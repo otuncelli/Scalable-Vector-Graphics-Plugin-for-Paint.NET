@@ -7,9 +7,9 @@
     <ProjectGuid>{C32235C8-90B3-4C43-B589-B821C84839E9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SVGType</RootNamespace>
-    <AssemblyName>SVGType</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <RootNamespace>SvgFileTypePlugin</RootNamespace>
+    <AssemblyName>SvgFileType</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -40,9 +40,9 @@
     <Reference Include="PaintDotNet.Data">
       <HintPath>C:\Program Files\paint.net\PaintDotNet.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Svg, Version=2.2.1.39233, Culture=neutral, PublicKeyToken=12a0bac221edeae2, processorArchitecture=MSIL">
-      <HintPath>..\packages\Svg.2.3.0\lib\net35\Svg.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Svg, Version=2.2.1.10396, Culture=neutral, PublicKeyToken=12a0bac221edeae2, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Downloads\SVG-master\Source\bin\Release\Svg.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -51,22 +51,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SvgType.cs" />
+    <Compile Include="SvgFileType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SvgTypeFactory.cs" />
-    <Compile Include="UIDialog.cs">
+    <Compile Include="SvgFileTypeFactory.cs" />
+    <Compile Include="UiDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UIDialog.Designer.cs">
-      <DependentUpon>UIDialog.cs</DependentUpon>
+    <Compile Include="UiDialog.Designer.cs">
+      <DependentUpon>UiDialog.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="UIDialog.resx">
-      <DependentUpon>UIDialog.cs</DependentUpon>
+    <EmbeddedResource Include="UiDialog.resx">
+      <DependentUpon>UiDialog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

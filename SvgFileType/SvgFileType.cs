@@ -5,14 +5,13 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Windows.Forms;
 
-namespace SVGType
+namespace SvgFileTypePlugin
 {
-    public class SvgType : FileType
+    public class SvgFileType : FileType
     {
-        public SvgType()
+        public SvgFileType()
             : base(
                 "Scalable Vector Graphics",
                 FileTypeFlags.SupportsLoading,
@@ -33,26 +32,11 @@ namespace SVGType
             }
         }
 
-        private static bool IsCompressed(Stream input)
-        {
-            if (input.Length < 3)
-                return false;
-            var headerBytes = new byte[3];
-            input.Read(headerBytes, 0, 3);
-            input.Position = 0;
-            return headerBytes.SequenceEqual(new byte[] {0x1f, 0x8b, 0x8});
-        }
-
         protected override Document OnLoad(Stream input)
         {
-            if (IsCompressed(input))
-                input = new GZipStream(input, CompressionMode.Decompress);
-
             SvgDocument doc;
-            using (input)
-            {
-                doc = SvgDocument.Open<SvgDocument>(input);
-            }
+            using (var wrapper = new SvgStreamWrapper(input))
+                doc = SvgDocument.Open<SvgDocument>(wrapper.SvgStream);
 
             bool keepAspectRatio;
             int resolution;
@@ -62,21 +46,21 @@ namespace SVGType
             var vph = 0;
             if (!doc.Width.IsNone && !doc.Width.IsEmpty &&
                 doc.Width.Type != SvgUnitType.Percentage)
-                vpw = (int) doc.Width.Value;
+                vpw = (int)doc.Width.Value;
             if (!doc.Height.IsNone && !doc.Height.IsEmpty &&
                 doc.Height.Type != SvgUnitType.Percentage)
-                vph = (int) doc.Height.Value;
-            var vbx = (int) doc.ViewBox.MinX;
-            var vby = (int) doc.ViewBox.MinY;
-            var vbw = (int) doc.ViewBox.Width;
-            var vbh = (int) doc.ViewBox.Height;
+                vph = (int)doc.Height.Value;
+            var vbx = (int)doc.ViewBox.MinX;
+            var vby = (int)doc.ViewBox.MinY;
+            var vbw = (int)doc.ViewBox.Width;
+            var vbh = (int)doc.ViewBox.Height;
             DialogResult dr = DialogResult.Cancel;
-            using (var dialog = new UIDialog())
+            using (var dialog = new UiDialog())
             {
                 Form mainForm = GetMainForm();
                 if (mainForm != null)
                 {
-                    mainForm.Invoke((MethodInvoker) (() =>
+                    mainForm.Invoke((MethodInvoker)(() =>
                     {
                         dialog.SetSvgInfo(vpw, vph, vbx, vby, vbw, vbh);
                         dr = dialog.ShowDialog(mainForm);
@@ -106,6 +90,39 @@ namespace SVGType
                 doc.Draw(graph);
             }
             return Document.FromImage(bmp);
+        }
+
+        private sealed class SvgStreamWrapper : IDisposable
+        {
+            public Stream SvgStream { get; }
+
+            public SvgStreamWrapper(Stream input)
+            {
+                if (input.Length < 3)
+                    throw new InvalidDataException();
+                var headerBytes = new byte[3];
+                input.Read(headerBytes, 0, 3);
+                input.Position = 0;
+                if (headerBytes[0] == 0x1f && headerBytes[1] == 0x8b && headerBytes[2] == 0x8)
+                    SvgStream = new GZipStream(input, CompressionMode.Decompress, true);
+                else
+                    SvgStream = input;
+            }
+
+            #region IDisposable
+
+            private bool _disposed;
+
+            public void Dispose()
+            {
+                if (_disposed)
+                    return;
+                if (SvgStream is GZipStream)
+                    SvgStream.Dispose();
+                _disposed = true;
+            }
+
+            #endregion
         }
     }
 }

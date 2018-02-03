@@ -1,14 +1,14 @@
 ﻿using PaintDotNet;
 
-namespace SVGType
+namespace SvgFileTypePlugin
 {
-    public class SvgTypeFactory : IFileTypeFactory
+    public class SvgFileTypeFactory : IFileTypeFactory
     {
         public FileType[] GetFileTypeInstances()
         {
             return new FileType[]
             {
-                new SvgType()
+                new SvgFileType()
             };
         }
     }

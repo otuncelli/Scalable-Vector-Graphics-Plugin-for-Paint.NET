@@ -2,11 +2,11 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace SVGType
+namespace SvgFileTypePlugin
 {
-    public partial class UIDialog : Form
+    public partial class UiDialog : Form
     {
-        public UIDialog()
+        public UiDialog()
         {
             InitializeComponent();
         }

@@ -5,7 +5,7 @@ This is a Paint.NET filetype plugin for loading SVG (Scalable Vector Graphics) a
 
 The plugin is a tiny wrapper around the [SVG.NET Library](https://github.com/vvvv/SVG) which does the actual SVG reading.
 
-Tested on Paint.NET 4.0.13.
+Tested on Paint.NET 4.0.21.
 
 Please check the [Releases](https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/releases) section for binary download.
 

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SVGType", "SVGType\SVGType.csproj", "{C32235C8-90B3-4C43-B589-B821C84839E9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvgFileTypePlugin", "SvgFileType\SvgFileTypePlugin.csproj", "{C32235C8-90B3-4C43-B589-B821C84839E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +18,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1ACF9C3B-BF8E-4939-88D4-BA7E2CE114E5}
 	EndGlobalSection
 EndGlobal

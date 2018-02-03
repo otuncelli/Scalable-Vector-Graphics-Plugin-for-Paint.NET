@@ -1,6 +1,6 @@
-﻿namespace SVGType
+﻿namespace SvgFileTypePlugin
 {
-    partial class UIDialog
+    partial class UiDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -337,7 +337,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "UIDialog";
+            this.Name = "UiDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "SVG (Scalable Vector Graphics) Import";
             this.TopMost = true;
