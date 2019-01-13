@@ -17,9 +17,14 @@ namespace SvgFileTypePlugin
         public bool KeepAspectRatio => cbKeepAR.Checked;
         private Size _sizeHint;
 
-        public void SetSvgInfo(int viewportw, int viewporth,
-            int viewboxx = 0, int viewboxy = 0, int viewboxw = 0,
-            int viewboxh = 0)
+        public void SetSvgInfo(
+            int viewportw,
+            int viewporth,
+            int viewboxx = 0,
+            int viewboxy = 0,
+            int viewboxw = 0,
+            int viewboxh = 0,
+            int dpi = 96)
         {
             if (viewportw > 0)
                 vpw.Text = viewportw.ToString();
@@ -43,21 +48,23 @@ namespace SvgFileTypePlugin
             else
                 _sizeHint = new Size(500, 500);
 
-            canvash.Value = canvasw.Value*_sizeHint.Height/_sizeHint.Width;
+            this.nudDpi.Value = dpi;
+            canvasw.Value = _sizeHint.Width;
+            canvash.Value = _sizeHint.Height;
         }
 
         private void canvasw_ValueChanged(object sender, EventArgs e)
         {
             if (!KeepAspectRatio)
                 return;
-            canvash.Value = canvasw.Value*_sizeHint.Height/_sizeHint.Width;
+            canvash.Value = canvasw.Value * _sizeHint.Height / _sizeHint.Width;
         }
 
         private void canvash_ValueChanged(object sender, EventArgs e)
         {
             if (!KeepAspectRatio)
                 return;
-            canvasw.Value = canvash.Value*_sizeHint.Width/_sizeHint.Height;
+            canvasw.Value = canvash.Value * _sizeHint.Width / _sizeHint.Height;
         }
 
         private void cbKeepAR_CheckedChanged(object sender, EventArgs e)

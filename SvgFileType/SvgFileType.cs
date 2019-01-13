@@ -15,7 +15,7 @@ namespace SvgFileTypePlugin
             : base(
                 "Scalable Vector Graphics",
                 FileTypeFlags.SupportsLoading,
-                new[] {".svg", ".svgz"})
+                new[] { ".svg", ".svgz" })
         {
         }
 
@@ -44,12 +44,18 @@ namespace SvgFileTypePlugin
             int canvash;
             var vpw = 0;
             var vph = 0;
-            if (!doc.Width.IsNone && !doc.Width.IsEmpty &&
-                doc.Width.Type != SvgUnitType.Percentage)
-                vpw = (int)doc.Width.Value;
-            if (!doc.Height.IsNone && !doc.Height.IsEmpty &&
-                doc.Height.Type != SvgUnitType.Percentage)
-                vph = (int)doc.Height.Value;
+            var ppi = doc.Ppi;
+
+            if (!doc.Width.IsNone && !doc.Width.IsEmpty)
+            {
+                vpw = ConvertToPixels(doc.Width.Type, doc.Width.Value, doc.Ppi);
+            }
+
+            if (!doc.Height.IsNone && !doc.Height.IsEmpty)
+            {
+                vph = ConvertToPixels(doc.Height.Type, doc.Height.Value, doc.Ppi);
+            }
+
             var vbx = (int)doc.ViewBox.MinX;
             var vby = (int)doc.ViewBox.MinY;
             var vbw = (int)doc.ViewBox.Width;
@@ -62,13 +68,13 @@ namespace SvgFileTypePlugin
                 {
                     mainForm.Invoke((MethodInvoker)(() =>
                     {
-                        dialog.SetSvgInfo(vpw, vph, vbx, vby, vbw, vbh);
+                        dialog.SetSvgInfo(vpw, vph, vbx, vby, vbw, vbh, ppi);
                         dr = dialog.ShowDialog(mainForm);
                     }));
                 }
                 else
                 {
-                    dialog.SetSvgInfo(vpw, vph, vbx, vby, vbw, vbh);
+                    dialog.SetSvgInfo(vpw, vph, vbx, vby, vbw, vbh, ppi);
                     dr = dialog.ShowDialog();
                 }
                 if (dr != DialogResult.OK)
@@ -78,6 +84,7 @@ namespace SvgFileTypePlugin
                 resolution = dialog.Dpi;
                 keepAspectRatio = dialog.KeepAspectRatio;
             }
+
             var bmp = new Bitmap(canvasw, canvash);
             using (Graphics graph = Graphics.FromImage(bmp))
             {
@@ -90,6 +97,38 @@ namespace SvgFileTypePlugin
                 doc.Draw(graph);
             }
             return Document.FromImage(bmp);
+        }
+
+        private static int ConvertToPixels(SvgUnitType type, float value, float ppi)
+        {
+            var defaultRatioFor96 = 3.78;
+            var convertationRatio = ppi / 96 * defaultRatioFor96;
+
+            if (type == SvgUnitType.Millimeter)
+            {
+                return (int)Math.Ceiling(value * convertationRatio);
+            }
+            else if (type == SvgUnitType.Centimeter)
+            {
+                return (int)Math.Ceiling(value * 10 * convertationRatio);
+            }
+            else if (type == SvgUnitType.Inch)
+            {
+                return (int)Math.Ceiling(value * 25.4 * convertationRatio);
+            }
+            else if (type == SvgUnitType.Em || type == SvgUnitType.Pica)
+            {
+                // Default 1 em for 16 pixels.
+                return (int)Math.Ceiling(value * 16);
+            }
+            else if (type != SvgUnitType.Percentage)
+            {
+                return (int)Math.Ceiling(value);
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         private sealed class SvgStreamWrapper : IDisposable
