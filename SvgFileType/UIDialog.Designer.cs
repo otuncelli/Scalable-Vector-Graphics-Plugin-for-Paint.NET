@@ -58,8 +58,7 @@
             this.rbAll = new System.Windows.Forms.RadioButton();
             this.rbGroups = new System.Windows.Forms.RadioButton();
             this.rbFlat = new System.Windows.Forms.RadioButton();
-            this.ttOpacity = new System.Windows.Forms.ToolTip(this.components);
-            this.ttGroup = new System.Windows.Forms.ToolTip(this.components);
+            this.tooltip = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvash)).BeginInit();
@@ -375,6 +374,8 @@
             this.cbOpacity.Size = new System.Drawing.Size(128, 17);
             this.cbOpacity.TabIndex = 3;
             this.cbOpacity.Text = "Opacity as layer prop.";
+            this.tooltip.SetToolTip(this.cbOpacity, "Store opacity as layer parameter. Note: Group opacity may be lost while Paint.NET" +
+        " has only one level of Layers.");
             this.cbOpacity.UseVisualStyleBackColor = true;
             // 
             // rbAll
@@ -394,9 +395,10 @@
             this.rbGroups.AutoSize = true;
             this.rbGroups.Location = new System.Drawing.Point(10, 42);
             this.rbGroups.Name = "rbGroups";
-            this.rbGroups.Size = new System.Drawing.Size(59, 17);
+            this.rbGroups.Size = new System.Drawing.Size(110, 17);
             this.rbGroups.TabIndex = 1;
-            this.rbGroups.Text = "Groups";
+            this.rbGroups.Text = "Groups (Unstable)";
+            this.tooltip.SetToolTip(this.rbGroups, "Results are unstable due to lack of paint.net features.");
             this.rbGroups.UseVisualStyleBackColor = true;
             // 
             // rbFlat
@@ -409,13 +411,14 @@
             this.rbFlat.Text = "Flat Image";
             this.rbFlat.UseVisualStyleBackColor = true;
             // 
-            // ttOpacity
+            // tooltip
             // 
-            this.ttOpacity.ToolTipTitle = "Store opacity as layer options instead of ";
-            // 
-            // ttGroup
-            // 
-            this.ttGroup.ToolTipTitle = "Results are unstable due to lack of paint.net features.";
+            this.tooltip.AutomaticDelay = 100;
+            this.tooltip.AutoPopDelay = 4000;
+            this.tooltip.InitialDelay = 100;
+            this.tooltip.ReshowDelay = 20;
+            this.tooltip.ShowAlways = true;
+            this.tooltip.UseAnimation = false;
             // 
             // UiDialog
             // 
@@ -478,7 +481,6 @@
         private System.Windows.Forms.RadioButton rbFlat;
         private System.Windows.Forms.CheckBox cbLayers;
         private System.Windows.Forms.CheckBox cbOpacity;
-        private System.Windows.Forms.ToolTip ttOpacity;
-        private System.Windows.Forms.ToolTip ttGroup;
+        private System.Windows.Forms.ToolTip tooltip;
     }
 }
