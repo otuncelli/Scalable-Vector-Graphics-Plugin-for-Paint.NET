@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOk = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -51,17 +52,27 @@
             this.nudDpi = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.cbLayers = new System.Windows.Forms.CheckBox();
+            this.cbOpacity = new System.Windows.Forms.CheckBox();
+            this.rbAll = new System.Windows.Forms.RadioButton();
+            this.rbGroups = new System.Windows.Forms.RadioButton();
+            this.rbFlat = new System.Windows.Forms.RadioButton();
+            this.ttOpacity = new System.Windows.Forms.ToolTip(this.components);
+            this.ttGroup = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvash)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasw)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDpi)).BeginInit();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCancel
             // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(197, 217);
+            this.btnCancel.Location = new System.Drawing.Point(197, 315);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 0;
@@ -70,8 +81,9 @@
             // 
             // btnOk
             // 
+            this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(116, 217);
+            this.btnOk.Location = new System.Drawing.Point(116, 315);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 1;
@@ -325,11 +337,92 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Resolution (DPI):";
             // 
-            // UIDialog
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.cbLayers);
+            this.groupBox3.Controls.Add(this.cbOpacity);
+            this.groupBox3.Controls.Add(this.rbAll);
+            this.groupBox3.Controls.Add(this.rbGroups);
+            this.groupBox3.Controls.Add(this.rbFlat);
+            this.groupBox3.Location = new System.Drawing.Point(13, 217);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(259, 92);
+            this.groupBox3.TabIndex = 14;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Layers";
+            // 
+            // cbLayers
+            // 
+            this.cbLayers.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.cbLayers.AutoSize = true;
+            this.cbLayers.Checked = true;
+            this.cbLayers.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbLayers.Location = new System.Drawing.Point(124, 43);
+            this.cbLayers.Name = "cbLayers";
+            this.cbLayers.Size = new System.Drawing.Size(120, 17);
+            this.cbLayers.TabIndex = 4;
+            this.cbLayers.Text = "Import hidden layers";
+            this.cbLayers.UseVisualStyleBackColor = true;
+            // 
+            // cbOpacity
+            // 
+            this.cbOpacity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbOpacity.AutoSize = true;
+            this.cbOpacity.Checked = true;
+            this.cbOpacity.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbOpacity.Location = new System.Drawing.Point(124, 19);
+            this.cbOpacity.Name = "cbOpacity";
+            this.cbOpacity.Size = new System.Drawing.Size(128, 17);
+            this.cbOpacity.TabIndex = 3;
+            this.cbOpacity.Text = "Opacity as layer prop.";
+            this.cbOpacity.UseVisualStyleBackColor = true;
+            // 
+            // rbAll
+            // 
+            this.rbAll.AutoSize = true;
+            this.rbAll.Checked = true;
+            this.rbAll.Location = new System.Drawing.Point(10, 65);
+            this.rbAll.Name = "rbAll";
+            this.rbAll.Size = new System.Drawing.Size(70, 17);
+            this.rbAll.TabIndex = 2;
+            this.rbAll.TabStop = true;
+            this.rbAll.Text = "All Layers";
+            this.rbAll.UseVisualStyleBackColor = true;
+            // 
+            // rbGroups
+            // 
+            this.rbGroups.AutoSize = true;
+            this.rbGroups.Location = new System.Drawing.Point(10, 42);
+            this.rbGroups.Name = "rbGroups";
+            this.rbGroups.Size = new System.Drawing.Size(59, 17);
+            this.rbGroups.TabIndex = 1;
+            this.rbGroups.Text = "Groups";
+            this.rbGroups.UseVisualStyleBackColor = true;
+            // 
+            // rbFlat
+            // 
+            this.rbFlat.AutoSize = true;
+            this.rbFlat.Location = new System.Drawing.Point(10, 19);
+            this.rbFlat.Name = "rbFlat";
+            this.rbFlat.Size = new System.Drawing.Size(74, 17);
+            this.rbFlat.TabIndex = 0;
+            this.rbFlat.Text = "Flat Image";
+            this.rbFlat.UseVisualStyleBackColor = true;
+            // 
+            // ttOpacity
+            // 
+            this.ttOpacity.ToolTipTitle = "Store opacity as layer options instead of ";
+            // 
+            // ttGroup
+            // 
+            this.ttGroup.ToolTipTitle = "Results are unstable due to lack of paint.net features.";
+            // 
+            // UiDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 252);
+            this.ClientSize = new System.Drawing.Size(284, 350);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnOk);
@@ -348,6 +441,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.canvash)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasw)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDpi)).EndInit();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -377,5 +472,13 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox cbKeepAR;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.RadioButton rbAll;
+        private System.Windows.Forms.RadioButton rbGroups;
+        private System.Windows.Forms.RadioButton rbFlat;
+        private System.Windows.Forms.CheckBox cbLayers;
+        private System.Windows.Forms.CheckBox cbOpacity;
+        private System.Windows.Forms.ToolTip ttOpacity;
+        private System.Windows.Forms.ToolTip ttGroup;
     }
 }

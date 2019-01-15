@@ -16,6 +16,27 @@ namespace SvgFileTypePlugin
         public int CanvasH => (int) canvash.Value;
         public bool KeepAspectRatio => cbKeepAR.Checked;
         private Size _sizeHint;
+        public bool ImportOpacity => this.cbOpacity.Checked;
+        public bool ImportHiddenLayers => this.cbLayers.Checked;
+
+        public LayersMode LayerMode
+        {
+            get
+            {
+                if(rbAll.Checked)
+                {
+                    return LayersMode.All;
+                }
+                else if(rbFlat.Checked)
+                {
+                    return LayersMode.Flat;
+                }
+                else
+                {
+                    return LayersMode.Groups;
+                }
+            }
+        }
 
         public void SetSvgInfo(
             int viewportw,
@@ -49,14 +70,18 @@ namespace SvgFileTypePlugin
                 _sizeHint = new Size(500, 500);
 
             this.nudDpi.Value = dpi;
+            changedProgramatically = true;
             canvasw.Value = _sizeHint.Width;
             canvash.Value = _sizeHint.Height;
+            changedProgramatically = false;
         }
 
+        bool changedProgramatically = false;
         private void canvasw_ValueChanged(object sender, EventArgs e)
         {
-            if (!KeepAspectRatio)
+            if (!KeepAspectRatio || changedProgramatically)
                 return;
+            
             canvash.Value = canvasw.Value * _sizeHint.Height / _sizeHint.Width;
         }
 
