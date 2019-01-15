@@ -122,14 +122,12 @@ namespace SvgFileTypePlugin
             }
             else
             {
-                // I had problems to render each element directly while parent transformation can affect child. 
-                // But we can trick the system. We can render full document each time but out of scope nodes should be turned off. 
-
                 var allElements = PrepareFlatElements(doc.Children).Where(p => p is SvgVisualElement).Cast<SvgVisualElement>().ToList();
 
                 Document outputDocument = new Document(canvasw, canvash);
                 if (layersMode == LayersMode.All)
                 {
+                    allElements = allElements.Where(p => !(p is SvgGroup)).ToList();
                     RenderElements(setOpacityForLayer, importHiddenLayers, allElements, outputDocument);
                 }
                 else if (layersMode == LayersMode.Groups)
@@ -171,7 +169,7 @@ namespace SvgFileTypePlugin
                         }
                     }
 
-                    RenderElements(setOpacityForLayer, importHiddenLayers, allElements, outputDocument);
+                    RenderElements(setOpacityForLayer, importHiddenLayers, groupsAndElementsWithoutGroup, outputDocument);
                 }
 
                 // Fallback. Nothing is added. Render one default layer.
@@ -219,15 +217,12 @@ namespace SvgFileTypePlugin
 
         private static void RenderElements(bool setOpacityForLayer, bool importHiddenLayers, List<SvgVisualElement> elements, Document outputDocument)
         {
-            // Render all visual elements.
+            // I had problems to render each element directly while parent transformation can affect child. 
+            // But we can do a trick and render full document each time with only required nodes set as visible.
+
+            // Render all visual elements that are passed here.
             foreach (var element in elements)
             {
-                if (element is SvgGroup)
-                {
-                    // Each child elements will be rendered separatelly
-                    continue;
-                }
-
                 // Turn off visibility of all elements
                 foreach (var elemntToChange in elements)
                 {
@@ -239,12 +234,11 @@ namespace SvgFileTypePlugin
                 var toCheck = (SvgElement)element;
                 while (toCheck != null)
                 {
-
                     var visual = toCheck as SvgVisualElement;
                     if (visual != null)
                     {
                         visual.Visible = true;
-
+                        // Check, maybe parent group was initially hidden
                         if (!importHiddenLayers)
                         {
                             // Skip hidden layers.
@@ -256,7 +250,6 @@ namespace SvgFileTypePlugin
                         }
                     }
 
-                    //RestoreOpacityFromAttribute(toCheck);
                     toCheck = toCheck.Parent;
                 }
 
@@ -293,7 +286,7 @@ namespace SvgFileTypePlugin
             // Store opacity as layer options.
             if (setOpacityForLayer)
             {
-                // Set full opacity when enabled to render 100%. We will use this opacity as layer.
+                // Set full opacity when enabled to render 100%. We will use this opacity as layer property.
                 if (element.Opacity > 0.01)
                 {
                     element.Opacity = 1;
