@@ -283,10 +283,9 @@ namespace SvgFileTypePlugin
                     visualElement.Visible = true;
 
                 }
-
-                // Hidden layers are ignored.
-                if(!visible)
+                else if (!visible)
                 {
+                    // Hidden layers are ignored.
                     return;
                 }
             }
