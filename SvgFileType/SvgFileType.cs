@@ -8,6 +8,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Windows.Forms;
 using System.Linq;
+using System.Reflection;
 
 namespace SvgFileTypePlugin
 {
@@ -154,7 +155,12 @@ namespace SvgFileTypePlugin
                                 {
                                     // TODO: render more groups. In most cases svg has only few root groups.
                                     var groupToCheck= (SvgGroup)toCheck;
-                                    lastGroup = groupToCheck;
+                                    var title = GetLayerTitle(groupToCheck);
+
+                                    if (!string.IsNullOrEmpty(title))
+                                    {
+                                        lastGroup = groupToCheck;
+                                    }
                                 }
                             }
 
@@ -369,6 +375,21 @@ namespace SvgFileTypePlugin
                         layerName = title.Content;
                         return layerName;
                     }
+                }
+            }
+
+            if (string.IsNullOrEmpty(layerName))
+            {
+                var prop = typeof(SvgElement).GetProperty("ElementName", BindingFlags.NonPublic | BindingFlags.Instance);
+                if (prop != null)
+                {
+                    var getter = prop.GetGetMethod(nonPublic: true);
+                    layerName = getter.Invoke(element, null) as string;
+                }
+
+                if(string.IsNullOrEmpty(layerName))
+                {
+                    layerName = element.GetType().Name;
                 }
             }
 
