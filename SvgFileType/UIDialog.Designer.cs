@@ -33,6 +33,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOk = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label6 = new System.Windows.Forms.Label();
             this.vbh = new System.Windows.Forms.TextBox();
             this.vbw = new System.Windows.Forms.TextBox();
@@ -62,7 +63,7 @@
             this.rbGroups = new System.Windows.Forms.RadioButton();
             this.rbFlat = new System.Windows.Forms.RadioButton();
             this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.linkGitHub = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.warningBox)).BeginInit();
@@ -117,6 +118,17 @@
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Size settings given in SVG file";
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(117, 98);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(151, 13);
+            this.linkLabel1.TabIndex = 13;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Use size settings given in SVG";
+            this.linkLabel1.Click += new System.EventHandler(this.btnUseOriginal_Click);
             // 
             // label6
             // 
@@ -479,22 +491,24 @@
             this.tooltip.ShowAlways = true;
             this.tooltip.UseAnimation = false;
             // 
-            // linkLabel1
+            // linkGitHub
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(117, 98);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(151, 13);
-            this.linkLabel1.TabIndex = 13;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Use size settings given in SVG";
-            this.linkLabel1.Click += new System.EventHandler(this.btnUseOriginal_Click);
+            this.linkGitHub.AutoSize = true;
+            this.linkGitHub.Location = new System.Drawing.Point(12, 342);
+            this.linkGitHub.Name = "linkGitHub";
+            this.linkGitHub.Size = new System.Drawing.Size(40, 13);
+            this.linkGitHub.TabIndex = 14;
+            this.linkGitHub.TabStop = true;
+            this.linkGitHub.Text = "GitHub";
+            this.tooltip.SetToolTip(this.linkGitHub, "Information about the plugin and sources");
+            this.linkGitHub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkGitHub_LinkClicked);
             // 
             // UiDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(303, 372);
+            this.Controls.Add(this.linkGitHub);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -518,6 +532,7 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -556,5 +571,6 @@
         private System.Windows.Forms.CheckBox cbPSDSupport;
         private System.Windows.Forms.PictureBox warningBox;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.LinkLabel linkGitHub;
     }
 }

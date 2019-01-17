@@ -149,5 +149,10 @@ namespace SvgFileTypePlugin
         {
             this.cbOpacity.Enabled = this.cbLayers.Enabled = this.cbPSDSupport.Enabled = !rbFlat.Checked;
         }
+
+        private void linkGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(@"https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET");
+        }
     }
 }
