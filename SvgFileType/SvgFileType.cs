@@ -9,6 +9,7 @@ using System.IO.Compression;
 using System.Windows.Forms;
 using System.Linq;
 using System.Reflection;
+using System.Drawing.Drawing2D;
 
 namespace SvgFileTypePlugin
 {
@@ -22,7 +23,11 @@ namespace SvgFileTypePlugin
         {
         }
 
-        private static string groupAttribute = "import_grouped";
+        // Dont change this text! It's used by a PSD import plugin to keep photoshop folder strure.
+        public const string LayerGroupBegin = "Layer Group: {0}";
+        public const string LayerGroupEnd = "End Layer Group: {0}";
+
+        private static string groupAttribute = "import_group_name";
         private static string visibilityAttribute = "import_visibility";
 
         private static string[] allowedTitles = new string[] { "label", "title", "inskape:label" };
@@ -78,7 +83,7 @@ namespace SvgFileTypePlugin
             // Store opacity as layer options.
             var setOpacityForLayer = true;
             var importHiddenLayers = true;
-
+            var importGroupBoundariesAsLayers = false;
             DialogResult dr = DialogResult.Cancel;
             using (var dialog = new UiDialog())
             {
@@ -105,6 +110,7 @@ namespace SvgFileTypePlugin
                 keepAspectRatio = dialog.KeepAspectRatio;
                 setOpacityForLayer = dialog.ImportOpacity;
                 importHiddenLayers = dialog.ImportHiddenLayers;
+                importGroupBoundariesAsLayers = dialog.ImportGroupBoundariesAsLayers;
             }
 
             doc.Ppi = resolution;
@@ -128,8 +134,16 @@ namespace SvgFileTypePlugin
                 Document outputDocument = new Document(canvasw, canvash);
                 if (layersMode == LayersMode.All)
                 {
+                    // Dont render groups and boundaries if defined
                     allElements = allElements.Where(p => !(p is SvgGroup)).ToList();
-                    RenderElements(setOpacityForLayer, importHiddenLayers, allElements, outputDocument);
+
+                    // Filter out group boundaries if not set.
+                    if (!importGroupBoundariesAsLayers)
+                    {
+                        allElements = allElements.Where(p => !(p is PaintGroupBoundaries)).ToList();
+                    }
+
+                    RenderElements(allElements, outputDocument, setOpacityForLayer, importHiddenLayers);
                 }
                 else if (layersMode == LayersMode.Groups)
                 {
@@ -138,6 +152,9 @@ namespace SvgFileTypePlugin
                   
                     foreach(var element in allElements)
                     {
+                        if (element is PaintGroupBoundaries)
+                            continue;
+
                         if (element.ContainsAttribute(groupAttribute))
                         {
                             // Get only root level
@@ -175,7 +192,7 @@ namespace SvgFileTypePlugin
                         }
                     }
 
-                    RenderElements(setOpacityForLayer, importHiddenLayers, groupsAndElementsWithoutGroup, outputDocument);
+                    RenderElements(groupsAndElementsWithoutGroup, outputDocument, setOpacityForLayer, importHiddenLayers);
                 }
 
                 // Fallback. Nothing is added. Render one default layer.
@@ -221,7 +238,7 @@ namespace SvgFileTypePlugin
             }
         }
 
-        private static void RenderElements(bool setOpacityForLayer, bool importHiddenLayers, List<SvgVisualElement> elements, Document outputDocument)
+        private static void RenderElements( List<SvgVisualElement> elements, Document outputDocument, bool setOpacityForLayer, bool importHiddenLayers)
         {
             // I had problems to render each element directly while parent transformation can affect child. 
             // But we can do a trick and render full document each time with only required nodes set as visible.
@@ -229,6 +246,15 @@ namespace SvgFileTypePlugin
             // Render all visual elements that are passed here.
             foreach (var element in elements)
             {
+                if (element is PaintGroupBoundaries)
+                {
+                    // Render empty boundary and continue
+                    var pdnLayer = new BitmapLayer(outputDocument.Width, outputDocument.Height);
+                    pdnLayer.Name = ((PaintGroupBoundaries)element).ID;
+                    outputDocument.Layers.Add(pdnLayer);
+                    continue;
+                }
+
                 // Turn off visibility of all elements
                 foreach (var elemntToChange in elements)
                 {
@@ -396,21 +422,32 @@ namespace SvgFileTypePlugin
             return layerName;
         }
 
-        private static IEnumerable<SvgElement> PrepareFlatElements(SvgElementCollection collection, bool grouped = false)
+        private static IEnumerable<SvgElement> PrepareFlatElements(SvgElementCollection collection, string groupName = null)
         {
+            // Prepare a collection of elements that about to be rendered. 
             if (collection != null)
             {
                 foreach (var toRender in collection)
                 {
-                    if (!grouped && toRender is SvgGroup)
+                    // Dont prepare for a separate parsing def lists.
+                    if (toRender is SvgDefinitionList)
                     {
-                        grouped = true;
+                        continue;
                     }
 
                     // Dont prepare def lists for a separate rendering.
                     if (toRender is SvgDefinitionList)
                     {
                         continue;
+                    }
+
+                    var isGroup = toRender is SvgGroup;
+                    if (isGroup)
+                    {
+                        groupName = GetLayerTitle((SvgGroup)toRender);
+
+                        // Return fake node to indicate group end. 
+                        yield return new PaintGroupBoundaries() { ID = string.Format(LayerGroupEnd, groupName) };
                     }
 
                     var visual = toRender as SvgVisualElement;
@@ -427,20 +464,29 @@ namespace SvgFileTypePlugin
                         // Store opacity
                         toRender.CustomAttributes.Add(visibilityAttribute, visual.Visible.ToString());
 
-                        if (grouped && !toRender.ContainsAttribute(groupAttribute))
+                        // Save current group to indicate that elements inside a group.
+                        if (!string.IsNullOrEmpty(groupName) && !toRender.ContainsAttribute(groupAttribute))
                         {
                             // Store group info
-                            toRender.CustomAttributes.Add(groupAttribute, grouped.ToString());
+                            toRender.CustomAttributes.Add(groupAttribute, groupName);
                         }
                     }
 
-                    var returned = PrepareFlatElements(toRender.Children, grouped);
+                    var returned = PrepareFlatElements(toRender.Children, groupName);
                     if (returned != null)
                     {
                         foreach (var output in returned)
                         {
                             yield return output;
                         }
+                    }
+
+                    if (isGroup)
+                    {
+                        groupName = GetLayerTitle((SvgGroup)toRender);
+
+                        // Return fake node to indicate group start.
+                        yield return new PaintGroupBoundaries() { ID = string.Format(LayerGroupBegin, groupName), IsStart = true };
                     }
 
                     yield return toRender;
@@ -479,6 +525,23 @@ namespace SvgFileTypePlugin
             }
 
             #endregion
+        }
+    }
+
+    // Used to determine boundaries of a group.
+    public class PaintGroupBoundaries : SvgVisualElement
+    {
+        public bool IsStart { get; set; }
+        public override RectangleF Bounds => throw new NotImplementedException();
+
+        public override SvgElement DeepCopy()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override GraphicsPath Path(ISvgRenderer renderer)
+        {
+            throw new NotImplementedException();
         }
     }
 }

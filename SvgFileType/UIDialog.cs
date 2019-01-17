@@ -19,7 +19,7 @@ namespace SvgFileTypePlugin
         private Size _sizeHint;
         public bool ImportOpacity => this.cbOpacity.Checked;
         public bool ImportHiddenLayers => this.cbLayers.Checked;
-        public bool ImportLayers => cbPSDSupport.Checked;
+        public bool ImportGroupBoundariesAsLayers => cbPSDSupport.Checked;
 
         private static int bigImageSize = 1280;
         public LayersMode LayerMode
@@ -147,7 +147,8 @@ namespace SvgFileTypePlugin
 
         private void ResolveControlsVisibility()
         {
-            this.cbOpacity.Enabled = this.cbLayers.Enabled = this.cbPSDSupport.Enabled = !rbFlat.Checked;
+            this.cbOpacity.Enabled = this.cbLayers.Enabled = this.cbPSDSupport.Enabled = !this.rbFlat.Checked;
+            this.cbPSDSupport.Enabled = this.rbAll.Checked;
         }
 
         private void linkGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

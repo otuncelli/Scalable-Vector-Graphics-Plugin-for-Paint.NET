@@ -77,7 +77,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(216, 337);
+            this.btnCancel.Location = new System.Drawing.Point(223, 337);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 0;
@@ -88,7 +88,7 @@
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(135, 337);
+            this.btnOk.Location = new System.Drawing.Point(142, 337);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 1;
@@ -114,7 +114,7 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(13, 13);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(278, 115);
+            this.groupBox1.Size = new System.Drawing.Size(285, 115);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Size settings given in SVG file";
@@ -122,7 +122,7 @@
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(117, 98);
+            this.linkLabel1.Location = new System.Drawing.Point(123, 96);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(151, 13);
             this.linkLabel1.TabIndex = 13;
@@ -135,7 +135,7 @@
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(185, 72);
+            this.label6.Location = new System.Drawing.Point(188, 72);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(12, 13);
             this.label6.TabIndex = 11;
@@ -148,7 +148,7 @@
             this.vbh.Location = new System.Drawing.Point(203, 69);
             this.vbh.Name = "vbh";
             this.vbh.ReadOnly = true;
-            this.vbh.Size = new System.Drawing.Size(65, 20);
+            this.vbh.Size = new System.Drawing.Size(72, 20);
             this.vbh.TabIndex = 10;
             this.vbh.Text = "n/a";
             this.vbh.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -160,7 +160,7 @@
             this.vbw.Location = new System.Drawing.Point(114, 69);
             this.vbw.Name = "vbw";
             this.vbw.ReadOnly = true;
-            this.vbw.Size = new System.Drawing.Size(65, 20);
+            this.vbw.Size = new System.Drawing.Size(72, 20);
             this.vbw.TabIndex = 9;
             this.vbw.Text = "n/a";
             this.vbw.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -179,7 +179,7 @@
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(185, 46);
+            this.label4.Location = new System.Drawing.Point(188, 46);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(12, 13);
             this.label4.TabIndex = 7;
@@ -192,7 +192,7 @@
             this.vby.Location = new System.Drawing.Point(203, 43);
             this.vby.Name = "vby";
             this.vby.ReadOnly = true;
-            this.vby.Size = new System.Drawing.Size(65, 20);
+            this.vby.Size = new System.Drawing.Size(72, 20);
             this.vby.TabIndex = 6;
             this.vby.Text = "n/a";
             this.vby.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -204,7 +204,7 @@
             this.vbx.Location = new System.Drawing.Point(114, 43);
             this.vbx.Name = "vbx";
             this.vbx.ReadOnly = true;
-            this.vbx.Size = new System.Drawing.Size(65, 20);
+            this.vbx.Size = new System.Drawing.Size(72, 20);
             this.vbx.TabIndex = 5;
             this.vbx.Text = "n/a";
             this.vbx.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -223,7 +223,7 @@
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(185, 20);
+            this.label3.Location = new System.Drawing.Point(188, 20);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(12, 13);
             this.label3.TabIndex = 3;
@@ -236,7 +236,7 @@
             this.vph.Location = new System.Drawing.Point(203, 17);
             this.vph.Name = "vph";
             this.vph.ReadOnly = true;
-            this.vph.Size = new System.Drawing.Size(65, 20);
+            this.vph.Size = new System.Drawing.Size(72, 20);
             this.vph.TabIndex = 2;
             this.vph.Text = "n/a";
             this.vph.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -248,7 +248,7 @@
             this.vpw.Location = new System.Drawing.Point(114, 17);
             this.vpw.Name = "vpw";
             this.vpw.ReadOnly = true;
-            this.vpw.Size = new System.Drawing.Size(65, 20);
+            this.vpw.Size = new System.Drawing.Size(72, 20);
             this.vpw.TabIndex = 1;
             this.vpw.Text = "n/a";
             this.vpw.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -276,7 +276,7 @@
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Location = new System.Drawing.Point(13, 134);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(278, 94);
+            this.groupBox2.Size = new System.Drawing.Size(285, 94);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Size selection by user";
@@ -284,7 +284,7 @@
             // warningBox
             // 
             this.warningBox.Image = ((System.Drawing.Image)(resources.GetObject("warningBox.Image")));
-            this.warningBox.Location = new System.Drawing.Point(90, 42);
+            this.warningBox.Location = new System.Drawing.Point(87, 42);
             this.warningBox.Name = "warningBox";
             this.warningBox.Size = new System.Drawing.Size(22, 22);
             this.warningBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -402,7 +402,7 @@
             this.groupBox3.Controls.Add(this.rbFlat);
             this.groupBox3.Location = new System.Drawing.Point(13, 234);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(278, 97);
+            this.groupBox3.Size = new System.Drawing.Size(285, 97);
             this.groupBox3.TabIndex = 14;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Layers";
@@ -411,14 +411,14 @@
             // 
             this.cbPSDSupport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbPSDSupport.AutoSize = true;
-            this.cbPSDSupport.Location = new System.Drawing.Point(144, 65);
+            this.cbPSDSupport.Location = new System.Drawing.Point(131, 65);
             this.cbPSDSupport.Name = "cbPSDSupport";
-            this.cbPSDSupport.Size = new System.Drawing.Size(120, 17);
+            this.cbPSDSupport.Size = new System.Drawing.Size(140, 17);
             this.cbPSDSupport.TabIndex = 5;
-            this.cbPSDSupport.Text = "Layers PSD support";
-            this.tooltip.SetToolTip(this.cbPSDSupport, "Import groups as empty layers (PSD plugin compatability)");
+            this.cbPSDSupport.Text = "Import group boundaries";
+            this.tooltip.SetToolTip(this.cbPSDSupport, "Import groups as empty \"start\" and \"end\" layers to determine boundaries (PSD plug" +
+        "in compatability)");
             this.cbPSDSupport.UseVisualStyleBackColor = true;
-            this.cbPSDSupport.Visible = false;
             // 
             // cbLayers
             // 
@@ -426,7 +426,7 @@
             this.cbLayers.AutoSize = true;
             this.cbLayers.Checked = true;
             this.cbLayers.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbLayers.Location = new System.Drawing.Point(144, 42);
+            this.cbLayers.Location = new System.Drawing.Point(131, 42);
             this.cbLayers.Name = "cbLayers";
             this.cbLayers.Size = new System.Drawing.Size(120, 17);
             this.cbLayers.TabIndex = 4;
@@ -439,11 +439,11 @@
             this.cbOpacity.AutoSize = true;
             this.cbOpacity.Checked = true;
             this.cbOpacity.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbOpacity.Location = new System.Drawing.Point(144, 20);
+            this.cbOpacity.Location = new System.Drawing.Point(131, 19);
             this.cbOpacity.Name = "cbOpacity";
-            this.cbOpacity.Size = new System.Drawing.Size(128, 17);
+            this.cbOpacity.Size = new System.Drawing.Size(142, 17);
             this.cbOpacity.TabIndex = 3;
-            this.cbOpacity.Text = "Opacity as layer prop.";
+            this.cbOpacity.Text = "Opacity as layer property";
             this.tooltip.SetToolTip(this.cbOpacity, "Store opacity as layer parameter. Note: Group opacity may be lost while Paint.NET" +
         " has only one level of Layers.");
             this.cbOpacity.UseVisualStyleBackColor = true;
@@ -457,6 +457,7 @@
             this.rbAll.TabIndex = 2;
             this.rbAll.Text = "All Layers";
             this.rbAll.UseVisualStyleBackColor = true;
+            this.rbAll.CheckedChanged += new System.EventHandler(this.ResolvePropertiesVisibility);
             // 
             // rbGroups
             // 
@@ -468,6 +469,7 @@
             this.rbGroups.Text = "Groups (Unstable)";
             this.tooltip.SetToolTip(this.rbGroups, "Results are unstable due to lack of paint.net features.");
             this.rbGroups.UseVisualStyleBackColor = true;
+            this.rbGroups.CheckedChanged += new System.EventHandler(this.ResolvePropertiesVisibility);
             // 
             // rbFlat
             // 
@@ -500,14 +502,15 @@
             this.linkGitHub.TabIndex = 14;
             this.linkGitHub.TabStop = true;
             this.linkGitHub.Text = "GitHub";
-            this.tooltip.SetToolTip(this.linkGitHub, "Information about the plugin and sources");
+            this.tooltip.SetToolTip(this.linkGitHub, "Releases, sources and plugin information https://github.com/otuncelli/Scalable-Ve" +
+        "ctor-Graphics-Plugin-for-Paint.NET");
             this.linkGitHub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkGitHub_LinkClicked);
             // 
             // UiDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(303, 372);
+            this.ClientSize = new System.Drawing.Size(310, 372);
             this.Controls.Add(this.linkGitHub);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
