@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UiDialog));
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOk = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -45,6 +46,7 @@
             this.vpw = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.warningBox = new System.Windows.Forms.PictureBox();
             this.cbKeepAR = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
             this.canvash = new System.Windows.Forms.NumericUpDown();
@@ -53,14 +55,17 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.cbPSDSupport = new System.Windows.Forms.CheckBox();
             this.cbLayers = new System.Windows.Forms.CheckBox();
             this.cbOpacity = new System.Windows.Forms.CheckBox();
             this.rbAll = new System.Windows.Forms.RadioButton();
             this.rbGroups = new System.Windows.Forms.RadioButton();
             this.rbFlat = new System.Windows.Forms.RadioButton();
             this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.warningBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvash)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasw)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDpi)).BeginInit();
@@ -71,7 +76,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(197, 315);
+            this.btnCancel.Location = new System.Drawing.Point(216, 337);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 0;
@@ -82,7 +87,7 @@
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(116, 315);
+            this.btnOk.Location = new System.Drawing.Point(135, 337);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 1;
@@ -91,6 +96,9 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.linkLabel1);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.vbh);
             this.groupBox1.Controls.Add(this.vbw);
@@ -105,15 +113,17 @@
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(13, 13);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(259, 99);
+            this.groupBox1.Size = new System.Drawing.Size(278, 115);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Size settings given in SVG file";
             // 
             // label6
             // 
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(169, 72);
+            this.label6.Location = new System.Drawing.Point(185, 72);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(12, 13);
             this.label6.TabIndex = 11;
@@ -121,7 +131,9 @@
             // 
             // vbh
             // 
-            this.vbh.Location = new System.Drawing.Point(187, 69);
+            this.vbh.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.vbh.Location = new System.Drawing.Point(203, 69);
             this.vbh.Name = "vbh";
             this.vbh.ReadOnly = true;
             this.vbh.Size = new System.Drawing.Size(65, 20);
@@ -131,7 +143,9 @@
             // 
             // vbw
             // 
-            this.vbw.Location = new System.Drawing.Point(98, 69);
+            this.vbw.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.vbw.Location = new System.Drawing.Point(114, 69);
             this.vbw.Name = "vbw";
             this.vbw.ReadOnly = true;
             this.vbw.Size = new System.Drawing.Size(65, 20);
@@ -150,8 +164,10 @@
             // 
             // label4
             // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(169, 46);
+            this.label4.Location = new System.Drawing.Point(185, 46);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(12, 13);
             this.label4.TabIndex = 7;
@@ -159,7 +175,9 @@
             // 
             // vby
             // 
-            this.vby.Location = new System.Drawing.Point(187, 43);
+            this.vby.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.vby.Location = new System.Drawing.Point(203, 43);
             this.vby.Name = "vby";
             this.vby.ReadOnly = true;
             this.vby.Size = new System.Drawing.Size(65, 20);
@@ -169,7 +187,9 @@
             // 
             // vbx
             // 
-            this.vbx.Location = new System.Drawing.Point(98, 43);
+            this.vbx.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.vbx.Location = new System.Drawing.Point(114, 43);
             this.vbx.Name = "vbx";
             this.vbx.ReadOnly = true;
             this.vbx.Size = new System.Drawing.Size(65, 20);
@@ -188,8 +208,10 @@
             // 
             // label3
             // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(169, 20);
+            this.label3.Location = new System.Drawing.Point(185, 20);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(12, 13);
             this.label3.TabIndex = 3;
@@ -197,7 +219,9 @@
             // 
             // vph
             // 
-            this.vph.Location = new System.Drawing.Point(187, 17);
+            this.vph.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.vph.Location = new System.Drawing.Point(203, 17);
             this.vph.Name = "vph";
             this.vph.ReadOnly = true;
             this.vph.Size = new System.Drawing.Size(65, 20);
@@ -207,7 +231,9 @@
             // 
             // vpw
             // 
-            this.vpw.Location = new System.Drawing.Point(98, 17);
+            this.vpw.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.vpw.Location = new System.Drawing.Point(114, 17);
             this.vpw.Name = "vpw";
             this.vpw.ReadOnly = true;
             this.vpw.Size = new System.Drawing.Size(65, 20);
@@ -226,6 +252,9 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.warningBox);
             this.groupBox2.Controls.Add(this.cbKeepAR);
             this.groupBox2.Controls.Add(this.label9);
             this.groupBox2.Controls.Add(this.canvash);
@@ -233,19 +262,31 @@
             this.groupBox2.Controls.Add(this.nudDpi);
             this.groupBox2.Controls.Add(this.label8);
             this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Location = new System.Drawing.Point(13, 119);
+            this.groupBox2.Location = new System.Drawing.Point(13, 134);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(259, 92);
+            this.groupBox2.Size = new System.Drawing.Size(278, 94);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Size selection by user";
+            // 
+            // warningBox
+            // 
+            this.warningBox.Image = ((System.Drawing.Image)(resources.GetObject("warningBox.Image")));
+            this.warningBox.Location = new System.Drawing.Point(90, 42);
+            this.warningBox.Name = "warningBox";
+            this.warningBox.Size = new System.Drawing.Size(22, 22);
+            this.warningBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.warningBox.TabIndex = 14;
+            this.warningBox.TabStop = false;
+            this.tooltip.SetToolTip(this.warningBox, "File size is reduced with original aspect ratio. Files that have size more than 1" +
+        "280 can cause memory problems.");
             // 
             // cbKeepAR
             // 
             this.cbKeepAR.AutoSize = true;
             this.cbKeepAR.Checked = true;
             this.cbKeepAR.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbKeepAR.Location = new System.Drawing.Point(98, 69);
+            this.cbKeepAR.Location = new System.Drawing.Point(114, 69);
             this.cbKeepAR.Name = "cbKeepAR";
             this.cbKeepAR.Size = new System.Drawing.Size(109, 17);
             this.cbKeepAR.TabIndex = 13;
@@ -256,7 +297,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(169, 47);
+            this.label9.Location = new System.Drawing.Point(185, 47);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(12, 13);
             this.label9.TabIndex = 12;
@@ -264,7 +305,7 @@
             // 
             // canvash
             // 
-            this.canvash.Location = new System.Drawing.Point(187, 45);
+            this.canvash.Location = new System.Drawing.Point(203, 45);
             this.canvash.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -283,7 +324,7 @@
             // 
             // canvasw
             // 
-            this.canvasw.Location = new System.Drawing.Point(98, 45);
+            this.canvasw.Location = new System.Drawing.Point(114, 45);
             this.canvasw.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -302,7 +343,7 @@
             // 
             // nudDpi
             // 
-            this.nudDpi.Location = new System.Drawing.Point(98, 18);
+            this.nudDpi.Location = new System.Drawing.Point(114, 18);
             this.nudDpi.Maximum = new decimal(new int[] {
             300,
             0,
@@ -321,7 +362,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(12, 47);
+            this.label8.Location = new System.Drawing.Point(7, 47);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(80, 13);
             this.label8.TabIndex = 1;
@@ -338,25 +379,42 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Controls.Add(this.cbPSDSupport);
             this.groupBox3.Controls.Add(this.cbLayers);
             this.groupBox3.Controls.Add(this.cbOpacity);
             this.groupBox3.Controls.Add(this.rbAll);
             this.groupBox3.Controls.Add(this.rbGroups);
             this.groupBox3.Controls.Add(this.rbFlat);
-            this.groupBox3.Location = new System.Drawing.Point(13, 217);
+            this.groupBox3.Location = new System.Drawing.Point(13, 234);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(259, 92);
+            this.groupBox3.Size = new System.Drawing.Size(278, 97);
             this.groupBox3.TabIndex = 14;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Layers";
             // 
+            // cbPSDSupport
+            // 
+            this.cbPSDSupport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbPSDSupport.AutoSize = true;
+            this.cbPSDSupport.Location = new System.Drawing.Point(144, 65);
+            this.cbPSDSupport.Name = "cbPSDSupport";
+            this.cbPSDSupport.Size = new System.Drawing.Size(120, 17);
+            this.cbPSDSupport.TabIndex = 5;
+            this.cbPSDSupport.Text = "Layers PSD support";
+            this.tooltip.SetToolTip(this.cbPSDSupport, "Import groups as empty layers (PSD plugin compatability)");
+            this.cbPSDSupport.UseVisualStyleBackColor = true;
+            this.cbPSDSupport.Visible = false;
+            // 
             // cbLayers
             // 
-            this.cbLayers.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.cbLayers.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbLayers.AutoSize = true;
             this.cbLayers.Checked = true;
             this.cbLayers.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbLayers.Location = new System.Drawing.Point(124, 43);
+            this.cbLayers.Location = new System.Drawing.Point(144, 42);
             this.cbLayers.Name = "cbLayers";
             this.cbLayers.Size = new System.Drawing.Size(120, 17);
             this.cbLayers.TabIndex = 4;
@@ -369,7 +427,7 @@
             this.cbOpacity.AutoSize = true;
             this.cbOpacity.Checked = true;
             this.cbOpacity.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbOpacity.Location = new System.Drawing.Point(124, 19);
+            this.cbOpacity.Location = new System.Drawing.Point(144, 20);
             this.cbOpacity.Name = "cbOpacity";
             this.cbOpacity.Size = new System.Drawing.Size(128, 17);
             this.cbOpacity.TabIndex = 3;
@@ -381,12 +439,10 @@
             // rbAll
             // 
             this.rbAll.AutoSize = true;
-            this.rbAll.Checked = true;
             this.rbAll.Location = new System.Drawing.Point(10, 65);
             this.rbAll.Name = "rbAll";
             this.rbAll.Size = new System.Drawing.Size(70, 17);
             this.rbAll.TabIndex = 2;
-            this.rbAll.TabStop = true;
             this.rbAll.Text = "All Layers";
             this.rbAll.UseVisualStyleBackColor = true;
             // 
@@ -404,12 +460,15 @@
             // rbFlat
             // 
             this.rbFlat.AutoSize = true;
+            this.rbFlat.Checked = true;
             this.rbFlat.Location = new System.Drawing.Point(10, 19);
             this.rbFlat.Name = "rbFlat";
             this.rbFlat.Size = new System.Drawing.Size(74, 17);
             this.rbFlat.TabIndex = 0;
+            this.rbFlat.TabStop = true;
             this.rbFlat.Text = "Flat Image";
             this.rbFlat.UseVisualStyleBackColor = true;
+            this.rbFlat.CheckedChanged += new System.EventHandler(this.ResolvePropertiesVisibility);
             // 
             // tooltip
             // 
@@ -420,11 +479,22 @@
             this.tooltip.ShowAlways = true;
             this.tooltip.UseAnimation = false;
             // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(117, 98);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(151, 13);
+            this.linkLabel1.TabIndex = 13;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Use size settings given in SVG";
+            this.linkLabel1.Click += new System.EventHandler(this.btnUseOriginal_Click);
+            // 
             // UiDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 350);
+            this.ClientSize = new System.Drawing.Size(303, 372);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -441,6 +511,7 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.warningBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvash)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasw)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDpi)).EndInit();
@@ -482,5 +553,8 @@
         private System.Windows.Forms.CheckBox cbLayers;
         private System.Windows.Forms.CheckBox cbOpacity;
         private System.Windows.Forms.ToolTip tooltip;
+        private System.Windows.Forms.CheckBox cbPSDSupport;
+        private System.Windows.Forms.PictureBox warningBox;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }
