@@ -407,6 +407,12 @@ namespace SvgFileTypePlugin
                         grouped = true;
                     }
 
+                    // Dont prepare def lists for a separate rendering.
+                    if (toRender is SvgDefinitionList)
+                    {
+                        continue;
+                    }
+
                     var visual = toRender as SvgVisualElement;
 
                     if (visual != null)
