@@ -250,8 +250,18 @@ namespace SvgFileTypePlugin
                 {
                     // Render empty group boundary and continue
                     var pdnLayer = new BitmapLayer(outputDocument.Width, outputDocument.Height);
-                    pdnLayer.Name = ((PaintGroupBoundaries)element).ID;
+                    var boundaryNode = ((PaintGroupBoundaries)element);
+                    pdnLayer.Name = boundaryNode.ID;
+
+                    // Store related group opacity and visibility.
+                    if (boundaryNode.RelatedGroup != null)
+                    {
+                        pdnLayer.Opacity = (byte)(boundaryNode.RelatedGroup.Opacity * 255);
+                        pdnLayer.Visible = boundaryNode.RelatedGroup.Visible;
+                    }
+
                     outputDocument.Layers.Add(pdnLayer);
+
                     continue;
                 }
 
@@ -319,7 +329,8 @@ namespace SvgFileTypePlugin
             // Store opacity as layer options.
             if (setOpacityForLayer)
             {
-                // Set full opacity when enabled to render 100%. We will use this opacity as layer property.
+                // Set full opacity when enabled to render 100%. 
+                // Anyway opacity will be set as paint layer options.
                 if (element.Opacity > 0.01)
                 {
                     element.Opacity = 1;
@@ -457,15 +468,6 @@ namespace SvgFileTypePlugin
                         continue;
                     }
 
-                    var isGroup = toRender is SvgGroup;
-                    if (isGroup)
-                    {
-                        groupName = GetLayerTitle((SvgGroup)toRender);
-
-                        // Return fake node to indicate group end. 
-                        yield return new PaintGroupBoundaries() { ID = string.Format(LayerGroupEnd, groupName) };
-                    }
-
                     var visual = toRender as SvgVisualElement;
 
                     if (visual != null)
@@ -487,6 +489,19 @@ namespace SvgFileTypePlugin
                             toRender.CustomAttributes.Add(groupAttribute, groupName);
                         }
                     }
+                   
+                    var group = toRender as SvgGroup;
+                    if (group != null)
+                    {
+                        groupName = GetLayerTitle(group);
+
+                        // Return fake node to indicate group end. (order is reversed)
+                        yield return new PaintGroupBoundaries()
+                        {
+                            RelatedGroup = group,
+                            ID = string.Format(LayerGroupEnd, groupName)
+                        };
+                    }
 
                     var returned = PrepareFlatElements(toRender.Children, groupName);
                     if (returned != null)
@@ -497,12 +512,15 @@ namespace SvgFileTypePlugin
                         }
                     }
 
-                    if (isGroup)
+                    if (group != null)
                     {
-                        groupName = GetLayerTitle((SvgGroup)toRender);
-
                         // Return fake node to indicate group start.
-                        yield return new PaintGroupBoundaries() { ID = string.Format(LayerGroupBegin, groupName), IsStart = true };
+                        yield return new PaintGroupBoundaries()
+                        {
+                            ID = string.Format(LayerGroupBegin, groupName),
+                            IsStart = true,
+                            RelatedGroup = group
+                        };
                     }
 
                     // Skip text with empty content. But keep all children nodes.
@@ -552,6 +570,7 @@ namespace SvgFileTypePlugin
     // Used to determine boundaries of a group.
     public class PaintGroupBoundaries : SvgVisualElement
     {
+        public SvgGroup RelatedGroup { get; set; }
         public bool IsStart { get; set; }
         public override RectangleF Bounds => throw new NotImplementedException();
 
