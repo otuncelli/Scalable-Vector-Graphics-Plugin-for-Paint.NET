@@ -23,7 +23,7 @@ namespace SvgFileTypePlugin
         {
         }
 
-        // Dont change this text! It's used by a PSD import plugin to keep photoshop folder strure.
+        // Dont change this text! It's used by a PSD import plugin to keep photoshop folder structure.
         public const string LayerGroupBegin = "Layer Group: {0}";
         public const string LayerGroupEnd = "End Layer Group: {0}";
 
@@ -248,7 +248,7 @@ namespace SvgFileTypePlugin
             {
                 if (element is PaintGroupBoundaries)
                 {
-                    // Render empty boundary and continue
+                    // Render empty group boundary and continue
                     var pdnLayer = new BitmapLayer(outputDocument.Width, outputDocument.Height);
                     pdnLayer.Name = ((PaintGroupBoundaries)element).ID;
                     outputDocument.Layers.Add(pdnLayer);
@@ -262,6 +262,7 @@ namespace SvgFileTypePlugin
                 }
 
                 bool itemShouldBeIgnored = false;
+
                 // Turn on visibility from node to parent
                 var toCheck = (SvgElement)element;
                 while (toCheck != null)
@@ -413,9 +414,30 @@ namespace SvgFileTypePlugin
                     layerName = getter.Invoke(element, null) as string;
                 }
 
-                if(string.IsNullOrEmpty(layerName))
+                if (string.IsNullOrEmpty(layerName))
                 {
                     layerName = element.GetType().Name;
+                }
+
+                // Generate more meanfull name for a svg use node. Add reference element name in a case if it's local document.
+                var useElement = element as SvgUse;
+                if (useElement != null && useElement.ReferencedElement != null && !string.IsNullOrEmpty(useElement.ReferencedElement.OriginalString))
+                {
+                    var str = useElement.ReferencedElement.OriginalString.Trim();
+                    if(str.StartsWith("#"))
+                    {
+                        layerName += str.Replace('#', ' ');
+                    }
+                }
+
+                // Genearte more meanfull name for a svg text.
+                var text = element as SvgTextBase;
+                if (text != null && !string.IsNullOrEmpty(text.Text))
+                {
+                    var textToUse = text.Text;
+                    if (text.Text.Length > 35)
+                        textToUse = text.Text.Substring(0, 35);
+                    layerName += " " + textToUse;
                 }
             }
 
@@ -430,12 +452,6 @@ namespace SvgFileTypePlugin
                 foreach (var toRender in collection)
                 {
                     // Dont prepare for a separate parsing def lists.
-                    if (toRender is SvgDefinitionList)
-                    {
-                        continue;
-                    }
-
-                    // Dont prepare def lists for a separate rendering.
                     if (toRender is SvgDefinitionList)
                     {
                         continue;
@@ -488,6 +504,11 @@ namespace SvgFileTypePlugin
                         // Return fake node to indicate group start.
                         yield return new PaintGroupBoundaries() { ID = string.Format(LayerGroupBegin, groupName), IsStart = true };
                     }
+
+                    // Skip text with empty content. But keep all children nodes.
+                    var textNode = toRender as SvgTextBase;
+                    if (textNode != null && string.IsNullOrEmpty(textNode.Text))
+                        continue;
 
                     yield return toRender;
                 }
