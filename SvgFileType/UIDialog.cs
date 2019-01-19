@@ -12,9 +12,9 @@ namespace SvgFileTypePlugin
             this.warningBox.Image = SystemIcons.Warning.ToBitmap();
         }
 
-        public int Dpi => (int) nudDpi.Value;
-        public int CanvasW => (int) canvasw.Value;
-        public int CanvasH => (int) canvash.Value;
+        public int Dpi => (int)nudDpi.Value;
+        public int CanvasW => (int)canvasw.Value;
+        public int CanvasH => (int)canvash.Value;
         public bool KeepAspectRatio => cbKeepAR.Checked;
         private Size _sizeHint;
         public bool ImportOpacity => this.cbOpacity.Checked;
@@ -22,15 +22,16 @@ namespace SvgFileTypePlugin
         public bool ImportGroupBoundariesAsLayers => cbPSDSupport.Checked;
 
         private static int bigImageSize = 1280;
+        public event EventHandler OkClick;
         public LayersMode LayerMode
         {
             get
             {
-                if(rbAll.Checked)
+                if (rbAll.Checked)
                 {
                     return LayersMode.All;
                 }
-                else if(rbFlat.Checked)
+                else if (rbFlat.Checked)
                 {
                     return LayersMode.Flat;
                 }
@@ -107,7 +108,7 @@ namespace SvgFileTypePlugin
 
             if (!KeepAspectRatio)
                 return;
-           
+
             canvash.Value = canvasw.Value * _sizeHint.Height / _sizeHint.Width;
         }
 
@@ -154,6 +155,55 @@ namespace SvgFileTypePlugin
         private void linkGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start(@"https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET");
+        }
+
+        public void ReportProgress(int value)
+        {
+            if (progress.InvokeRequired)
+            {
+                progress.BeginInvoke((Action)(() =>
+                {
+                    progress.Value = value;
+                    this.UpdateProgressLabel();
+                }));
+
+                return;
+            }
+
+            progress.Value = value;
+            this.UpdateProgressLabel();
+        }
+
+        private void UpdateProgressLabel()
+        {
+            lbProgress.Text = progress.Value + " of " + progress.Maximum;
+        }
+
+        public void SetMaxProgress(int max)
+        {
+            if (progress.InvokeRequired)
+            {
+                progress.BeginInvoke((Action)(() =>
+                {
+                    progress.Maximum = max;
+                    this.UpdateProgressLabel();
+                }));
+
+                return;
+            }
+
+            progress.Maximum = max;
+            this.UpdateProgressLabel();
+        }
+
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            btnOk.Enabled = gr1.Enabled = gr2.Enabled = gr3.Enabled = false;
+            var handler = OkClick;
+            if (handler != null)
+            {
+                handler(sender, e);
+            }
         }
     }
 }

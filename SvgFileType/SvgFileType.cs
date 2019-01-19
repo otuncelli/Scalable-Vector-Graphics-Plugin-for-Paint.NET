@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Reflection;
 using System.Drawing.Drawing2D;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace SvgFileTypePlugin
 {
@@ -56,15 +58,9 @@ namespace SvgFileTypePlugin
             using (var wrapper = new SvgStreamWrapper(input))
                 doc = SvgDocument.Open<SvgDocument>(wrapper.SvgStream);
 
-            bool keepAspectRatio;
-            int resolution;
-            int canvasw;
-            int canvash;
             var vpw = 0;
             var vph = 0;
             var ppi = doc.Ppi;
-
-            var layersMode = LayersMode.All;
             if (!doc.Width.IsNone && !doc.Width.IsEmpty)
             {
                 vpw = ConvertToPixels(doc.Width.Type, doc.Width.Value, doc.Ppi);
@@ -79,14 +75,156 @@ namespace SvgFileTypePlugin
             var vby = (int)doc.ViewBox.MinY;
             var vbw = (int)doc.ViewBox.Width;
             var vbh = (int)doc.ViewBox.Height;
-            
+
             // Store opacity as layer options.
             var setOpacityForLayer = true;
             var importHiddenLayers = true;
             var importGroupBoundariesAsLayers = false;
-            DialogResult dr = DialogResult.Cancel;
+            var dr = DialogResult.Cancel;
+            Document results = null;
             using (var dialog = new UiDialog())
             {
+                var tokenSource = new CancellationTokenSource();
+                var token = tokenSource.Token;
+
+                dialog.FormClosing += (o, e) =>
+                {
+                    tokenSource.Cancel();
+                };
+
+                dialog.OkClick += (o, e) =>
+                {
+                    var canvasw = dialog.CanvasW;
+                    var canvash = dialog.CanvasH;
+                    var resolution = dialog.Dpi;
+                    var layersMode = dialog.LayerMode;
+                    var keepAspectRatio = dialog.KeepAspectRatio;
+                    setOpacityForLayer = dialog.ImportOpacity;
+                    importHiddenLayers = dialog.ImportHiddenLayers;
+                    importGroupBoundariesAsLayers = dialog.ImportGroupBoundariesAsLayers;
+
+                    doc.Ppi = resolution;
+                    doc.Width = new SvgUnit(SvgUnitType.Pixel, canvasw);
+                    doc.Height = new SvgUnit(SvgUnitType.Pixel, canvash);
+                    doc.AspectRatio = keepAspectRatio
+                        ? new SvgAspectRatio(SvgPreserveAspectRatio.xMinYMin)
+                        : new SvgAspectRatio(SvgPreserveAspectRatio.none);
+
+                    var progressCallback = new System.Action<int>(p => dialog.ReportProgress(p));
+                    // Run in another thread and unblock the UI.
+                    // Cannot run .AsParallel().AsOrdered() to render each element in async thread while gdi+ svg renderer failing with errors...
+                    Task.Run((Action)(()=>
+                    {
+                        if (layersMode == LayersMode.Flat)
+                        {
+                            // Render one flat image and quit.
+                            var bmp = RenderImage(doc, canvasw, canvash);
+                            results = Document.FromImage(bmp);
+                        }
+                        else
+                        {
+                            List<SvgVisualElement> allElements = null;
+
+
+                            allElements = PrepareFlatElements(doc.Children).Where(p => p is SvgVisualElement).Cast<SvgVisualElement>().ToList();
+
+                            Document outputDocument = new Document(canvasw, canvash);
+                            if (layersMode == LayersMode.All)
+                            {
+                                // Dont render groups and boundaries if defined
+                                allElements = allElements.Where(p => !(p is SvgGroup)).ToList();
+
+                                // Filter out group boundaries if not set.
+                                if (!importGroupBoundariesAsLayers)
+                                {
+                                    allElements = allElements.Where(p => !(p is PaintGroupBoundaries)).ToList();
+                                }
+
+                                // Thread safe
+                                dialog.SetMaxProgress(allElements.Count + 10);
+                                dialog.ReportProgress(10);
+
+                                RenderElements(allElements, outputDocument, setOpacityForLayer, importHiddenLayers, progressCallback, token);
+                            }
+                            else if (layersMode == LayersMode.Groups)
+                            {
+                                // Get only parent groups and single elements
+                                var groupsAndElementsWithoutGroup = new List<SvgVisualElement>();
+
+                                foreach (var element in allElements)
+                                {
+                                    if (element is PaintGroupBoundaries)
+                                        continue;
+
+                                    if (element.ContainsAttribute(groupAttribute))
+                                    {
+                                        // Get only root level
+                                        SvgGroup lastGroup = null;
+                                        if (element is SvgGroup)
+                                        {
+                                            lastGroup = (SvgGroup)element;
+                                        }
+
+                                        SvgElement toCheck = element;
+                                        while (toCheck != null)
+                                        {
+                                            toCheck = toCheck.Parent;
+                                            if (toCheck is SvgGroup)
+                                            {
+                                                // TODO: render more groups. In most cases svg has only few root groups.
+                                                var groupToCheck = (SvgGroup)toCheck;
+                                                var title = GetLayerTitle(groupToCheck);
+
+                                                if (!string.IsNullOrEmpty(title))
+                                                {
+                                                    lastGroup = groupToCheck;
+                                                }
+                                            }
+                                        }
+
+                                        if (!groupsAndElementsWithoutGroup.Contains(lastGroup))
+                                        {
+                                            groupsAndElementsWithoutGroup.Add(lastGroup);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        groupsAndElementsWithoutGroup.Add(element);
+                                    }
+                                }
+
+                                // Thread safe
+                                dialog.SetMaxProgress(groupsAndElementsWithoutGroup.Count + 10);
+                                dialog.ReportProgress(10);
+
+                                RenderElements(groupsAndElementsWithoutGroup, outputDocument, setOpacityForLayer, importHiddenLayers, progressCallback, token);
+                            }
+
+                            // Fallback. Nothing is added. Render one default layer.
+                            if (outputDocument.Layers.Count == 0)
+                            {
+                                var bmp = RenderImage(doc, canvasw, canvash);
+                                outputDocument = Document.FromImage(bmp);
+                            }
+
+                            results = outputDocument;
+                        }
+
+                    }), token)
+                    .ContinueWith((p) =>
+                    {
+                        if (p.Exception != null && !p.IsCanceled)
+                        {
+                            MessageBox.Show(p.Exception.Message);
+                        }
+                        else
+                        {
+                            if (dialog.DialogResult ==  DialogResult.None)
+                                dialog.DialogResult = DialogResult.OK;
+                        }
+                    });
+                };
+
                 Form mainForm = GetMainForm();
                 if (mainForm != null)
                 {
@@ -101,108 +239,11 @@ namespace SvgFileTypePlugin
                     dialog.SetSvgInfo(vpw, vph, vbx, vby, vbw, vbh, ppi);
                     dr = dialog.ShowDialog();
                 }
+
                 if (dr != DialogResult.OK)
                     throw new OperationCanceledException("Cancelled by user");
-                canvasw = dialog.CanvasW;
-                canvash = dialog.CanvasH;
-                resolution = dialog.Dpi;
-                layersMode = dialog.LayerMode;
-                keepAspectRatio = dialog.KeepAspectRatio;
-                setOpacityForLayer = dialog.ImportOpacity;
-                importHiddenLayers = dialog.ImportHiddenLayers;
-                importGroupBoundariesAsLayers = dialog.ImportGroupBoundariesAsLayers;
-            }
 
-            doc.Ppi = resolution;
-            doc.Width = new SvgUnit(SvgUnitType.Pixel, canvasw);
-            doc.Height = new SvgUnit(SvgUnitType.Pixel, canvash);
-            doc.AspectRatio = keepAspectRatio
-                ? new SvgAspectRatio(SvgPreserveAspectRatio.xMinYMin)
-                : new SvgAspectRatio(SvgPreserveAspectRatio.none);
-
-
-            if (layersMode== LayersMode.Flat)
-            {
-                // Render one flat image and quit.
-                var bmp = RenderImage(doc, canvasw, canvash);
-                return Document.FromImage(bmp);
-            }
-            else
-            {
-                var allElements = PrepareFlatElements(doc.Children).Where(p => p is SvgVisualElement).Cast<SvgVisualElement>().ToList();
-
-                Document outputDocument = new Document(canvasw, canvash);
-                if (layersMode == LayersMode.All)
-                {
-                    // Dont render groups and boundaries if defined
-                    allElements = allElements.Where(p => !(p is SvgGroup)).ToList();
-
-                    // Filter out group boundaries if not set.
-                    if (!importGroupBoundariesAsLayers)
-                    {
-                        allElements = allElements.Where(p => !(p is PaintGroupBoundaries)).ToList();
-                    }
-
-                    RenderElements(allElements, outputDocument, setOpacityForLayer, importHiddenLayers);
-                }
-                else if (layersMode == LayersMode.Groups)
-                {
-                    // Get only parent groups and single elements
-                    var groupsAndElementsWithoutGroup = new List<SvgVisualElement>();
-                  
-                    foreach(var element in allElements)
-                    {
-                        if (element is PaintGroupBoundaries)
-                            continue;
-
-                        if (element.ContainsAttribute(groupAttribute))
-                        {
-                            // Get only root level
-                            SvgGroup lastGroup = null;
-                            if (element is SvgGroup)
-                            {
-                                lastGroup = (SvgGroup)element;
-                            }
-
-                            SvgElement toCheck = element;
-                            while (toCheck != null)
-                            {
-                                toCheck = toCheck.Parent;
-                                if (toCheck is SvgGroup)
-                                {
-                                    // TODO: render more groups. In most cases svg has only few root groups.
-                                    var groupToCheck= (SvgGroup)toCheck;
-                                    var title = GetLayerTitle(groupToCheck);
-
-                                    if (!string.IsNullOrEmpty(title))
-                                    {
-                                        lastGroup = groupToCheck;
-                                    }
-                                }
-                            }
-
-                            if (!groupsAndElementsWithoutGroup.Contains(lastGroup))
-                            {
-                                groupsAndElementsWithoutGroup.Add(lastGroup);
-                            }
-                        }
-                        else
-                        {
-                            groupsAndElementsWithoutGroup.Add(element);
-                        }
-                    }
-
-                    RenderElements(groupsAndElementsWithoutGroup, outputDocument, setOpacityForLayer, importHiddenLayers);
-                }
-
-                // Fallback. Nothing is added. Render one default layer.
-                if (outputDocument.Layers.Count == 0)
-                {
-                    var bmp = RenderImage(doc, canvasw, canvash);
-                    return Document.FromImage(bmp);
-                }
-
-                return outputDocument;
+                return results;
             }
         }
 
@@ -238,14 +279,20 @@ namespace SvgFileTypePlugin
             }
         }
 
-        private static void RenderElements( List<SvgVisualElement> elements, Document outputDocument, bool setOpacityForLayer, bool importHiddenLayers)
+        private static void RenderElements(List<SvgVisualElement> elements, Document outputDocument, bool setOpacityForLayer, bool importHiddenLayers, Action<int> progress, CancellationToken token)
         {
             // I had problems to render each element directly while parent transformation can affect child. 
             // But we can do a trick and render full document each time with only required nodes set as visible.
 
             // Render all visual elements that are passed here.
+            int layer = 0;
             foreach (var element in elements)
             {
+                if (token != null)
+                {
+                    token.ThrowIfCancellationRequested();
+                }
+
                 if (element is PaintGroupBoundaries)
                 {
                     // Render empty group boundary and continue
@@ -261,7 +308,9 @@ namespace SvgFileTypePlugin
                     }
 
                     outputDocument.Layers.Add(pdnLayer);
-
+                    layer++;
+                    if (progress != null)
+                        progress(layer);
                     continue;
                 }
 
@@ -296,12 +345,20 @@ namespace SvgFileTypePlugin
                     toCheck = toCheck.Parent;
                 }
 
-                if(itemShouldBeIgnored)
+                if (itemShouldBeIgnored)
                 {
+                    layer++;
+                    if (progress != null)
+                        progress(layer);
+
                     continue;
                 }
 
                 RenderElement(element, outputDocument, setOpacityForLayer, importHiddenLayers);
+
+                layer++;
+                if (progress != null)
+                    progress(layer);
             }
         }
 

@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UiDialog));
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOk = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.gr1 = new System.Windows.Forms.GroupBox();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.label6 = new System.Windows.Forms.Label();
             this.vbh = new System.Windows.Forms.TextBox();
@@ -46,7 +46,7 @@
             this.vph = new System.Windows.Forms.TextBox();
             this.vpw = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.gr2 = new System.Windows.Forms.GroupBox();
             this.warningBox = new System.Windows.Forms.PictureBox();
             this.cbKeepAR = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -55,7 +55,7 @@
             this.nudDpi = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.gr3 = new System.Windows.Forms.GroupBox();
             this.cbPSDSupport = new System.Windows.Forms.CheckBox();
             this.cbLayers = new System.Windows.Forms.CheckBox();
             this.cbOpacity = new System.Windows.Forms.CheckBox();
@@ -64,20 +64,22 @@
             this.rbFlat = new System.Windows.Forms.RadioButton();
             this.tooltip = new System.Windows.Forms.ToolTip(this.components);
             this.linkGitHub = new System.Windows.Forms.LinkLabel();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.progress = new System.Windows.Forms.ProgressBar();
+            this.lbProgress = new System.Windows.Forms.Label();
+            this.gr1.SuspendLayout();
+            this.gr2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.warningBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvash)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasw)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDpi)).BeginInit();
-            this.groupBox3.SuspendLayout();
+            this.gr3.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(223, 337);
+            this.btnCancel.Location = new System.Drawing.Point(223, 368);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 0;
@@ -87,37 +89,37 @@
             // btnOk
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(142, 337);
+            this.btnOk.Location = new System.Drawing.Point(142, 368);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 1;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
+            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
             // 
-            // groupBox1
+            // gr1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.gr1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.linkLabel1);
-            this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.vbh);
-            this.groupBox1.Controls.Add(this.vbw);
-            this.groupBox1.Controls.Add(this.label7);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.vby);
-            this.groupBox1.Controls.Add(this.vbx);
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.vph);
-            this.groupBox1.Controls.Add(this.vpw);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(13, 13);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(285, 115);
-            this.groupBox1.TabIndex = 4;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Size settings given in SVG file";
+            this.gr1.Controls.Add(this.linkLabel1);
+            this.gr1.Controls.Add(this.label6);
+            this.gr1.Controls.Add(this.vbh);
+            this.gr1.Controls.Add(this.vbw);
+            this.gr1.Controls.Add(this.label7);
+            this.gr1.Controls.Add(this.label4);
+            this.gr1.Controls.Add(this.vby);
+            this.gr1.Controls.Add(this.vbx);
+            this.gr1.Controls.Add(this.label5);
+            this.gr1.Controls.Add(this.label3);
+            this.gr1.Controls.Add(this.vph);
+            this.gr1.Controls.Add(this.vpw);
+            this.gr1.Controls.Add(this.label2);
+            this.gr1.Location = new System.Drawing.Point(13, 13);
+            this.gr1.Name = "gr1";
+            this.gr1.Size = new System.Drawing.Size(285, 115);
+            this.gr1.TabIndex = 4;
+            this.gr1.TabStop = false;
+            this.gr1.Text = "Size settings given in SVG file";
             // 
             // linkLabel1
             // 
@@ -262,24 +264,24 @@
             this.label2.TabIndex = 0;
             this.label2.Text = "Viewport (w x h):";
             // 
-            // groupBox2
+            // gr2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.gr2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.warningBox);
-            this.groupBox2.Controls.Add(this.cbKeepAR);
-            this.groupBox2.Controls.Add(this.label9);
-            this.groupBox2.Controls.Add(this.canvash);
-            this.groupBox2.Controls.Add(this.canvasw);
-            this.groupBox2.Controls.Add(this.nudDpi);
-            this.groupBox2.Controls.Add(this.label8);
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Location = new System.Drawing.Point(13, 134);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(285, 94);
-            this.groupBox2.TabIndex = 5;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Size selection by user";
+            this.gr2.Controls.Add(this.warningBox);
+            this.gr2.Controls.Add(this.cbKeepAR);
+            this.gr2.Controls.Add(this.label9);
+            this.gr2.Controls.Add(this.canvash);
+            this.gr2.Controls.Add(this.canvasw);
+            this.gr2.Controls.Add(this.nudDpi);
+            this.gr2.Controls.Add(this.label8);
+            this.gr2.Controls.Add(this.label1);
+            this.gr2.Location = new System.Drawing.Point(13, 134);
+            this.gr2.Name = "gr2";
+            this.gr2.Size = new System.Drawing.Size(285, 94);
+            this.gr2.TabIndex = 5;
+            this.gr2.TabStop = false;
+            this.gr2.Text = "Size selection by user";
             // 
             // warningBox
             // 
@@ -389,23 +391,22 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Resolution (DPI):";
             // 
-            // groupBox3
+            // gr3
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.gr3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.Controls.Add(this.cbPSDSupport);
-            this.groupBox3.Controls.Add(this.cbLayers);
-            this.groupBox3.Controls.Add(this.cbOpacity);
-            this.groupBox3.Controls.Add(this.rbAll);
-            this.groupBox3.Controls.Add(this.rbGroups);
-            this.groupBox3.Controls.Add(this.rbFlat);
-            this.groupBox3.Location = new System.Drawing.Point(13, 234);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(285, 97);
-            this.groupBox3.TabIndex = 14;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Layers";
+            this.gr3.Controls.Add(this.cbPSDSupport);
+            this.gr3.Controls.Add(this.cbLayers);
+            this.gr3.Controls.Add(this.cbOpacity);
+            this.gr3.Controls.Add(this.rbAll);
+            this.gr3.Controls.Add(this.rbGroups);
+            this.gr3.Controls.Add(this.rbFlat);
+            this.gr3.Location = new System.Drawing.Point(13, 234);
+            this.gr3.Name = "gr3";
+            this.gr3.Size = new System.Drawing.Size(285, 97);
+            this.gr3.TabIndex = 14;
+            this.gr3.TabStop = false;
+            this.gr3.Text = "Layers";
             // 
             // cbPSDSupport
             // 
@@ -495,8 +496,9 @@
             // 
             // linkGitHub
             // 
+            this.linkGitHub.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.linkGitHub.AutoSize = true;
-            this.linkGitHub.Location = new System.Drawing.Point(12, 342);
+            this.linkGitHub.Location = new System.Drawing.Point(12, 373);
             this.linkGitHub.Name = "linkGitHub";
             this.linkGitHub.Size = new System.Drawing.Size(40, 13);
             this.linkGitHub.TabIndex = 14;
@@ -506,15 +508,35 @@
         "ctor-Graphics-Plugin-for-Paint.NET");
             this.linkGitHub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkGitHub_LinkClicked);
             // 
+            // progress
+            // 
+            this.progress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progress.Location = new System.Drawing.Point(13, 337);
+            this.progress.Name = "progress";
+            this.progress.Size = new System.Drawing.Size(285, 23);
+            this.progress.TabIndex = 15;
+            // 
+            // lbProgress
+            // 
+            this.lbProgress.AutoSize = true;
+            this.lbProgress.BackColor = System.Drawing.Color.Transparent;
+            this.lbProgress.Location = new System.Drawing.Point(122, 342);
+            this.lbProgress.Name = "lbProgress";
+            this.lbProgress.Size = new System.Drawing.Size(0, 13);
+            this.lbProgress.TabIndex = 16;
+            // 
             // UiDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(310, 372);
+            this.ClientSize = new System.Drawing.Size(310, 403);
+            this.Controls.Add(this.lbProgress);
+            this.Controls.Add(this.progress);
             this.Controls.Add(this.linkGitHub);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.gr3);
+            this.Controls.Add(this.gr2);
+            this.Controls.Add(this.gr1);
             this.Controls.Add(this.btnOk);
             this.Controls.Add(this.btnCancel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -524,16 +546,16 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "SVG (Scalable Vector Graphics) Import";
             this.TopMost = true;
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.gr1.ResumeLayout(false);
+            this.gr1.PerformLayout();
+            this.gr2.ResumeLayout(false);
+            this.gr2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.warningBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvash)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.canvasw)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDpi)).EndInit();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
+            this.gr3.ResumeLayout(false);
+            this.gr3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -543,7 +565,7 @@
 
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOk;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox gr1;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox vbh;
         private System.Windows.Forms.TextBox vbw;
@@ -556,7 +578,7 @@
         private System.Windows.Forms.TextBox vph;
         private System.Windows.Forms.TextBox vpw;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox gr2;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.NumericUpDown canvash;
         private System.Windows.Forms.NumericUpDown canvasw;
@@ -564,7 +586,7 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox cbKeepAR;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox gr3;
         private System.Windows.Forms.RadioButton rbAll;
         private System.Windows.Forms.RadioButton rbGroups;
         private System.Windows.Forms.RadioButton rbFlat;
@@ -575,5 +597,7 @@
         private System.Windows.Forms.PictureBox warningBox;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.LinkLabel linkGitHub;
+        private System.Windows.Forms.ProgressBar progress;
+        private System.Windows.Forms.Label lbProgress;
     }
 }
