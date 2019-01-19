@@ -215,7 +215,17 @@ namespace SvgFileTypePlugin
                     {
                         if (p.Exception != null && !p.IsCanceled)
                         {
-                            MessageBox.Show(p.Exception.Message);
+                            if (p.Exception.InnerExceptions != null && p.Exception.InnerExceptions.Any(exception => exception is OutOfMemoryException))
+                            {
+                                MessageBox.Show("Not enought memory to complete this operation.");
+                            }
+                            else
+                            {
+                                var innerExpection = p.Exception?.InnerException?.Message;
+                                MessageBox.Show(p.Exception.Message + ". Message:" + innerExpection);
+                            }
+
+                            dialog.DialogResult = DialogResult.Cancel;
                         }
                         else
                         {
