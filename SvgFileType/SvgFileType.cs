@@ -305,14 +305,30 @@ namespace SvgFileTypePlugin
 
                 if (element is PaintGroupBoundaries)
                 {
+                  
+                    var boundaryNode = ((PaintGroupBoundaries)element);
+
                     // Render empty group boundary and continue
                     var pdnLayer = new BitmapLayer(outputDocument.Width, outputDocument.Height);
-                    var boundaryNode = ((PaintGroupBoundaries)element);
                     pdnLayer.Name = boundaryNode.ID;
 
                     // Store related group opacity and visibility.
                     if (boundaryNode.RelatedGroup != null)
                     {
+                        if (!importHiddenLayers)
+                        {
+                            // Skip group boundaries for hidden layers.
+                            if (!GetOriginalVisibilityState(boundaryNode.RelatedGroup))
+                            {
+                                layer++;
+                                if (progress != null)
+                                    progress(layer);
+
+                                continue;
+                            }
+                        }
+
+
                         pdnLayer.Opacity = (byte)(boundaryNode.RelatedGroup.Opacity * 255);
                         pdnLayer.Visible = boundaryNode.RelatedGroup.Visible;
                     }
