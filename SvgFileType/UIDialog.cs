@@ -9,18 +9,50 @@ namespace SvgFileTypePlugin
         public UiDialog()
         {
             InitializeComponent();
+            this.warningBox.Image = SystemIcons.Warning.ToBitmap();
         }
 
-        public int Dpi => (int) nudDpi.Value;
-        public int CanvasW => (int) canvasw.Value;
-        public int CanvasH => (int) canvash.Value;
+        public int Dpi => (int)nudDpi.Value;
+        public int CanvasW => (int)canvasw.Value;
+        public int CanvasH => (int)canvash.Value;
         public bool KeepAspectRatio => cbKeepAR.Checked;
         private Size _sizeHint;
+        public bool ImportOpacity => this.cbOpacity.Checked;
+        public bool ImportHiddenLayers => this.cbLayers.Checked;
+        public bool ImportGroupBoundariesAsLayers => cbPSDSupport.Checked;
 
-        public void SetSvgInfo(int viewportw, int viewporth,
-            int viewboxx = 0, int viewboxy = 0, int viewboxw = 0,
-            int viewboxh = 0)
+        private static int bigImageSize = 1280;
+        public event EventHandler OkClick;
+        public LayersMode LayerMode
         {
+            get
+            {
+                if (rbAll.Checked)
+                {
+                    return LayersMode.All;
+                }
+                else if (rbFlat.Checked)
+                {
+                    return LayersMode.Flat;
+                }
+                else
+                {
+                    return LayersMode.Groups;
+                }
+            }
+        }
+
+        int originalPDI = 96;
+        public void SetSvgInfo(
+            int viewportw,
+            int viewporth,
+            int viewboxx = 0,
+            int viewboxy = 0,
+            int viewboxw = 0,
+            int viewboxh = 0,
+            int dpi = 96)
+        {
+            this.originalPDI = dpi;
             if (viewportw > 0)
                 vpw.Text = viewportw.ToString();
             if (viewporth > 0)
@@ -43,26 +75,135 @@ namespace SvgFileTypePlugin
             else
                 _sizeHint = new Size(500, 500);
 
-            canvash.Value = canvasw.Value*_sizeHint.Height/_sizeHint.Width;
+            this.nudDpi.Value = dpi;
+            changedProgramatically = true;
+
+            if (_sizeHint.Width > bigImageSize || _sizeHint.Height > bigImageSize)
+            {
+                warningBox.Visible = true;
+                // Set default size from numberic default input and keep aspect ratio.
+                // Default is 500
+                canvash.Value = canvasw.Value * _sizeHint.Height / _sizeHint.Width;
+            }
+            else
+            {
+                warningBox.Visible = false;
+                // Keep original image size and show warning
+                canvasw.Value = _sizeHint.Width;
+                canvash.Value = _sizeHint.Height;
+            }
+
+            changedProgramatically = false;
+
+            ResolveControlsVisibility();
         }
 
+        bool changedProgramatically = false;
         private void canvasw_ValueChanged(object sender, EventArgs e)
         {
+            if (changedProgramatically)
+                return;
+
+            warningBox.Visible = false;
+
             if (!KeepAspectRatio)
                 return;
-            canvash.Value = canvasw.Value*_sizeHint.Height/_sizeHint.Width;
+
+            canvash.Value = canvasw.Value * _sizeHint.Height / _sizeHint.Width;
         }
 
         private void canvash_ValueChanged(object sender, EventArgs e)
         {
+            if (changedProgramatically)
+                return;
+
+            warningBox.Visible = false;
+
             if (!KeepAspectRatio)
                 return;
-            canvasw.Value = canvash.Value*_sizeHint.Width/_sizeHint.Height;
+
+            canvasw.Value = canvash.Value * _sizeHint.Width / _sizeHint.Height;
         }
 
         private void cbKeepAR_CheckedChanged(object sender, EventArgs e)
         {
             canvasw_ValueChanged(sender, e);
+        }
+
+        private void btnUseOriginal_Click(object sender, EventArgs e)
+        {
+            changedProgramatically = true;
+            warningBox.Visible = false;
+            // Keep original image size and show warning
+            canvasw.Value = _sizeHint.Width;
+            canvash.Value = _sizeHint.Height;
+            this.nudDpi.Value = originalPDI;
+            changedProgramatically = false;
+        }
+
+        private void ResolvePropertiesVisibility(object sender, EventArgs e)
+        {
+            ResolveControlsVisibility();
+        }
+
+        private void ResolveControlsVisibility()
+        {
+            this.cbOpacity.Enabled = this.cbLayers.Enabled = this.cbPSDSupport.Enabled = !this.rbFlat.Checked;
+            this.cbPSDSupport.Enabled = this.rbAll.Checked;
+        }
+
+        private void linkGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(@"https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET");
+        }
+
+        public void ReportProgress(int value)
+        {
+            if (progress.InvokeRequired)
+            {
+                progress.BeginInvoke((Action)(() =>
+                {
+                    progress.Value = value;
+                    this.UpdateProgressLabel();
+                }));
+
+                return;
+            }
+
+            progress.Value = value;
+            this.UpdateProgressLabel();
+        }
+
+        private void UpdateProgressLabel()
+        {
+            lbProgress.Text = progress.Value + " of " + progress.Maximum;
+        }
+
+        public void SetMaxProgress(int max)
+        {
+            if (progress.InvokeRequired)
+            {
+                progress.BeginInvoke((Action)(() =>
+                {
+                    progress.Maximum = max;
+                    this.UpdateProgressLabel();
+                }));
+
+                return;
+            }
+
+            progress.Maximum = max;
+            this.UpdateProgressLabel();
+        }
+
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            btnOk.Enabled = gr1.Enabled = gr2.Enabled = gr3.Enabled = false;
+            var handler = OkClick;
+            if (handler != null)
+            {
+                handler(sender, e);
+            }
         }
     }
 }

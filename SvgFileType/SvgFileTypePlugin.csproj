@@ -40,9 +40,9 @@
     <Reference Include="PaintDotNet.Data">
       <HintPath>C:\Program Files\paint.net\PaintDotNet.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Svg, Version=2.2.1.10396, Culture=neutral, PublicKeyToken=12a0bac221edeae2, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Downloads\SVG-master\Source\bin\Release\Svg.dll</HintPath>
+    <Reference Include="Svg, Version=2.4.0.42491, Culture=neutral, PublicKeyToken=12a0bac221edeae2, processorArchitecture=MSIL">
+      <HintPath>..\packages\Svg.2.4.0\lib\Svg.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LayersMode.cs" />
     <Compile Include="SvgFileType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SvgFileTypeFactory.cs" />
@@ -65,6 +66,9 @@
     <EmbeddedResource Include="UiDialog.resx">
       <DependentUpon>UiDialog.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
