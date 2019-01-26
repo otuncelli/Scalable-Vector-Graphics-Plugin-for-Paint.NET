@@ -9,7 +9,7 @@ namespace SvgFileTypePlugin
         public UiDialog()
         {
             InitializeComponent();
-            this.warningBox.Image = SystemIcons.Warning.ToBitmap();
+            warningBox.Image = SystemIcons.Warning.ToBitmap();
         }
 
         public int Dpi => (int)nudDpi.Value;
@@ -17,11 +17,13 @@ namespace SvgFileTypePlugin
         public int CanvasH => (int)canvash.Value;
         public bool KeepAspectRatio => cbKeepAR.Checked;
         private Size _sizeHint;
-        public bool ImportOpacity => this.cbOpacity.Checked;
-        public bool ImportHiddenLayers => this.cbLayers.Checked;
+        private bool _changedProgramatically;
+        private int _originalPdi = 96;
+        public bool ImportOpacity => cbOpacity.Checked;
+        public bool ImportHiddenLayers => cbLayers.Checked;
         public bool ImportGroupBoundariesAsLayers => cbPSDSupport.Checked;
 
-        private static int bigImageSize = 1280;
+        private const int BigImageSize = 1280;
         public event EventHandler OkClick;
         public LayersMode LayerMode
         {
@@ -31,18 +33,15 @@ namespace SvgFileTypePlugin
                 {
                     return LayersMode.All;
                 }
-                else if (rbFlat.Checked)
+
+                if (rbFlat.Checked)
                 {
                     return LayersMode.Flat;
                 }
-                else
-                {
-                    return LayersMode.Groups;
-                }
+                return LayersMode.Groups;
             }
         }
 
-        int originalPDI = 96;
         public void SetSvgInfo(
             int viewportw,
             int viewporth,
@@ -52,7 +51,7 @@ namespace SvgFileTypePlugin
             int viewboxh = 0,
             int dpi = 96)
         {
-            this.originalPDI = dpi;
+            _originalPdi = dpi;
             if (viewportw > 0)
                 vpw.Text = viewportw.ToString();
             if (viewporth > 0)
@@ -75,13 +74,13 @@ namespace SvgFileTypePlugin
             else
                 _sizeHint = new Size(500, 500);
 
-            this.nudDpi.Value = dpi;
-            changedProgramatically = true;
+            nudDpi.Value = dpi;
+            _changedProgramatically = true;
 
-            if (_sizeHint.Width > bigImageSize || _sizeHint.Height > bigImageSize)
+            if (_sizeHint.Width > BigImageSize || _sizeHint.Height > BigImageSize)
             {
                 warningBox.Visible = true;
-                // Set default size from numberic default input and keep aspect ratio.
+                // Set default size from numeric default input and keep aspect ratio.
                 // Default is 500
                 canvash.Value = canvasw.Value * _sizeHint.Height / _sizeHint.Width;
             }
@@ -93,15 +92,14 @@ namespace SvgFileTypePlugin
                 canvash.Value = _sizeHint.Height;
             }
 
-            changedProgramatically = false;
+            _changedProgramatically = false;
 
             ResolveControlsVisibility();
         }
 
-        bool changedProgramatically = false;
         private void canvasw_ValueChanged(object sender, EventArgs e)
         {
-            if (changedProgramatically)
+            if (_changedProgramatically)
                 return;
 
             warningBox.Visible = false;
@@ -114,7 +112,7 @@ namespace SvgFileTypePlugin
 
         private void canvash_ValueChanged(object sender, EventArgs e)
         {
-            if (changedProgramatically)
+            if (_changedProgramatically)
                 return;
 
             warningBox.Visible = false;
@@ -132,13 +130,13 @@ namespace SvgFileTypePlugin
 
         private void btnUseOriginal_Click(object sender, EventArgs e)
         {
-            changedProgramatically = true;
+            _changedProgramatically = true;
             warningBox.Visible = false;
             // Keep original image size and show warning
             canvasw.Value = _sizeHint.Width;
             canvash.Value = _sizeHint.Height;
-            this.nudDpi.Value = originalPDI;
-            changedProgramatically = false;
+            nudDpi.Value = _originalPdi;
+            _changedProgramatically = false;
         }
 
         private void ResolvePropertiesVisibility(object sender, EventArgs e)
@@ -148,8 +146,8 @@ namespace SvgFileTypePlugin
 
         private void ResolveControlsVisibility()
         {
-            this.cbOpacity.Enabled = this.cbLayers.Enabled = this.cbPSDSupport.Enabled = !this.rbFlat.Checked;
-            this.cbPSDSupport.Enabled = this.rbAll.Checked;
+            cbOpacity.Enabled = cbLayers.Enabled = cbPSDSupport.Enabled = !rbFlat.Checked;
+            cbPSDSupport.Enabled = rbAll.Checked;
         }
 
         private void linkGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -164,14 +162,14 @@ namespace SvgFileTypePlugin
                 progress.BeginInvoke((Action)(() =>
                 {
                     progress.Value = value;
-                    this.UpdateProgressLabel();
+                    UpdateProgressLabel();
                 }));
 
                 return;
             }
 
             progress.Value = value;
-            this.UpdateProgressLabel();
+            UpdateProgressLabel();
         }
 
         private void UpdateProgressLabel()
@@ -186,24 +184,20 @@ namespace SvgFileTypePlugin
                 progress.BeginInvoke((Action)(() =>
                 {
                     progress.Maximum = max;
-                    this.UpdateProgressLabel();
+                    UpdateProgressLabel();
                 }));
 
                 return;
             }
 
             progress.Maximum = max;
-            this.UpdateProgressLabel();
+            UpdateProgressLabel();
         }
 
         private void btnOk_Click(object sender, EventArgs e)
         {
             btnOk.Enabled = gr1.Enabled = gr2.Enabled = gr3.Enabled = false;
-            var handler = OkClick;
-            if (handler != null)
-            {
-                handler(sender, e);
-            }
+            OkClick?.Invoke(sender, e);
         }
     }
 }
