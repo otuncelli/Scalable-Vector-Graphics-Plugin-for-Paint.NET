@@ -6,25 +6,28 @@ namespace SvgFileTypePlugin
 {
     public partial class UiDialog : Form
     {
+        public int Dpi => (int) nudDpi.Value;
+        public int CanvasW => (int) canvasw.Value;
+        public int CanvasH => (int) canvash.Value;
+        public bool KeepAspectRatio => cbKeepAR.Checked;
+        public bool ImportOpacity => cbOpacity.Checked;
+        public bool ImportHiddenLayers => cbLayers.Checked;
+        public bool ImportGroupBoundariesAsLayers => cbPSDSupport.Checked;
+        public event EventHandler OkClick;
+
+        private const string VersionString = "0.3-alpha";
+        private const int BigImageSize = 1280;
+        private Size _sizeHint;
+        private bool _changedProgramatically;
+        private int _originalPdi = 96;
+
         public UiDialog()
         {
             InitializeComponent();
             warningBox.Image = SystemIcons.Warning.ToBitmap();
+            Text = "SVG Import Plug-in v" + VersionString;
         }
 
-        public int Dpi => (int)nudDpi.Value;
-        public int CanvasW => (int)canvasw.Value;
-        public int CanvasH => (int)canvash.Value;
-        public bool KeepAspectRatio => cbKeepAR.Checked;
-        private Size _sizeHint;
-        private bool _changedProgramatically;
-        private int _originalPdi = 96;
-        public bool ImportOpacity => cbOpacity.Checked;
-        public bool ImportHiddenLayers => cbLayers.Checked;
-        public bool ImportGroupBoundariesAsLayers => cbPSDSupport.Checked;
-
-        private const int BigImageSize = 1280;
-        public event EventHandler OkClick;
         public LayersMode LayerMode
         {
             get
@@ -38,6 +41,7 @@ namespace SvgFileTypePlugin
                 {
                     return LayersMode.Flat;
                 }
+
                 return LayersMode.Groups;
             }
         }
@@ -152,14 +156,15 @@ namespace SvgFileTypePlugin
 
         private void linkGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start(@"https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET");
+            System.Diagnostics.Process.Start(
+                @"https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET");
         }
 
         public void ReportProgress(int value)
         {
             if (progress.InvokeRequired)
             {
-                progress.BeginInvoke((Action)(() =>
+                progress.BeginInvoke((Action) (() =>
                 {
                     progress.Value = value;
                     UpdateProgressLabel();
@@ -181,7 +186,7 @@ namespace SvgFileTypePlugin
         {
             if (progress.InvokeRequired)
             {
-                progress.BeginInvoke((Action)(() =>
+                progress.BeginInvoke((Action) (() =>
                 {
                     progress.Maximum = max;
                     UpdateProgressLabel();

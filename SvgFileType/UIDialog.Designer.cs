@@ -368,7 +368,7 @@
             this.nudDpi.TabIndex = 2;
             this.nudDpi.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudDpi.Value = new decimal(new int[] {
-            90,
+            96,
             0,
             0,
             0});
@@ -500,12 +500,11 @@
             this.linkGitHub.AutoSize = true;
             this.linkGitHub.Location = new System.Drawing.Point(12, 373);
             this.linkGitHub.Name = "linkGitHub";
-            this.linkGitHub.Size = new System.Drawing.Size(40, 13);
+            this.linkGitHub.Size = new System.Drawing.Size(91, 13);
             this.linkGitHub.TabIndex = 14;
             this.linkGitHub.TabStop = true;
-            this.linkGitHub.Text = "GitHub";
-            this.tooltip.SetToolTip(this.linkGitHub, "Releases, sources and plugin information https://github.com/otuncelli/Scalable-Ve" +
-        "ctor-Graphics-Plugin-for-Paint.NET");
+            this.linkGitHub.Text = "Project on GitHub";
+            this.tooltip.SetToolTip(this.linkGitHub, "Releases, sources and plugin information");
             this.linkGitHub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkGitHub_LinkClicked);
             // 
             // progress
@@ -545,7 +544,6 @@
             this.MinimizeBox = false;
             this.Name = "UiDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "SVG (Scalable Vector Graphics) Import";
             this.TopMost = true;
             this.gr1.ResumeLayout(false);
             this.gr1.PerformLayout();
