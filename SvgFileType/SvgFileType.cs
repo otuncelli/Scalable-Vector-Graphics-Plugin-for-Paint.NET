@@ -19,8 +19,7 @@ namespace SvgFileTypePlugin
         public SvgFileType()
             : base(
                 "Scalable Vector Graphics",
-                FileTypeFlags.SupportsLoading,
-                new[] {".svg", ".svgz"})
+                new FileTypeOptions {LoadExtensions = new[] {".svg", ".svgz"}})
         {
         }
 
