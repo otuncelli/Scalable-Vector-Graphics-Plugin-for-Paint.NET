@@ -15,7 +15,7 @@ namespace SvgFileTypePlugin
         public bool ImportGroupBoundariesAsLayers => cbPSDSupport.Checked;
         public event EventHandler OkClick;
 
-        private const string VersionString = "0.3-alpha";
+        private const string VersionString = "1.0";
         private const int BigImageSize = 1280;
         private Size _sizeHint;
         private bool _changedProgramatically;
