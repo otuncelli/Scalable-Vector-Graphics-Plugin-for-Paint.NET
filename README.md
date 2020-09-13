@@ -5,12 +5,15 @@
 
 **Please check the [Releases](https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/releases) section for binary download.**
 
+**Please note:** The binary forms that you can get from the releases section are under the LGPL terms since they contain code from 
+[Fizzler: .NET CSS Selector Engine](https://github.com/atifaziz/Fizzler) project.
+
 This is a Paint.NET filetype plugin for loading SVG (Scalable Vector Graphics) and its compressed variant SVGZ files. 
 SVG elements can be rendered as a flat image file or each on a separate layer.
 
 The plugin is a tiny wrapper around the [SVG.NET Library](https://github.com/vvvv/SVG) which does the actual SVG reading.
 
-Tested on Paint.NET 4.2.1.
+Tested on paint.net 4.2.13.
 
 To install the plugin perform the following steps:
  * Put the DLL in the `<Paint.NET>\FileTypes` directory (default location is `C:\Program Files\paint.net\FileTypes`)
