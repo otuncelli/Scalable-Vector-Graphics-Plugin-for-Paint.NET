@@ -333,7 +333,7 @@ namespace SvgFileTypePlugin
                 // Turn off visibility of all elements
                 foreach (var elemntToChange in elements)
                 {
-                    elemntToChange.Visible = false;
+                    elemntToChange.Visibility = "hidden";
                 }
 
                 var itemShouldBeIgnored = false;
@@ -344,7 +344,7 @@ namespace SvgFileTypePlugin
                 {
                     if (toCheck is SvgVisualElement visual)
                     {
-                        visual.Visible = true;
+                        visual.Visibility = "visible";
                         // Check, maybe parent group was initially hidden
                         if (!importHiddenLayers)
                         {
@@ -386,7 +386,7 @@ namespace SvgFileTypePlugin
                 if (importHiddenLayers)
                 {
                     // Set visible to render image and then item can be hidden.
-                    visualElement.Visible = true;
+                    visualElement.Visibility = "visible";
 
                 }
                 else if (!visible)
@@ -542,7 +542,7 @@ namespace SvgFileTypePlugin
                         // Fix problem that SVG visual element lib style "display:none" is not recognized as visible state.
                         if (visual.Visible && (visual.Display == "none" || visual.Display == "hidden"))
                         {
-                            visual.Visible = false;
+                            visual.Visibility = "hidden";
                             visual.Display = null;
                         }
 
