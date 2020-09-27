@@ -1,6 +1,6 @@
 ﻿namespace SvgFileTypePlugin
 {
-    public enum LayersMode
+    internal enum LayersMode
     {
         Flat,
         Groups,
