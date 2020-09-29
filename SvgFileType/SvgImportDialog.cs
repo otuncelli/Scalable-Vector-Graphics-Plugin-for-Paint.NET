@@ -37,40 +37,40 @@ namespace SvgFileTypePlugin
             }
         }
 
-        public int ViewportW
+        public int? ViewportW
         {
-            get => Int32.TryParse(vpw.Text, out int val) ? val : -1;
-            set => vpw.Text = value <= 0 ? NotAvailable : value.ToString();
+            get => Int32.TryParse(vpw.Text, out int val) ? (int?)val : null;
+            set => vpw.Text = value > 0 ? value.ToString() : NotAvailable;
         }
 
-        public int ViewportH
+        public int? ViewportH
         {
-            get => Int32.TryParse(vph.Text, out int val) ? val : -1;
-            set => vph.Text = value <= 0 ? NotAvailable : value.ToString();
+            get => Int32.TryParse(vph.Text, out int val) ? (int?)val : null;
+            set => vph.Text = value > 0 ? value.ToString() : NotAvailable;
         }
 
-        public int ViewBoxW
+        public int? ViewBoxW
         {
-            get => Int32.TryParse(vbw.Text, out int val) ? val : -1;
-            set => vbw.Text = value <= 0 ? NotAvailable : value.ToString();
+            get => Int32.TryParse(vbw.Text, out int val) ? (int?)val : null;
+            set => vbw.Text = value > 0 ? value.ToString() : NotAvailable;
         }
 
-        public int ViewBoxH
+        public int? ViewBoxH
         {
-            get => Int32.TryParse(vbh.Text, out int val) ? val : -1;
-            set => vbh.Text = value <= 0 ? NotAvailable : value.ToString();
+            get => Int32.TryParse(vbh.Text, out int val) ? (int?)val : null;
+            set => vbh.Text = value > 0 ? value.ToString() : NotAvailable;
         }
 
-        public int ViewBoxX
+        public int? ViewBoxX
         {
-            get => Int32.TryParse(vbx.Text, out int val) ? val : -1;
-            set => vbx.Text = value < 0 ? NotAvailable : value.ToString();
+            get => Int32.TryParse(vbx.Text, out int val) ? (int?) val : null;
+            set => vbx.Text = value.HasValue ? value.ToString() : NotAvailable;
         }
 
-        public int ViewBoxY
+        public int? ViewBoxY
         {
-            get => Int32.TryParse(vby.Text, out int val) ? val : -1;
-            set => vby.Text = value < 0 ? NotAvailable : value.ToString();
+            get => Int32.TryParse(vby.Text, out int val) ? (int?) val : null;
+            set => vby.Text = value.HasValue ? value.ToString() : NotAvailable;
         }
 
         public bool KeepAspectRatio
@@ -150,7 +150,6 @@ namespace SvgFileTypePlugin
             rbFlat.CheckedChanged += Rb_CheckedChanged;
             rbGroups.CheckedChanged += Rb_CheckedChanged;
             canvasw.KeyUp += Canvas_KeyUp;
-            ;
             canvash.KeyUp += Canvas_KeyUp;
             canvasw.ValueChanged += CanvasW_ValueChanged;
             canvash.ValueChanged += CanvasH_ValueChanged;
@@ -170,54 +169,10 @@ namespace SvgFileTypePlugin
             ImportOpacity = true;
             ImportHiddenLayers = true;
             ImportGroupBoundariesAsLayers = true;
-            InitSizeHint();
             canvasw.Minimum = 1;
             canvash.Minimum = 1;
             cbKeepAR.Checked = true;
-        }
-
-        public void InitSizeHint()
-        {
-            int w, h;
-
-            if (ViewportW > 0 && ViewportH > 0)
-            {
-                w = ViewportW;
-                h = ViewportH;
-            }
-            else if (ViewBoxW > 0 && ViewBoxH > 0)
-            {
-                w = ViewBoxW;
-                h = ViewBoxH;
-            }
-            else
-            {
-                w = h = 512;
-            }
-
-            double ratio = w / (double) h;
-            if (w > CanvasSizeWarningThreshold)
-            {
-                if (w > h)
-                {
-                    w = CanvasSizeWarningThreshold;
-                    h = (int) Math.Ceiling(CanvasSizeWarningThreshold / ratio);
-                }
-                else
-                {
-                    h = CanvasSizeWarningThreshold;
-                    w = (int) Math.Ceiling(CanvasSizeWarningThreshold * ratio);
-                }
-            }
-            else if (h > CanvasSizeWarningThreshold)
-            {
-                h = CanvasSizeWarningThreshold;
-                w = (int) Math.Ceiling(CanvasSizeWarningThreshold * ratio);
-            }
-
-            sizeHint = new Size(w, h);
-            UpdateCanvasW();
-            UpdateCanvasH();
+            InitSizeHint();
         }
 
         private void UpdateCanvasH()
@@ -246,7 +201,7 @@ namespace SvgFileTypePlugin
             cbPSDSupport.Enabled = rbAll.Checked;
         }
 
-        public void SetValuesGivenInSource()
+        private void SetValuesGivenInSource()
         {
             // Keep original image size and show warning
             CanvasW = sizeHint.Width;
@@ -254,6 +209,54 @@ namespace SvgFileTypePlugin
             TargetDpi = SourceDpi;
             warningBox.Visible = CanvasW > CanvasSizeWarningThreshold ||
                                  CanvasH > CanvasSizeWarningThreshold;
+        }
+
+        #endregion
+
+        #region Public
+
+        public void InitSizeHint()
+        {
+            int w = 512;
+            int h = 512;
+
+            if (ViewBoxW > 0 && ViewBoxH > 0)
+            {
+                w = ViewBoxW.Value;
+                h = ViewBoxH.Value;
+            }
+            else if (ViewportW > 0 && ViewportH > 0)
+            {
+                w = ViewportW.Value;
+                h = ViewportH.Value;
+            }
+
+            sizeHint = new Size(w, h);
+            Size sizeHintOriginal = sizeHint;
+            double ratio = w / (double) h;
+            if (w > CanvasSizeWarningThreshold)
+            {
+                if (w > h)
+                {
+                    w = CanvasSizeWarningThreshold;
+                    h = (int) Math.Ceiling(CanvasSizeWarningThreshold / ratio);
+                }
+                else
+                {
+                    h = CanvasSizeWarningThreshold;
+                    w = (int) Math.Ceiling(CanvasSizeWarningThreshold * ratio);
+                }
+            }
+            else if (h > CanvasSizeWarningThreshold)
+            {
+                h = CanvasSizeWarningThreshold;
+                w = (int) Math.Ceiling(CanvasSizeWarningThreshold * ratio);
+            }
+
+            sizeHint = new Size(w, h);
+            UpdateCanvasW();
+            UpdateCanvasH();
+            sizeHint = sizeHintOriginal;
         }
 
         #endregion

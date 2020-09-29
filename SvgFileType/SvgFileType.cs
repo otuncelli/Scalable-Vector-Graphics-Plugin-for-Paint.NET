@@ -16,7 +16,7 @@ namespace SvgFileTypePlugin
         public SvgFileType() : base(FileTypeName,
             new FileTypeOptions
             {
-                LoadExtensions = SupportedExtensions,
+                LoadExtensions = new []{".svg", ".svgz"},
                 SupportsCancellation = true,
                 SupportsLayers = true
             })
@@ -25,9 +25,9 @@ namespace SvgFileTypePlugin
 
         private const string FileTypeName = "Scalable Vector Graphics";
         private const string WindowTitle = "SVG Import Plug-in v1.0.1";
-        private static readonly string[] SupportedExtensions = {".svg", ".svgz"};
 
         // Don't change this text! It's used by a PSD import plugin to keep Photoshop's folder structure.
+        // https://forums.getpaint.net/topic/113742-photoshop-psd-file-plugin-with-layers-support/
         public const string LayerGroupBegin = "Layer Group: {0}";
         public const string LayerGroupEnd = "End Layer Group: {0}";
 
@@ -54,9 +54,9 @@ namespace SvgFileTypePlugin
             using (dialog = new SvgImportDialog())
             {
                 dialog.Title = WindowTitle;
+                dialog.SourceDpi = ppi;
                 dialog.ViewportW = viewportW;
                 dialog.ViewportH = viewportH;
-                dialog.SourceDpi = ppi;
                 dialog.ViewBoxX = viewBoxX;
                 dialog.ViewBoxY = viewBoxY;
                 dialog.ViewBoxW = viewBoxW;
@@ -113,7 +113,6 @@ namespace SvgFileTypePlugin
 
         private void Dialog_FormClosed(object sender, FormClosedEventArgs e)
         {
-            cts = null;
             svg = null;
             GC.Collect();
         }
@@ -150,8 +149,6 @@ namespace SvgFileTypePlugin
                 : new SvgAspectRatio(SvgPreserveAspectRatio.none);
 
             LayersMode layersMode = dialog.LayersMode;
-            int canvasW = dialog.CanvasW;
-            int canvasH = dialog.CanvasH;
             bool importGroupBoundariesAsLayers = dialog.ImportGroupBoundariesAsLayers;
             bool setOpacityForLayer = dialog.ImportOpacity;
             bool importHiddenLayers = dialog.ImportHiddenLayers;
@@ -160,7 +157,7 @@ namespace SvgFileTypePlugin
             // Render one flat image and quit.
             if (layersMode == LayersMode.Flat)
             {
-                using (Bitmap bmp = RenderFlatImage(svg, canvasW, canvasH))
+                using (Bitmap bmp = RenderSvgDocument())
                 {
                     return Document.FromImage(bmp);
                 }
@@ -246,7 +243,8 @@ namespace SvgFileTypePlugin
                     }
                 }
 
-                if (ShowMemoryWarningDialog(groupsAndElementsWithoutGroup.Count) != DialogResult.Yes)
+                if (groupsAndElementsWithoutGroup.Count > LayerCountWarningThreshold &&
+                    ShowMemoryWarningDialog(groupsAndElementsWithoutGroup.Count) != DialogResult.Yes)
                 {
                     dialog.DialogResult = DialogResult.Cancel;
                     return null;
@@ -264,7 +262,7 @@ namespace SvgFileTypePlugin
             if (pdnDocument == null || pdnDocument.Layers.Count == 0)
             {
                 pdnDocument?.Dispose();
-                using (Bitmap bmp = RenderFlatImage(svg, canvasW, canvasH))
+                using (Bitmap bmp = RenderSvgDocument())
                 {
                     return Document.FromImage(bmp);
                 }
@@ -341,7 +339,7 @@ namespace SvgFileTypePlugin
 
                     pdnDocument = pdnDocument ?? new Document(width, height);
                     // Render empty group boundary and continue
-                    var pdnLayer = new BitmapLayer(pdnDocument.Width, pdnDocument.Height)
+                    var pdnLayer = new BitmapLayer(width, height)
                     {
                         Name = boundaryNode.ID,
                         Opacity = (byte) (boundaryNode.RelatedGroup.Opacity * 255),
@@ -400,7 +398,7 @@ namespace SvgFileTypePlugin
         private void RenderElement(SvgElement element, bool setOpacityForLayer,
             bool importHiddenLayers)
         {
-            var opacity = element.Opacity;
+            float opacity = element.Opacity;
             var visible = true;
             var visualElement = element as SvgVisualElement;
             if (visualElement != null)
@@ -431,7 +429,7 @@ namespace SvgFileTypePlugin
 
             BitmapLayer pdnLayer;
             pdnDocument = pdnDocument ?? new Document(width, height);
-            using (Bitmap bmp = RenderFlatImage(element.OwnerDocument, pdnDocument.Width, pdnDocument.Height))
+            using (Bitmap bmp = RenderSvgDocument())
             using (Surface surface = Surface.CopyFromBitmap(bmp))
             {
                 pdnLayer = new BitmapLayer(surface);
@@ -464,12 +462,12 @@ namespace SvgFileTypePlugin
             return true;
         }
 
-        private static Bitmap RenderFlatImage(SvgDocument doc, int canvasw, int canvash)
+        private Bitmap RenderSvgDocument()
         {
-            var bmp = new Bitmap(canvasw, canvash);
+            var bmp = new Bitmap(width, height);
             using (Graphics graph = Graphics.FromImage(bmp))
             {
-                doc.Draw(graph);
+                svg.Draw(graph);
             }
 
             return bmp;
@@ -568,13 +566,16 @@ namespace SvgFileTypePlugin
 
                 if (toRender is SvgVisualElement visual)
                 {
+                    const string hidden = "hidden";
+                    const string none = "none";
+
                     // Fix problem that SVG visual element lib style "display:none" is not recognized as visible state.
                     if (visual.Visible &&
-                        (visual.Display?.Trim().Equals("none", StringComparison.OrdinalIgnoreCase) == true ||
-                         visual.Display?.Trim().Equals("hidden", StringComparison.OrdinalIgnoreCase) == true))
+                        (visual.Display?.Trim().Equals(none, StringComparison.OrdinalIgnoreCase) == true ||
+                         visual.Display?.Trim().Equals(hidden, StringComparison.OrdinalIgnoreCase) == true))
                     {
-                        visual.Visibility = "hidden";
-                        visual.Display = "none";
+                        visual.Visibility = hidden;
+                        visual.Display = none;
                     }
 
                     // Store opacity
