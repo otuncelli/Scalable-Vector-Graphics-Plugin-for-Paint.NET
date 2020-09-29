@@ -123,11 +123,12 @@ namespace SvgFileTypePlugin
         {
             var dialogResult = (DialogResult) dialog.Invoke((Func<DialogResult>) (() =>
             {
-                string msg = $"This process will import {layerCount} layers.\r\n" +
-                             "Rendering many svg elements on a separate layer requires a lot of memory, especially if you're using a large canvas.\r\n" +
-                             "Please make sure you've enough available memory before continue.\r\n" +
+                string msg = $"This plug-in will import {layerCount} layers from this svg file.\r\n" +
+                             "Importing many layers requires a lot of memory, especially if you're using a large canvas. " +
+                             "Insufficient memory may cause operating system instability. \r\n" +
+                             "Please make sure you've enough memory available before continue.\r\n" +
                              "\r\n" +
-                             "Do you really want to continue?";
+                             "Do you want to continue?";
                 return MessageBoxEx.Show(dialog, msg, "Warning",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
                     MessageBoxDefaultButton.Button2);
