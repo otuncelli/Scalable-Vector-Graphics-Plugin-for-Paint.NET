@@ -99,11 +99,9 @@ namespace SvgFileTypePlugin
 
         #region Events
 
-        private async void Dialog_OkClick(object sender, EventArgs e)
+        private void Dialog_OkClick(object sender, EventArgs e)
         {
-            pdnDocument = await Task.Run(DoImport, cts.Token)
-                .ContinueWith(AfterImport)
-                .ConfigureAwait(false);
+            Task.Run(DoImport, cts.Token).ContinueWith(AfterImport);
         }
 
         private void Dialog_FormClosing(object sender, FormClosingEventArgs e)
@@ -137,7 +135,7 @@ namespace SvgFileTypePlugin
             return dialogResult;
         }
 
-        private Document DoImport()
+        private void DoImport()
         {
             // set the requested size & resolution for SvgDocument
             width = dialog.CanvasW;
@@ -160,7 +158,8 @@ namespace SvgFileTypePlugin
             {
                 using (Bitmap bmp = RenderSvgDocument())
                 {
-                    return Document.FromImage(bmp);
+                    pdnDocument = Document.FromImage(bmp);
+                    return;
                 }
             }
 
@@ -184,7 +183,7 @@ namespace SvgFileTypePlugin
                     if (ShowMemoryWarningDialog(allElements.Count) != DialogResult.Yes)
                     {
                         dialog.DialogResult = DialogResult.Cancel;
-                        return null;
+                        return;
                     }
                 }
 
@@ -248,7 +247,7 @@ namespace SvgFileTypePlugin
                     ShowMemoryWarningDialog(groupsAndElementsWithoutGroup.Count) != DialogResult.Yes)
                 {
                     dialog.DialogResult = DialogResult.Cancel;
-                    return null;
+                    return;
                 }
 
                 // Thread safe
@@ -258,21 +257,19 @@ namespace SvgFileTypePlugin
                 pdnDocument = RenderElements(groupsAndElementsWithoutGroup, setOpacityForLayer, importHiddenLayers,
                     dialog.ReportProgress, ct);
             }
-
+            
             // Fallback. Nothing is added. Render one default layer.
             if (pdnDocument == null || pdnDocument.Layers.Count == 0)
             {
                 pdnDocument?.Dispose();
                 using (Bitmap bmp = RenderSvgDocument())
                 {
-                    return Document.FromImage(bmp);
+                    pdnDocument = Document.FromImage(bmp);
                 }
             }
-
-            return pdnDocument;
         }
 
-        private Document AfterImport(Task<Document> p)
+        private void AfterImport(Task p)
         {
             if (p.Exception != null && !p.IsCanceled)
             {
@@ -295,15 +292,13 @@ namespace SvgFileTypePlugin
                 }
 
                 dialog.DialogResult = DialogResult.Cancel;
-                return null;
+                return;
             }
 
             if (dialog.DialogResult == DialogResult.None)
             {
                 dialog.DialogResult = DialogResult.OK;
             }
-
-            return p.Result;
         }
 
         #region Render Elements
