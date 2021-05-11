@@ -23,7 +23,7 @@ namespace SvgFileTypePlugin
         {
         }
 
-        private const string WindowTitle = "SVG Import Plug-in v1.0.1";
+        private const string WindowTitle = "SVG Import Plug-in v1.0.2";
 
         // Don't change this text! It's used by a PSD import plugin to keep Photoshop's folder structure.
         // https://forums.getpaint.net/topic/113742-photoshop-psd-file-plugin-with-layers-support/
