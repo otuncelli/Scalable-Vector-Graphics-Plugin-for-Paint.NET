@@ -140,6 +140,7 @@ namespace SvgFileTypePlugin
         private const string NotAvailable = "n/a";
         private const int CanvasSizeWarningThreshold = 1280;
         private Size sizeHint;
+        private object lastChangedCtrl;
 
         #endregion
 
@@ -153,7 +154,7 @@ namespace SvgFileTypePlugin
             canvash.KeyUp += Canvas_KeyUp;
             canvasw.ValueChanged += CanvasW_ValueChanged;
             canvash.ValueChanged += CanvasH_ValueChanged;
-            cbKeepAR.CheckedChanged += CanvasW_ValueChanged;
+            cbKeepAR.CheckedChanged += KeepAR_CheckedChanged;
             linkLabel1.Click += BtnUseOriginal_Click;
             linkGitHub.LinkClicked += LinkGitHub_LinkClicked;
             btnOk.Click += BtnOk_Click;
@@ -177,21 +178,43 @@ namespace SvgFileTypePlugin
 
         private void UpdateCanvasH()
         {
+            decimal newHeight;
             if (KeepAspectRatio)
             {
-                canvash.Value = canvasw.Value * sizeHint.Height / sizeHint.Width;
+                newHeight = canvasw.Value * sizeHint.Height / sizeHint.Width;
+            }
+            else
+            {
+                newHeight = canvash.Value;
             }
 
-            warningBox.Visible = canvash.Value > CanvasSizeWarningThreshold;
+            if (newHeight < 1)
+            {
+                newHeight = canvasw.Minimum;
+            }
+
+            canvash.Value = newHeight;
+            warningBox.Visible = newHeight > CanvasSizeWarningThreshold;
         }
 
         private void UpdateCanvasW()
         {
+            decimal newWidth;
             if (KeepAspectRatio)
             {
-                canvasw.Value = canvash.Value * sizeHint.Width / sizeHint.Height;
+                newWidth = canvash.Value * sizeHint.Width / sizeHint.Height;
+            }
+            else
+            {
+                newWidth = canvasw.Value;
             }
 
+            if (newWidth < 1)
+            {
+                newWidth = canvash.Minimum;
+            }
+
+            canvasw.Value = newWidth;
             warningBox.Visible = canvasw.Value > CanvasSizeWarningThreshold;
         }
 
@@ -265,16 +288,32 @@ namespace SvgFileTypePlugin
 
         private void CanvasW_ValueChanged(object sender, EventArgs e)
         {
+            lastChangedCtrl = sender;
             UpdateCanvasH();
         }
 
         private void CanvasH_ValueChanged(object sender, EventArgs e)
         {
+            lastChangedCtrl = sender;
             UpdateCanvasW();
+        }
+
+        private void KeepAR_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ReferenceEquals(lastChangedCtrl, canvasw))
+            {
+                UpdateCanvasH();
+            }
+            else
+            {
+                UpdateCanvasW();
+            }
         }
 
         private void Canvas_KeyUp(object sender, KeyEventArgs e)
         {
+            lastChangedCtrl = sender;
+
             if (e.KeyValue >= '0' || e.KeyValue <= '9' ||
                 e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
             {

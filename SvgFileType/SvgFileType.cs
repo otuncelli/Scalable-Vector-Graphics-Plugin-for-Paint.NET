@@ -13,7 +13,7 @@ namespace SvgFileTypePlugin
 {
     public class SvgFileType : FileType
     {
-        public SvgFileType() : base(FileTypeName,
+        public SvgFileType() : base("Scalable Vector Graphics",
             new FileTypeOptions
             {
                 LoadExtensions = new []{".svg", ".svgz"},
@@ -23,7 +23,6 @@ namespace SvgFileTypePlugin
         {
         }
 
-        private const string FileTypeName = "Scalable Vector Graphics";
         private const string WindowTitle = "SVG Import Plug-in v1.0.1";
 
         // Don't change this text! It's used by a PSD import plugin to keep Photoshop's folder structure.
