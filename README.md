@@ -13,7 +13,7 @@ SVG elements can be rendered as a flat image file or each on a separate layer.
 
 The plugin is a tiny wrapper around the [SVG.NET Library](https://github.com/vvvv/SVG) which does the actual SVG reading.
 
-Tested on paint.net 4.2.13.
+Tested on paint.net 4.2.16 stable & 4.3 alpha (4.300.7881.3082) releases.
 
 To install the plugin perform the following steps:
  * Put the DLL in the `<Paint.NET>\FileTypes` directory (default location is `C:\Program Files\paint.net\FileTypes`)

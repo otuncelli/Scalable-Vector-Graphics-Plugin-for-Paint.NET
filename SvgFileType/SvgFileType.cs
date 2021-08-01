@@ -13,6 +13,10 @@ namespace SvgFileTypePlugin
 {
     public class SvgFileType : FileType
     {
+        // https://forums.getpaint.net/topic/117086-scalable-vector-graphics-filetype-alternative-plugin-svg-svgz
+
+        public const string Version = "1.0.3";
+
         public SvgFileType() : base("Scalable Vector Graphics",
             new FileTypeOptions
             {
@@ -23,10 +27,11 @@ namespace SvgFileTypePlugin
         {
         }
 
-        private const string WindowTitle = "SVG Import Plug-in v1.0.2";
+        private const string WindowTitle = "SVG Import Plug-in v" + Version;
 
         // Don't change this text! It's used by a PSD import plugin to keep Photoshop's folder structure.
         // https://forums.getpaint.net/topic/113742-photoshop-psd-file-plugin-with-layers-support/
+
         public const string LayerGroupBegin = "Layer Group: {0}";
         public const string LayerGroupEnd = "End Layer Group: {0}";
 
@@ -274,7 +279,7 @@ namespace SvgFileTypePlugin
             {
                 if (p.Exception.InnerExceptions.Any(exception => exception is OutOfMemoryException))
                 {
-                    dialog.Invoke((Action) (() =>
+                    dialog.Invoke((MethodInvoker) (() =>
                     {
                         MessageBoxEx.Show(dialog, "Not enough memory to complete this operation.",
                             "Out of Memory", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -283,7 +288,7 @@ namespace SvgFileTypePlugin
                 else
                 {
                     var innerExpection = p.Exception?.InnerException?.Message;
-                    dialog.Invoke((Action) (() =>
+                    dialog.Invoke((MethodInvoker) (() =>
                     {
                         MessageBoxEx.Show(dialog, p.Exception.Message + "\r\nMessage: " + innerExpection,
                             "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -302,13 +307,12 @@ namespace SvgFileTypePlugin
 
         #region Render Elements
 
-        private static int GetLayerCountToRender(IReadOnlyCollection<SvgVisualElement> elements,
-            bool importHiddenLayers)
+        private static int GetLayerCountToRender(IReadOnlyCollection<SvgVisualElement> elements, bool importHiddenLayers)
         {
             return importHiddenLayers ? elements.Count : elements.Count(IsVisibleOriginally);
         }
 
-        private Document RenderElements(IReadOnlyCollection<SvgVisualElement> elements, bool setOpacityForLayer,
+        private Document RenderElements(IReadOnlyCollection<SvgVisualElement> elements, bool setOpacityForLayer, 
             bool importHiddenLayers, Action<int> progress, CancellationToken token)
         {
             // I had problems to render each element directly while parent transformation can affect child. 
@@ -390,8 +394,7 @@ namespace SvgFileTypePlugin
             return pdnDocument;
         }
 
-        private void RenderElement(SvgElement element, bool setOpacityForLayer,
-            bool importHiddenLayers)
+        private void RenderElement(SvgElement element, bool setOpacityForLayer, bool importHiddenLayers)
         {
             float opacity = element.Opacity;
             var visible = true;
@@ -501,7 +504,7 @@ namespace SvgFileTypePlugin
             {
                 // Get child title tag
                 SvgTitle title = element.Children.OfType<SvgTitle>().FirstOrDefault();
-                if (title != null && !string.IsNullOrEmpty(title.Content))
+                if (!String.IsNullOrEmpty(title?.Content))
                 {
                     layerName = title.Content;
                 }
@@ -542,8 +545,7 @@ namespace SvgFileTypePlugin
             return layerName == null ? elementName : String.Join(": ", elementName, layerName);
         }
 
-        private static IEnumerable<SvgElement> PrepareFlatElements(SvgElementCollection collection,
-            string groupName = null)
+        private static IEnumerable<SvgElement> PrepareFlatElements(SvgElementCollection collection, string groupName = null)
         {
             if (collection == null)
             {
