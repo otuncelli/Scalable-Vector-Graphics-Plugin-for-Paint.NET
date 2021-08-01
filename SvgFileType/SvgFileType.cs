@@ -15,7 +15,7 @@ namespace SvgFileTypePlugin
     {
         // https://forums.getpaint.net/topic/117086-scalable-vector-graphics-filetype-alternative-plugin-svg-svgz
 
-        public const string Version = "1.0.3";
+        public const string Version = "1.0.3.1";
 
         public SvgFileType() : base("Scalable Vector Graphics",
             new FileTypeOptions
