@@ -1,4 +1,7 @@
-﻿using Svg;
+﻿// Copyright 2021 Osman Tunçelli. All rights reserved.
+// Use of this source code is governed by a LGPL license that can be
+// found in the COPYING file.
+
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -7,45 +10,35 @@ namespace SvgFileTypePlugin
 {
     internal static class Utils
     {
+        private static readonly Lazy<Form> MainFormLazy = new Lazy<Form>(() =>
+        {
+            IntPtr windowHandle = Process.GetCurrentProcess().MainWindowHandle;
+            Form form = Control.FromHandle(windowHandle) as Form ?? Application.OpenForms["MainForm"];
+            if (form == null)
+            {
+                Debug.WriteLine("Can't get the main form.");
+            }
+            return form;
+        });
+
         public static Form GetMainForm()
         {
-            try
-            {
-                var form = Control.FromHandle(Process.GetCurrentProcess().MainWindowHandle) as Form;
-                return form ?? Application.OpenForms["MainForm"];
-            }
-            catch
-            {
-                return null;
-            }
+            return MainFormLazy.Value;
         }
 
-        public static int ConvertToPixels(SvgUnitType unit, float value, float ppi)
+        public static DialogResult ThreadSafeShowDialog(Form owner, Func<DialogResult> func)
         {
-            const float defaultRatioFor96 = 3.78f;
-            var convertationRatio = ppi / 96 * defaultRatioFor96;
-            float pixels;
-            switch (unit)
-            {
-                case SvgUnitType.Millimeter:
-                    pixels = value * convertationRatio;
-                    break;
-                case SvgUnitType.Centimeter:
-                    pixels = value * convertationRatio * 10;
-                    break;
-                case SvgUnitType.Inch:
-                    pixels = value * convertationRatio * 25.4f;
-                    break;
-                case SvgUnitType.Em:
-                case SvgUnitType.Pica:
-                    pixels = value * 16;
-                    break;
-                default:
-                    pixels = 0;
-                    break;
-            }
+            return owner.InvokeRequired ? (DialogResult)owner.Invoke(func) : func();
+        }
 
-            return (int) Math.Ceiling(pixels);
+        public static int CalcMemoryNeeded(int width, int height)
+        {
+            return Math.Max(height * CalcStride(width) / (1024 * 1024), 1);
+        }
+
+        public static int CalcStride(int width, int bytesPerPixel = 4)
+        {
+            return 4 * ((width * bytesPerPixel * 8 + 31) / 32);
         }
     }
 }

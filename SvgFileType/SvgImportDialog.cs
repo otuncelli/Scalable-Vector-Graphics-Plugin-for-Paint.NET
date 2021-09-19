@@ -1,306 +1,224 @@
-﻿using System;
+﻿// Copyright 2021 Osman Tunçelli. All rights reserved.
+// Use of this source code is governed by a LGPL license that can be
+// found in the COPYING file.
+
+using Svg;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace SvgFileTypePlugin
 {
-    public partial class SvgImportDialog : Form
+    internal partial class SvgImportDialog : Form
     {
         #region Properties
 
-        public int TargetDpi
+        public SvgImportConfig GetConfig()
         {
-            get => (int) nudDpi.Value;
-            set => nudDpi.Value = value;
-        }
-
-        public int SourceDpi { get; set; } = 96;
-
-        public int CanvasW
-        {
-            get => (int) canvasw.Value;
-            set
+            return new SvgImportConfig
             {
-                canvasw.Value = value;
-                UpdateCanvasH();
-            }
-        }
-
-        public int CanvasH
-        {
-            get => (int) canvash.Value;
-            set
-            {
-                canvash.Value = value;
-                UpdateCanvasW();
-            }
-        }
-
-        public int? ViewportW
-        {
-            get => Int32.TryParse(vpw.Text, out int val) ? (int?)val : null;
-            set => vpw.Text = value > 0 ? value.ToString() : NotAvailable;
-        }
-
-        public int? ViewportH
-        {
-            get => Int32.TryParse(vph.Text, out int val) ? (int?)val : null;
-            set => vph.Text = value > 0 ? value.ToString() : NotAvailable;
-        }
-
-        public int? ViewBoxW
-        {
-            get => Int32.TryParse(vbw.Text, out int val) ? (int?)val : null;
-            set => vbw.Text = value > 0 ? value.ToString() : NotAvailable;
-        }
-
-        public int? ViewBoxH
-        {
-            get => Int32.TryParse(vbh.Text, out int val) ? (int?)val : null;
-            set => vbh.Text = value > 0 ? value.ToString() : NotAvailable;
-        }
-
-        public int? ViewBoxX
-        {
-            get => Int32.TryParse(vbx.Text, out int val) ? (int?) val : null;
-            set => vbx.Text = value.HasValue ? value.ToString() : NotAvailable;
-        }
-
-        public int? ViewBoxY
-        {
-            get => Int32.TryParse(vby.Text, out int val) ? (int?) val : null;
-            set => vby.Text = value.HasValue ? value.ToString() : NotAvailable;
-        }
-
-        public bool KeepAspectRatio
-        {
-            get => cbKeepAR.Checked;
-            set
-            {
-                cbKeepAR.Checked = value;
-                if (sizeHint.Width > sizeHint.Height)
-                {
-                    UpdateCanvasW();
-                }
-                else
-                {
-                    UpdateCanvasH();
-                }
-            }
-        }
-
-        public bool ImportOpacity
-        {
-            get => cbOpacity.Checked;
-            set => cbOpacity.Checked = value;
-        }
-
-        public bool ImportHiddenLayers
-        {
-            get => cbLayers.Checked;
-            set => cbLayers.Checked = value;
-        }
-
-        public bool ImportGroupBoundariesAsLayers
-        {
-            get => cbPSDSupport.Checked;
-            set => cbPSDSupport.Checked = value;
+                Width = (int)NudCanvasW.Value,
+                Height = (int)NudCanvasH.Value,
+                KeepAspectRatio = CbKeepAR.Checked,
+                Ppi = (int)NudDpi.Value,
+                GroupBoundariesAsLayers = CbGroupBoundaries.Checked,
+                HiddenElements = CbHiddenLayers.Checked,
+                RespectElementOpacity = CbOpacity.Checked,
+                LayersMode = LayersMode
+            };
         }
 
         internal LayersMode LayersMode
         {
             get
             {
-                if (rbAll.Checked) return LayersMode.All;
-                if (rbFlat.Checked) return LayersMode.Flat;
+                if (RbAllLayers.Checked) return LayersMode.All;
+                if (RbFlatten.Checked) return LayersMode.Flat;
                 return LayersMode.Groups;
             }
             set
             {
-                if (value == LayersMode.All) rbAll.Checked = true;
-                else if (value == LayersMode.Flat) rbFlat.Checked = true;
-                else rbGroups.Checked = true;
+                if (value == LayersMode.All) RbAllLayers.Checked = true;
+                else if (value == LayersMode.Flat) RbFlatten.Checked = true;
+                else RbGroups.Checked = true;
                 UpdateOptionsAvail();
             }
         }
 
-        public string Title
-        {
-            get => Text;
-            set => Text = value;
-        }
-
         #endregion
-
-        public event EventHandler OkClick;
 
         #region Fields
 
+        public event EventHandler OkClick;
         private const string NotAvailable = "n/a";
         private const int CanvasSizeWarningThreshold = 1280;
-        private Size sizeHint;
         private object lastChangedCtrl;
+        private readonly Rectangle viewbox;
+        private readonly int sourceWidth, sourceHeight;
+        private readonly int sourcePpi;
 
         #endregion
 
-        public SvgImportDialog()
+        #region Constructor
+
+        public SvgImportDialog(SvgDocument svg)
         {
             InitializeComponent();
-            rbAll.CheckedChanged += Rb_CheckedChanged;
-            rbFlat.CheckedChanged += Rb_CheckedChanged;
-            rbGroups.CheckedChanged += Rb_CheckedChanged;
-            canvasw.KeyUp += Canvas_KeyUp;
-            canvash.KeyUp += Canvas_KeyUp;
-            canvasw.ValueChanged += CanvasW_ValueChanged;
-            canvash.ValueChanged += CanvasH_ValueChanged;
-            cbKeepAR.CheckedChanged += KeepAR_CheckedChanged;
-            linkLabel1.Click += BtnUseOriginal_Click;
-            linkGitHub.LinkClicked += LinkGitHub_LinkClicked;
-            btnOk.Click += BtnOk_Click;
-            SetDefaults();
+            FixProgressLabel();
+
+            Text = "SVG Import Plugin v" + MyPluginSupportInfo.VersionString;
+            PbWarning.Image = SystemIcons.Warning.ToBitmap();
+            ToolTip1.SetToolTip(PbWarning, "Please make sure you've enough memory.");
+            LayersMode = LayersMode.Flat;
+            CbOpacity.Checked = true;
+            CbHiddenLayers.Checked = true;
+            CbGroupBoundaries.Checked = false;
+            NudCanvasW.Minimum = 1;
+            NudCanvasH.Minimum = 1;
+            CbKeepAR.Checked = true;
+            sourceWidth = svg.Width.ToPixels(svg);
+            sourceHeight = svg.Height.ToPixels(svg);
+            sourcePpi = svg.Ppi;
+            viewbox = svg.ViewBox.ToRectangle();
+
+            if (sourceWidth > 0 && sourceHeight > 0)
+            {
+                TbViewportW.Text = sourceWidth.ToString();
+                TbViewportH.Text = sourceHeight.ToString();
+            }
+            else
+            {
+                TbViewportW.Text = NotAvailable;
+                TbViewportH.Text = NotAvailable;
+            }
+
+            if (!viewbox.IsEmpty)
+            {
+                TbViewboxX.Text = viewbox.X.ToString();
+                TbViewboxY.Text = viewbox.Y.ToString();
+                TbViewboxW.Text = viewbox.Width.ToString();
+                TbViewboxH.Text = viewbox.Height.ToString();
+            }
+            else
+            {
+                TbViewboxX.Text = NotAvailable;
+                TbViewboxY.Text = NotAvailable;
+                TbViewboxW.Text = NotAvailable;
+                TbViewboxH.Text = NotAvailable;
+            }
+
+            if (!viewbox.IsEmpty) // /*(sourceWidth == 0 || sourceHeight == 0) && */
+            {
+                sourceWidth = viewbox.Width;
+                sourceHeight = viewbox.Height;
+            }
+
+            if (sourceWidth == 0 || sourceHeight == 0)
+            {
+                NudCanvasW.Value = NudCanvasW.Value = 512;
+            }
+            else
+            {
+                double ratio = sourceWidth / (double)sourceHeight;
+                if (sourceWidth > CanvasSizeWarningThreshold)
+                {
+                    if (sourceWidth > sourceHeight)
+                    {
+                        NudCanvasW.Value = CanvasSizeWarningThreshold;
+                        NudCanvasH.Value = (int)Math.Round(CanvasSizeWarningThreshold / ratio);
+                    }
+                    else
+                    {
+                        NudCanvasH.Value = CanvasSizeWarningThreshold;
+                        NudCanvasW.Value = (int)Math.Round(CanvasSizeWarningThreshold * ratio);
+                    }
+                }
+                else if (sourceHeight > CanvasSizeWarningThreshold)
+                {
+                    NudCanvasH.Value = CanvasSizeWarningThreshold;
+                    NudCanvasW.Value = (int)Math.Round(CanvasSizeWarningThreshold * ratio);
+                }
+                else
+                {
+                    NudCanvasW.Value = sourceWidth;
+                    NudCanvasH.Value = sourceHeight;
+                }
+            }
+
+            BindEvents();
         }
+
+        #endregion
 
         #region Private
 
-        private void SetDefaults()
+        private void FixProgressLabel()
         {
-            warningBox.Image = SystemIcons.Warning.ToBitmap();
-            LayersMode = LayersMode.Flat;
-            ImportOpacity = true;
-            ImportHiddenLayers = true;
-            ImportGroupBoundariesAsLayers = true;
-            canvasw.Minimum = 1;
-            canvash.Minimum = 1;
-            cbKeepAR.Checked = true;
-            InitSizeHint();
+            ProgressLabel.AutoSize = false;
+            ProgressLabel.TextAlign = ContentAlignment.MiddleCenter;
+            ProgressLabel.Location = ProgressBar.Location;
+            ProgressLabel.Width = ProgressBar.Width;
+            ProgressLabel.Height = ProgressBar.Height;
         }
 
         private void UpdateCanvasH()
         {
-            decimal newHeight;
-            if (KeepAspectRatio)
-            {
-                newHeight = canvasw.Value * sizeHint.Height / sizeHint.Width;
-            }
-            else
-            {
-                newHeight = canvash.Value;
-            }
-
-            if (newHeight < 1)
-            {
-                newHeight = canvasw.Minimum;
-            }
-
-            canvash.Value = newHeight;
-            warningBox.Visible = newHeight > CanvasSizeWarningThreshold;
+            decimal newHeight = CbKeepAR.Checked ? NudCanvasW.Value * sourceHeight / sourceWidth : NudCanvasH.Value;
+            newHeight = Math.Max(newHeight, 1);
+            NudCanvasH.Value = newHeight;
+            PbWarning.Visible = !RbFlatten.Checked && (newHeight > CanvasSizeWarningThreshold || NudCanvasW.Value > CanvasSizeWarningThreshold);
         }
 
         private void UpdateCanvasW()
         {
-            decimal newWidth;
-            if (KeepAspectRatio)
-            {
-                newWidth = canvash.Value * sizeHint.Width / sizeHint.Height;
-            }
-            else
-            {
-                newWidth = canvasw.Value;
-            }
-
-            if (newWidth < 1)
-            {
-                newWidth = canvash.Minimum;
-            }
-
-            canvasw.Value = newWidth;
-            warningBox.Visible = canvasw.Value > CanvasSizeWarningThreshold;
+            decimal newWidth = CbKeepAR.Checked ? NudCanvasH.Value * sourceWidth / sourceHeight : NudCanvasW.Value;
+            newWidth = Math.Max(newWidth, 1);
+            NudCanvasW.Value = newWidth;
+            PbWarning.Visible = !RbFlatten.Checked && (newWidth > CanvasSizeWarningThreshold || NudCanvasH.Value > CanvasSizeWarningThreshold);
         }
 
         private void UpdateOptionsAvail()
         {
-            cbOpacity.Enabled = cbLayers.Enabled = cbPSDSupport.Enabled = !rbFlat.Checked;
-            cbPSDSupport.Enabled = rbAll.Checked;
-        }
-
-        private void SetValuesGivenInSource()
-        {
-            // Keep original image size and show warning
-            CanvasW = sizeHint.Width;
-            CanvasH = sizeHint.Height;
-            TargetDpi = SourceDpi;
-            warningBox.Visible = CanvasW > CanvasSizeWarningThreshold ||
-                                 CanvasH > CanvasSizeWarningThreshold;
-        }
-
-        #endregion
-
-        #region Public
-
-        public void InitSizeHint()
-        {
-            int w = 512;
-            int h = 512;
-
-            if (ViewBoxW > 0 && ViewBoxH > 0)
-            {
-                w = ViewBoxW.Value;
-                h = ViewBoxH.Value;
-            }
-            else if (ViewportW > 0 && ViewportH > 0)
-            {
-                w = ViewportW.Value;
-                h = ViewportH.Value;
-            }
-
-            sizeHint = new Size(w, h);
-            Size sizeHintOriginal = sizeHint;
-            double ratio = w / (double) h;
-            if (w > CanvasSizeWarningThreshold)
-            {
-                if (w > h)
-                {
-                    w = CanvasSizeWarningThreshold;
-                    h = (int) Math.Ceiling(CanvasSizeWarningThreshold / ratio);
-                }
-                else
-                {
-                    h = CanvasSizeWarningThreshold;
-                    w = (int) Math.Ceiling(CanvasSizeWarningThreshold * ratio);
-                }
-            }
-            else if (h > CanvasSizeWarningThreshold)
-            {
-                h = CanvasSizeWarningThreshold;
-                w = (int) Math.Ceiling(CanvasSizeWarningThreshold * ratio);
-            }
-
-            sizeHint = new Size(w, h);
-            UpdateCanvasW();
-            UpdateCanvasH();
-            sizeHint = sizeHintOriginal;
+            CbOpacity.Enabled = CbHiddenLayers.Enabled = CbGroupBoundaries.Enabled = !RbFlatten.Checked;
+            CbGroupBoundaries.Enabled = RbAllLayers.Checked;
+            PbWarning.Visible = !RbFlatten.Checked && (NudCanvasH.Value > CanvasSizeWarningThreshold || NudCanvasW.Value > CanvasSizeWarningThreshold);
         }
 
         #endregion
 
         #region Events
 
-        private void CanvasW_ValueChanged(object sender, EventArgs e)
+        private void BindEvents()
+        {
+            RbAllLayers.CheckedChanged += Rb_CheckedChanged;
+            RbFlatten.CheckedChanged += Rb_CheckedChanged;
+            RbGroups.CheckedChanged += Rb_CheckedChanged;
+            NudCanvasW.KeyUp += NudCanvas_KeyUp;
+            NudCanvasH.KeyUp += NudCanvas_KeyUp;
+            NudCanvasW.ValueChanged += NudCanvasW_ValueChanged;
+            NudCanvasH.ValueChanged += NudCanvasH_ValueChanged;
+            CbKeepAR.CheckedChanged += CbKeepAR_CheckedChanged;
+            LnkUseSvgSettings.Click += LnkUseSvgSettings_Click;
+            LnkGitHub.LinkClicked += LnkGitHub_LinkClicked;
+            BtnOk.Click += BtnOk_Click;
+        }
+
+        private void NudCanvasW_ValueChanged(object sender, EventArgs e)
         {
             lastChangedCtrl = sender;
             UpdateCanvasH();
         }
 
-        private void CanvasH_ValueChanged(object sender, EventArgs e)
+        private void NudCanvasH_ValueChanged(object sender, EventArgs e)
         {
             lastChangedCtrl = sender;
             UpdateCanvasW();
         }
 
-        private void KeepAR_CheckedChanged(object sender, EventArgs e)
+        private void CbKeepAR_CheckedChanged(object sender, EventArgs e)
         {
-            if (ReferenceEquals(lastChangedCtrl, canvasw))
+            if (ReferenceEquals(lastChangedCtrl, NudCanvasW))
             {
                 UpdateCanvasH();
             }
@@ -310,15 +228,15 @@ namespace SvgFileTypePlugin
             }
         }
 
-        private void Canvas_KeyUp(object sender, KeyEventArgs e)
+        private void NudCanvas_KeyUp(object sender, KeyEventArgs e)
         {
             lastChangedCtrl = sender;
 
             if (e.KeyValue >= '0' || e.KeyValue <= '9' ||
                 e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
             {
-                var input = (NumericUpDown) sender;
-                if (input == canvasw)
+                var input = (NumericUpDown)sender;
+                if (input == NudCanvasW)
                 {
                     UpdateCanvasH();
                 }
@@ -339,21 +257,28 @@ namespace SvgFileTypePlugin
             UpdateOptionsAvail();
         }
 
-        private void BtnUseOriginal_Click(object sender, EventArgs e)
+        private void LnkUseSvgSettings_Click(object sender, EventArgs e)
         {
-            SetValuesGivenInSource();
+            // Keep original image size and show warning
+            NudCanvasW.ValueChanged -= NudCanvasW_ValueChanged;
+            NudCanvasH.ValueChanged -= NudCanvasH_ValueChanged;
+            NudCanvasW.Value = sourceWidth;
+            NudCanvasH.Value = sourceHeight;
+            NudCanvasW.ValueChanged += NudCanvasW_ValueChanged;
+            NudCanvasH.ValueChanged += NudCanvasH_ValueChanged;
+            NudDpi.Value = sourcePpi;
+            PbWarning.Visible = sourceWidth > CanvasSizeWarningThreshold ||
+                                 sourceHeight > CanvasSizeWarningThreshold;
         }
 
-        private void LinkGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LnkGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            const string url = @"https://github.com/" +
-                               "otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET";
-            Process.Start(url);
+            Process.Start("explorer", MyPluginSupportInfo.Url);
         }
 
         private void BtnOk_Click(object sender, EventArgs e)
         {
-            btnOk.Enabled = gr1.Enabled = gr2.Enabled = gr3.Enabled = false;
+            BtnOk.Enabled = GbInfo.Enabled = GbSizeSelection.Enabled = GbLayers.Enabled = false;
             OkClick?.Invoke(this, e);
         }
 
@@ -363,31 +288,41 @@ namespace SvgFileTypePlugin
 
         public void ReportProgress(int value)
         {
-            if (progress.InvokeRequired)
+            if (value < ProgressBar.Minimum || value > ProgressBar.Maximum)
             {
-                progress.Invoke((Action) (() => ReportProgress(value)));
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+            if (Disposing) { return; }
+            if (ProgressBar.InvokeRequired)
+            {
+                ProgressBar.Invoke((MethodInvoker)(() => ReportProgress(value)));
                 return;
             }
 
-            progress.Value = value;
+            ProgressBar.Value = value;
             UpdateProgressLabel();
         }
 
         public void SetMaxProgress(int max)
         {
-            if (progress.InvokeRequired)
+            if (max <= 0)
             {
-                progress.Invoke((Action) (() => SetMaxProgress(max)));
+                throw new ArgumentOutOfRangeException(nameof(max));
+            }
+            if (Disposing) { return; }
+            if (ProgressBar.InvokeRequired)
+            {
+                ProgressBar.Invoke((MethodInvoker)(() => SetMaxProgress(max)));
                 return;
             }
 
-            progress.Maximum = max;
+            ProgressBar.Maximum = max;
             UpdateProgressLabel();
         }
 
         private void UpdateProgressLabel()
         {
-            lbProgress.Text = progress.Value + " of " + progress.Maximum;
+            ProgressLabel.Text = ProgressBar.Value + " of " + ProgressBar.Maximum;
         }
 
         #endregion

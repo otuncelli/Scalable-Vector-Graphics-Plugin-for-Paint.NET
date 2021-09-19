@@ -8,6 +8,7 @@ namespace SvgFileTypePlugin
 {
     /// <summary>
     /// Parent centered MessageBox dialog in C#
+    /// https://gist.github.com/otuncelli/bd967d63d0151df14fefb1388e944e4e
     /// </summary>
     internal static class MessageBoxEx
     {

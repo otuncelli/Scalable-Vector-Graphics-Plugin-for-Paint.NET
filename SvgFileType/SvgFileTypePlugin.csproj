@@ -3,29 +3,37 @@
 	<PropertyGroup>
 		<TargetFrameworks>net47;net5.0-windows</TargetFrameworks>
 		<UseWindowsForms>true</UseWindowsForms>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<AllowUnsafeBlocks>false</AllowUnsafeBlocks>
 		<AssemblyName>SvgFileType</AssemblyName>
+		<RootNamespace>SvgFileTypePlugin</RootNamespace>
+		<Product>SVG (Scalable Vector Graphics) Import Plugin for Paint.NET</Product>
+		<AssemblyTitle>SVG (Scalable Vector Graphics) Import Plugin for Paint.NET</AssemblyTitle>
+		<Copyright>Copyright © 2021 Osman Tunçelli</Copyright>
+		<ProductVersion>1.0.4.0</ProductVersion>
+		<AssemblyVersion>1.0.4.0</AssemblyVersion>
+		<FileVersion>1.0.4.0</FileVersion>
+		<Version>1.0.4.0</Version>
+		<NoWarn>FodyPackageReference</NoWarn>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<!--<OutputType>Exe</OutputType>-->
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net47|AnyCPU'">
-		<Title>.Net 4.7</Title>
-	  <WarningLevel>3</WarningLevel>
-	  <NoWarn>1701;1702</NoWarn>
+	  <NoWarn>$(NoWarn);1701;1702</NoWarn>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net5.0-windows|AnyCPU'">
-		<Title>.Net 5.0</Title>
-		<DefineConstants>$(DefineConstants);NETCORE;NETCORE50</DefineConstants>
-		<WarningLevel>3</WarningLevel>
-	</PropertyGroup>
+	<ItemGroup Condition="'$(Configuration)'=='Release'">
+		<Compile Remove="Program.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Fody" Version="6.5.2">
+	  <PackageReference Include="Fody" Version="6.5.3">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
-	  <PackageReference Include="ILMerge.Fody" Version="1.16.0" />
+	  <PackageReference Include="ILMerge.Fody" Version="1.18.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net47'">
@@ -49,13 +57,13 @@
 	<ItemGroup Condition="'$(TargetFramework)'=='net5.0-windows'">
 		<PackageReference Include="Svg" Version="3.2.3" />
 		<Reference Include="PaintDotNet.Base">
-			<HintPath>E:\Downloads\paint.net.4.300.7881.3082.portable.x86.scd.aot\PaintDotNet.Base.dll</HintPath>
+			<HintPath>C:\Program Files\paint.net\PaintDotNet.Base.dll</HintPath>
 		</Reference>
 		<Reference Include="PaintDotNet.Core">
-			<HintPath>E:\Downloads\paint.net.4.300.7881.3082.portable.x86.scd.aot\PaintDotNet.Core.dll</HintPath>
+			<HintPath>C:\Program Files\paint.net\PaintDotNet.Core.dll</HintPath>
 		</Reference>
 		<Reference Include="PaintDotNet.Data">
-			<HintPath>E:\Downloads\paint.net.4.300.7881.3082.portable.x86.scd.aot\PaintDotNet.Data.dll</HintPath>
+			<HintPath>C:\Program Files\paint.net\PaintDotNet.Data.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 
