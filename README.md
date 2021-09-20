@@ -20,8 +20,8 @@ Here are the download links for latest release:
     <th>Manual Installation</th>
   </tr>
   <tr>
-    <td><a href="https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/releases/latest/download/SvgFileType_setup.exe">SvgFileTypePlugin_setup.exe</a> (399 KiB)</td>
-    <td><a href="https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/releases/latest/download/SvgFileType.zip">SvgFileTypePlugin.zip</a> (274 KiB)</td>
+    <td><a href="https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/releases/latest/download/SvgFileTypePlugin_setup.exe">SvgFileTypePlugin_setup.exe</a> (399 KiB)</td>
+    <td><a href="https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/releases/latest/download/SvgFileTypePlugin.zip">SvgFileTypePlugin.zip</a> (274 KiB)</td>
   </tr>
 </table>
 
