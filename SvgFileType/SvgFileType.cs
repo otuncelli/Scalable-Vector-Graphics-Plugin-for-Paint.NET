@@ -22,14 +22,23 @@ namespace SvgFileTypePlugin
         {
         }
 
-        protected override Document OnLoad(Stream input) 
-            => new SvgImporter().Import(input);
+        protected override Document OnLoad(Stream input)
+        {
+            return new SvgImporter().Import(input);
+        }
 
-        protected override void OnSave(Document input, Stream output, SaveConfigToken token, Surface scratchSurface, ProgressEventHandler callback) 
-            => throw new NotSupportedException();
+        protected override void OnSave(Document input, Stream output, SaveConfigToken token, Surface scratchSurface, ProgressEventHandler callback)
+        {
+            throw new NotSupportedException();
+        }
 
         #region IFileTypeFactory
-        public FileType[] GetFileTypeInstances() => new[] { new SvgFileType() };
+
+        public FileType[] GetFileTypeInstances()
+        {
+            return new FileType[] { new SvgFileType() };
+        }
+
         #endregion
     }
 }

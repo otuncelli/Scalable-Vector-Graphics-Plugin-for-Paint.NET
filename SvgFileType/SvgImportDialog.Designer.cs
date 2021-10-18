@@ -77,11 +77,9 @@
             // BtnCancel
             // 
             this.BtnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.BtnCancel.BackColor = System.Drawing.Color.DarkRed;
             this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.BtnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BtnCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnCancel.ForeColor = System.Drawing.Color.White;
             this.BtnCancel.Location = new System.Drawing.Point(220, 368);
             this.BtnCancel.Name = "BtnCancel";
             this.BtnCancel.Size = new System.Drawing.Size(75, 23);
@@ -92,10 +90,8 @@
             // BtnOk
             // 
             this.BtnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.BtnOk.BackColor = System.Drawing.Color.RoyalBlue;
             this.BtnOk.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BtnOk.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnOk.ForeColor = System.Drawing.Color.White;
             this.BtnOk.Location = new System.Drawing.Point(139, 368);
             this.BtnOk.Name = "BtnOk";
             this.BtnOk.Size = new System.Drawing.Size(75, 23);
@@ -546,11 +542,8 @@
             this.Controls.Add(this.BtnOk);
             this.Controls.Add(this.BtnCancel);
             this.ForeColor = System.Drawing.Color.Black;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "SvgImportDialog";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.TopMost = true;
             this.GbInfo.ResumeLayout(false);
             this.GbInfo.PerformLayout();

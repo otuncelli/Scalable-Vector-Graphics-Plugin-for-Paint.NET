@@ -36,9 +36,9 @@ namespace SvgFileTypePlugin
             return Math.Max(height * CalcStride(width) / (1024 * 1024), 1);
         }
 
-        public static int CalcStride(int width, int bytesPerPixel = 4)
+        public static int CalcStride(int width)
         {
-            return 4 * ((width * bytesPerPixel * 8 + 31) / 32);
+            return 4 * width;
         }
     }
 }

@@ -232,6 +232,7 @@ namespace SvgFileTypePlugin
         {
             return importHiddenLayers ? elements.Count : elements.Count(IsVisibleOriginally);
         }
+
         private Document RenderElements(IReadOnlyCollection<SvgVisualElement> elements, bool setOpacityForLayer, bool importHiddenLayers, Action<int> progress, CancellationToken cancellationToken)
         {
             // I had problems to render each element directly while parent transformation can affect child. 
@@ -260,7 +261,7 @@ namespace SvgFileTypePlugin
                     var pdnLayer = new BitmapLayer(rasterWidth, rasterHeight)
                     {
                         Name = boundaryNode.ID,
-                        Opacity = (byte)(boundaryNode.RelatedGroup.Opacity * 255),
+                        Opacity = (byte)(boundaryNode.RelatedGroup.Opacity * 255f),
                         Visible = boundaryNode.RelatedGroup.Visible
                     };
                     pdnDocument.Layers.Add(pdnLayer);

@@ -9,7 +9,9 @@ using System.Drawing.Drawing2D;
 
 namespace SvgFileTypePlugin
 {
-    // Used to determine boundaries of a group.
+    /// <summary>
+    /// Used to determine boundaries of a group.
+    /// </summary>
     internal sealed class PaintGroupBoundaries : SvgVisualElement
     {
         public PaintGroupBoundaries(SvgGroup relatedGroup, bool isStart)

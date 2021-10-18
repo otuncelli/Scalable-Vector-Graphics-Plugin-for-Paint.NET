@@ -9,8 +9,8 @@ namespace SvgFileTypePlugin
 {
     internal static class SvgElementExtensions
     {
-        private static readonly MethodInfo ElementNameGetter = typeof(SvgElement).GetProperty("ElementName", BindingFlags.NonPublic | BindingFlags.Instance)?.GetGetMethod(true);
-        private static readonly MethodInfo AttributesGetter = typeof(SvgElement).GetProperty("Attributes", BindingFlags.NonPublic | BindingFlags.Instance)?.GetGetMethod(true);
+        private static readonly MethodInfo ElementNameGetter = GetGetMethod("ElementName");
+        private static readonly MethodInfo AttributesGetter = GetGetMethod("Attributes");
 
         public static string GetName(this SvgElement element)
         {
@@ -22,6 +22,11 @@ namespace SvgFileTypePlugin
         public static SvgAttributeCollection GetAttributes(this SvgElement element)
         {
             return (SvgAttributeCollection)AttributesGetter.Invoke(element, null);
+        }
+
+        private static MethodInfo GetGetMethod(string propertyName)
+        {
+            return typeof(SvgElement).GetProperty(propertyName, BindingFlags.NonPublic | BindingFlags.Instance)?.GetGetMethod(true);
         }
     }
 }

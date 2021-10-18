@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace SvgFileTypePlugin
 {
-    internal partial class SvgImportDialog : Form
+    internal partial class SvgImportDialog : PdnPluginForm
     {
         #region Properties
 
@@ -160,6 +160,7 @@ namespace SvgFileTypePlugin
             ProgressLabel.Location = ProgressBar.Location;
             ProgressLabel.Width = ProgressBar.Width;
             ProgressLabel.Height = ProgressBar.Height;
+            ProgressLabel.ForeColor = SystemColors.ControlText;
         }
 
         private void UpdateCanvasH()
