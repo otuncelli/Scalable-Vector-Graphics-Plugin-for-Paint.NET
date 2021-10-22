@@ -7,7 +7,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
-namespace SvgFileTypePlugin
+namespace SvgFileTypePlugin.Import
 {
     /// <summary>
     /// Used to determine boundaries of a group.
@@ -25,15 +25,7 @@ namespace SvgFileTypePlugin
         public bool IsStart { get; }
 
         public override RectangleF Bounds => throw new NotImplementedException();
-
-        public override SvgElement DeepCopy()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override GraphicsPath Path(ISvgRenderer renderer)
-        {
-            throw new NotImplementedException();
-        }
+        public override SvgElement DeepCopy() => throw new NotImplementedException();
+        public override GraphicsPath Path(ISvgRenderer renderer) => throw new NotImplementedException();
     }
 }

@@ -6,28 +6,14 @@ using Svg;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
-namespace SvgFileTypePlugin
+namespace SvgFileTypePlugin.Import
 {
     internal partial class SvgImportDialog : PdnPluginForm
     {
         #region Properties
-
-        public SvgImportConfig GetConfig()
-        {
-            return new SvgImportConfig
-            {
-                Width = (int)NudCanvasW.Value,
-                Height = (int)NudCanvasH.Value,
-                KeepAspectRatio = CbKeepAR.Checked,
-                Ppi = (int)NudDpi.Value,
-                GroupBoundariesAsLayers = CbGroupBoundaries.Checked,
-                HiddenElements = CbHiddenLayers.Checked,
-                RespectElementOpacity = CbOpacity.Checked,
-                LayersMode = LayersMode
-            };
-        }
 
         internal LayersMode LayersMode
         {
@@ -67,9 +53,9 @@ namespace SvgFileTypePlugin
             InitializeComponent();
             FixProgressLabel();
 
-            Text = "SVG Import Plugin v" + MyPluginSupportInfo.VersionString;
+            Text = Text = String.Join(" v", MyPluginSupportInfo.Instance.DisplayName, MyPluginSupportInfo.Instance.Version);
             PbWarning.Image = SystemIcons.Warning.ToBitmap();
-            ToolTip1.SetToolTip(PbWarning, "Please make sure you've enough memory.");
+            ToolTip1.SetToolTip(PbWarning, "Make sure you've enough memory!");
             LayersMode = LayersMode.Flat;
             CbOpacity.Checked = true;
             CbHiddenLayers.Checked = true;
@@ -77,8 +63,8 @@ namespace SvgFileTypePlugin
             NudCanvasW.Minimum = 1;
             NudCanvasH.Minimum = 1;
             CbKeepAR.Checked = true;
-            sourceWidth = svg.Width.ToPixels(svg);
-            sourceHeight = svg.Height.ToPixels(svg);
+            sourceWidth = svg.Width.ToDeviceValue(svg);
+            sourceHeight = svg.Height.ToDeviceValue(svg);
             sourcePpi = svg.Ppi;
             viewbox = svg.ViewBox.ToRectangle();
 
@@ -108,7 +94,7 @@ namespace SvgFileTypePlugin
                 TbViewboxH.Text = NotAvailable;
             }
 
-            if (!viewbox.IsEmpty) // /*(sourceWidth == 0 || sourceHeight == 0) && */
+            if (!viewbox.IsEmpty && (sourceWidth == 0 || sourceHeight == 0))
             {
                 sourceWidth = viewbox.Width;
                 sourceHeight = viewbox.Height;
@@ -163,10 +149,15 @@ namespace SvgFileTypePlugin
             ProgressLabel.ForeColor = SystemColors.ControlText;
         }
 
+        private static decimal Min(decimal a, decimal b, decimal c)
+        {
+            return Math.Min(a, Math.Min(b, c));
+        }
+
         private void UpdateCanvasH()
         {
             decimal newHeight = CbKeepAR.Checked ? NudCanvasW.Value * sourceHeight / sourceWidth : NudCanvasH.Value;
-            newHeight = Math.Max(newHeight, 1);
+            newHeight = Min(Math.Max(newHeight, 1), NudCanvasH.Maximum, int.MaxValue / (NudCanvasW.Value * 4));
             NudCanvasH.Value = newHeight;
             PbWarning.Visible = !RbFlatten.Checked && (newHeight > CanvasSizeWarningThreshold || NudCanvasW.Value > CanvasSizeWarningThreshold);
         }
@@ -174,7 +165,7 @@ namespace SvgFileTypePlugin
         private void UpdateCanvasW()
         {
             decimal newWidth = CbKeepAR.Checked ? NudCanvasH.Value * sourceWidth / sourceHeight : NudCanvasW.Value;
-            newWidth = Math.Max(newWidth, 1);
+            newWidth = Min(Math.Max(newWidth, 1), NudCanvasW.Maximum, int.MaxValue / (NudCanvasH.Value * 4));
             NudCanvasW.Value = newWidth;
             PbWarning.Visible = !RbFlatten.Checked && (newWidth > CanvasSizeWarningThreshold || NudCanvasH.Value > CanvasSizeWarningThreshold);
         }
@@ -202,6 +193,7 @@ namespace SvgFileTypePlugin
             CbKeepAR.CheckedChanged += CbKeepAR_CheckedChanged;
             LnkUseSvgSettings.Click += LnkUseSvgSettings_Click;
             LnkGitHub.LinkClicked += LnkGitHub_LinkClicked;
+            LnkForum.LinkClicked += LnkForum_LinkClicked;
             BtnOk.Click += BtnOk_Click;
         }
 
@@ -232,9 +224,7 @@ namespace SvgFileTypePlugin
         private void NudCanvas_KeyUp(object sender, KeyEventArgs e)
         {
             lastChangedCtrl = sender;
-
-            if (e.KeyValue >= '0' || e.KeyValue <= '9' ||
-                e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
+            if (e.KeyValue >= '0' || e.KeyValue <= '9' || e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
             {
                 var input = (NumericUpDown)sender;
                 if (input == NudCanvasW)
@@ -248,6 +238,7 @@ namespace SvgFileTypePlugin
             }
             else
             {
+                // ignore any other key
                 e.SuppressKeyPress = true;
                 e.Handled = true;
             }
@@ -268,24 +259,53 @@ namespace SvgFileTypePlugin
             NudCanvasW.ValueChanged += NudCanvasW_ValueChanged;
             NudCanvasH.ValueChanged += NudCanvasH_ValueChanged;
             NudDpi.Value = sourcePpi;
-            PbWarning.Visible = sourceWidth > CanvasSizeWarningThreshold ||
-                                 sourceHeight > CanvasSizeWarningThreshold;
+            PbWarning.Visible = sourceWidth > CanvasSizeWarningThreshold || sourceHeight > CanvasSizeWarningThreshold;
         }
 
         private void LnkGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            if (e.Button != MouseButtons.Left) { return; }
             Process.Start("explorer", MyPluginSupportInfo.Url);
+        }
+
+        private void LnkForum_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left) { return; }
+            Process.Start("explorer", MyPluginSupportInfo.ForumUrl);
+        }
+
+        private bool ValidateInput()
+        {
+            return true;
         }
 
         private void BtnOk_Click(object sender, EventArgs e)
         {
-            BtnOk.Enabled = GbInfo.Enabled = GbSizeSelection.Enabled = GbLayers.Enabled = false;
-            OkClick?.Invoke(this, e);
+            if (ValidateInput())
+            {
+                Controls.OfType<GroupBox>().ToList().ForEach(gb => gb.Enabled = false);
+                OkClick?.Invoke(this, e);
+            }
         }
 
         #endregion
 
-        #region Progress Reporting
+        #region Public
+
+        public SvgImportConfig GetConfig()
+        {
+            return new SvgImportConfig
+            {
+                Width = (int)NudCanvasW.Value,
+                Height = (int)NudCanvasH.Value,
+                KeepAspectRatio = CbKeepAR.Checked,
+                Ppi = (int)NudDpi.Value,
+                GroupBoundariesAsLayers = CbGroupBoundaries.Checked,
+                HiddenElements = CbHiddenLayers.Checked,
+                RespectElementOpacity = CbOpacity.Checked,
+                LayersMode = LayersMode
+            };
+        }
 
         public void ReportProgress(int value)
         {
@@ -293,13 +313,18 @@ namespace SvgFileTypePlugin
             {
                 throw new ArgumentOutOfRangeException(nameof(value));
             }
-            if (Disposing) { return; }
+            if (Disposing || IsDisposed) { return; }
             if (ProgressBar.InvokeRequired)
             {
-                ProgressBar.Invoke((MethodInvoker)(() => ReportProgress(value)));
+                ProgressBar.Invoke((Action<int>)ReportProgress, value);
                 return;
             }
-
+            if (value == ProgressBar.Maximum)
+            {
+                ProgressBar.Maximum = value + 1;
+                ProgressBar.Value = value + 1;
+                ProgressBar.Maximum = value;
+            }
             ProgressBar.Value = value;
             UpdateProgressLabel();
         }
@@ -310,10 +335,10 @@ namespace SvgFileTypePlugin
             {
                 throw new ArgumentOutOfRangeException(nameof(max));
             }
-            if (Disposing) { return; }
+            if (Disposing || IsDisposed) { return; }
             if (ProgressBar.InvokeRequired)
             {
-                ProgressBar.Invoke((MethodInvoker)(() => SetMaxProgress(max)));
+                ProgressBar.Invoke((Action<int>)SetMaxProgress, max);
                 return;
             }
 
@@ -323,7 +348,7 @@ namespace SvgFileTypePlugin
 
         private void UpdateProgressLabel()
         {
-            ProgressLabel.Text = ProgressBar.Value + " of " + ProgressBar.Maximum;
+            ProgressLabel.Text = String.Join(" of ", ProgressBar.Value, ProgressBar.Maximum);
         }
 
         #endregion

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a LGPL license that can be
 // found in the COPYING file.
 
-namespace SvgFileTypePlugin
+namespace SvgFileTypePlugin.Import
 {
     internal sealed class SvgImportConfig
     {

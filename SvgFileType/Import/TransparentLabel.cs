@@ -4,7 +4,7 @@
 
 using System.Windows.Forms;
 
-namespace SvgFileTypePlugin
+namespace SvgFileTypePlugin.Import
 {
     internal class TransparentLabel : Label
     {

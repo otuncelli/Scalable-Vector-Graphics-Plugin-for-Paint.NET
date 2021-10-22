@@ -1,22 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
 	<PropertyGroup>
-		<TargetFrameworks>net47;net5.0-windows</TargetFrameworks>
+		<TargetFrameworks>net5.0-windows;net47</TargetFrameworks>
 		<UseWindowsForms>true</UseWindowsForms>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<AllowUnsafeBlocks>false</AllowUnsafeBlocks>
 		<AssemblyName>SvgFileType</AssemblyName>
 		<RootNamespace>SvgFileTypePlugin</RootNamespace>
-		<Product>SVG (Scalable Vector Graphics) Import Plugin for Paint.NET</Product>
-		<AssemblyTitle>SVG (Scalable Vector Graphics) Import Plugin for Paint.NET</AssemblyTitle>
+		<Product>SVG Plugin for Paint.NET</Product>
+		<AssemblyTitle>SVG Plugin for Paint.NET</AssemblyTitle>
 		<Copyright>Copyright © 2021 Osman Tunçelli</Copyright>
-		<ProductVersion>1.0.4.0</ProductVersion>
-		<AssemblyVersion>1.0.4.0</AssemblyVersion>
-		<FileVersion>1.0.4.0</FileVersion>
-		<Version>1.0.4.0</Version>
+		<Version>1.0.5.0</Version>
 		<NoWarn>FodyPackageReference</NoWarn>
-		<PlatformTarget>AnyCPU</PlatformTarget>
+		<OutputType>Library</OutputType>
 		<!--<OutputType>Exe</OutputType>-->
 	</PropertyGroup>
 
@@ -29,11 +26,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Fody" Version="6.5.3">
+	  <PackageReference Include="Fody" Version="6.6.0">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
-	  <PackageReference Include="ILMerge.Fody" Version="1.18.0" />
+		<PackageReference Include="ILMerge.Fody" Version="1.18.0" />
+		<PackageReference Include="Fizzler" Version="1.2.1" />
+		<PackageReference Include="Svg" Version="3.3.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net47'">
@@ -46,25 +45,23 @@
 	  <Reference Include="PaintDotNet.Data">
 	    <HintPath>C:\Program Files\paint.net\PaintDotNet.Data.dll</HintPath>
 	  </Reference>
-		<Reference Include="Svg">
-			<HintPath>..\..\SvgFileTypePlugin\LibrariesWithoutASPNETDependency\net461\Svg.dll</HintPath>
-		</Reference>
-		<Reference Include="Fizzler">
-			<HintPath>..\..\SvgFileTypePlugin\LibrariesWithoutASPNETDependency\net461\Fizzler.dll</HintPath>
-		</Reference>
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net5.0-windows'">
-		<PackageReference Include="Svg" Version="3.2.3" />
 		<Reference Include="PaintDotNet.Base">
-			<HintPath>C:\Program Files\paint.net\PaintDotNet.Base.dll</HintPath>
+			<HintPath>E:\Downloads\paint.net.4.3.1.portable.x64\PaintDotNet.Base.dll</HintPath>
 		</Reference>
 		<Reference Include="PaintDotNet.Core">
-			<HintPath>C:\Program Files\paint.net\PaintDotNet.Core.dll</HintPath>
+			<HintPath>E:\Downloads\paint.net.4.3.1.portable.x64\PaintDotNet.Core.dll</HintPath>
 		</Reference>
 		<Reference Include="PaintDotNet.Data">
-			<HintPath>C:\Program Files\paint.net\PaintDotNet.Data.dll</HintPath>
+			<HintPath>E:\Downloads\paint.net.4.3.1.portable.x64\PaintDotNet.Data.dll</HintPath>
 		</Reference>
 	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="copy &quot;$(TargetPath)&quot; &quot;E:\Downloads\paint.net.4.3.1.portable.x64\FileTypes\SvgFileTypePlugin&quot; /y" />
+		<Exec Command="copy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;E:\Downloads\paint.net.4.3.1.portable.x64\FileTypes\SvgFileTypePlugin&quot; /y" Condition="'$(ConfigurationName)' == 'Debug'" />
+	</Target>
 
 </Project>

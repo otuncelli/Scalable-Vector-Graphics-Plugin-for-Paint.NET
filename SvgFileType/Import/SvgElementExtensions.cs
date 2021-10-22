@@ -5,7 +5,7 @@
 using Svg;
 using System.Reflection;
 
-namespace SvgFileTypePlugin
+namespace SvgFileTypePlugin.Import
 {
     internal static class SvgElementExtensions
     {

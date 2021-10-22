@@ -4,18 +4,28 @@
 
 using Svg;
 using System;
+using System.Drawing;
 
 namespace SvgFileTypePlugin
 {
     internal static class SvgUnitExtensions
     {
-        public static int ToPixels(this SvgUnit unit, SvgElement owner)
+        public static int ToDeviceValue(this SvgUnit unit, SvgElement owner)
         {
-            if (owner == null) throw new ArgumentNullException(nameof(owner));
+            if (owner == null)
+            {
+                throw new ArgumentNullException(nameof(owner));
+            }
+
             using (var renderer = SvgRenderer.FromNull())
             {
                 return (int)Math.Round(unit.ToDeviceValue(renderer, UnitRenderingType.Other, owner));
             }
         }
+        
+        //public static SizeF GetDeviceDimensions(this SvgDocument svg)
+        //{
+        //    return new SizeF(svg.Width.ToDeviceValue(svg), svg.Height.ToDeviceValue(svg));
+        //}
     }
 }

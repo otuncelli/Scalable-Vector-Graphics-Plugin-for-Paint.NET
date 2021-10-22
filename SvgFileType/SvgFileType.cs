@@ -8,6 +8,8 @@ using System.IO;
 
 namespace SvgFileTypePlugin
 {
+    using Import;
+
     [PluginSupportInfo(typeof(MyPluginSupportInfo))]
     public sealed class SvgFileType : FileType, IFileTypeFactory
     {

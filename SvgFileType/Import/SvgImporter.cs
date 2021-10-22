@@ -15,7 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SvgFileTypePlugin
+namespace SvgFileTypePlugin.Import
 {
     internal sealed class SvgImporter
     {
@@ -25,7 +25,7 @@ namespace SvgFileTypePlugin
         public const string LayerGroupEnd = "End Layer Group: {0}";
         private const string GroupAttribute = "import_group_name";
         private const string VisibilityAttribute = "import_visibility";
-        private static readonly string[] AllowedTitles = { "label", "title", "inskape:label" };
+        private static readonly IReadOnlyCollection<string> AllowedTitles = new string[] { "label", "title", "inkscape:label" };
         private const int LayerCountWarningThreshold = 50;
 
         private SvgDocument svg;
@@ -46,14 +46,12 @@ namespace SvgFileTypePlugin
             {
                 dialog.FormClosing += Dialog_FormClosing;
                 dialog.OkClick += Dialog_OkClick;
-                Form mainForm = Utils.GetMainForm();
-                DialogResult dialogResult = Utils.ThreadSafeShowDialog(mainForm, () => dialog.ShowDialog(mainForm));
+                DialogResult dialogResult = dialog.ShowDialog();
                 if (dialogResult != DialogResult.OK)
                 {
                     pdnDocument?.Dispose();
                     pdnDocument = null;
                     svg = null;
-                    GC.Collect();
                     throw reason ?? new OperationCanceledException("Canceled by user");
                 }
                 return pdnDocument;
@@ -62,26 +60,27 @@ namespace SvgFileTypePlugin
 
         private DialogResult WarnAboutMemory(int layerCount)
         {
-            var dialogResult = Utils.ThreadSafeShowDialog(dialog, () =>
-            {
-                string[] lines =
-                {
-                    $"This plug-in will import {layerCount} layers from this svg file.",
-                    "Importing many layers requires a lot of memory, especially if you're using a large canvas.",
+            var dialogResult = Utils.ThreadSafeShowDialog(dialog, form =>
+              {
+                  string[] lines =
+                  {
+                    $"There are {layerCount} layers about to be imported from the SVG file.",
                     String.Empty,
-                    "Insufficient memory may cause operating system instability.",
+                    "Importing many layers requires a lot of memory, especially if you're using a large canvas. " +
+                    "Insufficient memory may cause operating system instability. " +
                     "Please make sure you've enough memory available before continue.",
                     String.Empty,
                     "Do you want to continue?"
-                };
-                return MessageBoxEx.Show(dialog, String.Join(Environment.NewLine, lines), "Warning",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
-                    MessageBoxDefaultButton.Button2);
-            });
+                  };
+                  return MessageBoxEx.Show(form, String.Join(Environment.NewLine, lines), "Warning",
+                      MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+                      MessageBoxDefaultButton.Button2);
+              });
             return dialogResult;
         }
 
         #region DoImport
+
         private void DoImport(SvgImportConfig config, CancellationToken cancellationToken = default)
         {
             // set the requested size & resolution for SvgDocument
@@ -224,6 +223,7 @@ namespace SvgFileTypePlugin
                 pdnDocument.DpuUnit = MeasurementUnit.Inch;
             }
         }
+
         #endregion
 
         #region Render Elements
@@ -437,14 +437,9 @@ namespace SvgFileTypePlugin
 
         private static bool IsVisibleOriginally(SvgElement element)
         {
-            if (element is SvgVisualElement visual)
-            {
-                if (visual.CustomAttributes.TryGetValue(VisibilityAttribute, out string argument))
-                {
-                    return bool.Parse(argument);
-                }
-            }
-            return true;
+            return element is SvgVisualElement visual && visual.CustomAttributes.TryGetValue(VisibilityAttribute, out string arg)
+                ? bool.Parse(arg)
+                : true;
         }
 
         private void RenderSvgDocument()
@@ -618,13 +613,13 @@ namespace SvgFileTypePlugin
                     reason = t.Exception;
                     if (t.Exception.Flatten().InnerExceptions.Any(exception => exception is OutOfMemoryException || exception is InsufficientMemoryException))
                     {
-                        Utils.ThreadSafeShowDialog(dialog, () => MessageBoxEx.Show(dialog,
-                            "Not enough memory to complete this operation.",
-                            "Out of Memory", MessageBoxButtons.OK, MessageBoxIcon.Error));
+                        Utils.ThreadSafeShowDialog(dialog, form => MessageBoxEx.Show(form,
+                              "Not enough memory to complete this operation.",
+                              "Out of Memory", MessageBoxButtons.OK, MessageBoxIcon.Error));
                     }
                     else
                     {
-                        Utils.ThreadSafeShowDialog(dialog, () => MessageBoxEx.Show(dialog,
+                        Utils.ThreadSafeShowDialog(dialog, form => MessageBoxEx.Show(form,
                             t.Exception.ToString().Substring(0, 1000),
                             "Error", MessageBoxButtons.OK, MessageBoxIcon.Error));
                     }

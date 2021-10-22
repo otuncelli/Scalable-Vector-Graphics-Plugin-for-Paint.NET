@@ -1,4 +1,4 @@
-﻿namespace SvgFileTypePlugin
+﻿namespace SvgFileTypePlugin.Import
 {
     partial class SvgImportDialog
     {
@@ -47,7 +47,7 @@
             this.LblViewport = new System.Windows.Forms.Label();
             this.GbSizeSelection = new System.Windows.Forms.GroupBox();
             this.PbWarning = new System.Windows.Forms.PictureBox();
-            this.CbKeepAR = new System.Windows.Forms.CheckBox();
+            this.CbKeepAR = new SvgFileTypePlugin.Import.MyCheckBox();
             this.label9 = new System.Windows.Forms.Label();
             this.NudCanvasH = new System.Windows.Forms.NumericUpDown();
             this.NudCanvasW = new System.Windows.Forms.NumericUpDown();
@@ -55,16 +55,17 @@
             this.LblCanvasWH = new System.Windows.Forms.Label();
             this.LblResolution = new System.Windows.Forms.Label();
             this.GbLayers = new System.Windows.Forms.GroupBox();
-            this.CbGroupBoundaries = new System.Windows.Forms.CheckBox();
-            this.CbHiddenLayers = new System.Windows.Forms.CheckBox();
-            this.CbOpacity = new System.Windows.Forms.CheckBox();
-            this.RbAllLayers = new System.Windows.Forms.RadioButton();
-            this.RbGroups = new System.Windows.Forms.RadioButton();
-            this.RbFlatten = new System.Windows.Forms.RadioButton();
+            this.CbGroupBoundaries = new SvgFileTypePlugin.Import.MyCheckBox();
+            this.CbHiddenLayers = new SvgFileTypePlugin.Import.MyCheckBox();
+            this.CbOpacity = new SvgFileTypePlugin.Import.MyCheckBox();
+            this.RbAllLayers = new MyRadioButton();
+            this.RbGroups = new MyRadioButton();
+            this.RbFlatten = new MyRadioButton();
             this.LnkGitHub = new System.Windows.Forms.LinkLabel();
             this.ProgressBar = new System.Windows.Forms.ProgressBar();
             this.ToolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.ProgressLabel = new SvgFileTypePlugin.TransparentLabel();
+            this.ProgressLabel = new SvgFileTypePlugin.Import.TransparentLabel();
+            this.LnkForum = new System.Windows.Forms.LinkLabel();
             this.GbInfo.SuspendLayout();
             this.GbSizeSelection.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PbWarning)).BeginInit();
@@ -78,26 +79,22 @@
             // 
             this.BtnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.BtnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.BtnCancel.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.BtnCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BtnCancel.Location = new System.Drawing.Point(220, 368);
             this.BtnCancel.Name = "BtnCancel";
             this.BtnCancel.Size = new System.Drawing.Size(75, 23);
             this.BtnCancel.TabIndex = 1;
             this.BtnCancel.Text = "Cancel";
-            this.BtnCancel.UseVisualStyleBackColor = false;
+            this.BtnCancel.UseVisualStyleBackColor = true;
             // 
             // BtnOk
             // 
             this.BtnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.BtnOk.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.BtnOk.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BtnOk.Location = new System.Drawing.Point(139, 368);
             this.BtnOk.Name = "BtnOk";
             this.BtnOk.Size = new System.Drawing.Size(75, 23);
             this.BtnOk.TabIndex = 0;
             this.BtnOk.Text = "OK";
-            this.BtnOk.UseVisualStyleBackColor = false;
+            this.BtnOk.UseVisualStyleBackColor = true;
             // 
             // GbInfo
             // 
@@ -116,7 +113,7 @@
             this.GbInfo.Controls.Add(this.TbViewportH);
             this.GbInfo.Controls.Add(this.TbViewportW);
             this.GbInfo.Controls.Add(this.LblViewport);
-            this.GbInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.GbInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.GbInfo.Location = new System.Drawing.Point(13, 13);
             this.GbInfo.Name = "GbInfo";
             this.GbInfo.Size = new System.Drawing.Size(285, 115);
@@ -129,7 +126,7 @@
             this.LnkUseSvgSettings.AutoSize = true;
             this.LnkUseSvgSettings.Location = new System.Drawing.Point(86, 96);
             this.LnkUseSvgSettings.Name = "LnkUseSvgSettings";
-            this.LnkUseSvgSettings.Size = new System.Drawing.Size(189, 16);
+            this.LnkUseSvgSettings.Size = new System.Drawing.Size(188, 16);
             this.LnkUseSvgSettings.TabIndex = 13;
             this.LnkUseSvgSettings.TabStop = true;
             this.LnkUseSvgSettings.Text = "Use size settings given in SVG";
@@ -141,7 +138,7 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(188, 72);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(14, 16);
+            this.label6.Size = new System.Drawing.Size(13, 16);
             this.label6.TabIndex = 11;
             this.label6.Text = "x";
             // 
@@ -172,10 +169,10 @@
             // LblViewboxWH
             // 
             this.LblViewboxWH.AutoSize = true;
-            this.LblViewboxWH.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LblViewboxWH.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.LblViewboxWH.Location = new System.Drawing.Point(7, 72);
             this.LblViewboxWH.Name = "LblViewboxWH";
-            this.LblViewboxWH.Size = new System.Drawing.Size(102, 16);
+            this.LblViewboxWH.Size = new System.Drawing.Size(101, 16);
             this.LblViewboxWH.TabIndex = 8;
             this.LblViewboxWH.Text = "ViewBox (w x h):";
             // 
@@ -186,7 +183,7 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(188, 46);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(12, 16);
+            this.label4.Size = new System.Drawing.Size(11, 16);
             this.label4.TabIndex = 7;
             this.label4.Text = "/";
             // 
@@ -217,10 +214,10 @@
             // LblViewboxXY
             // 
             this.LblViewboxXY.AutoSize = true;
-            this.LblViewboxXY.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LblViewboxXY.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.LblViewboxXY.Location = new System.Drawing.Point(7, 46);
             this.LblViewboxXY.Name = "LblViewboxXY";
-            this.LblViewboxXY.Size = new System.Drawing.Size(97, 16);
+            this.LblViewboxXY.Size = new System.Drawing.Size(96, 16);
             this.LblViewboxXY.TabIndex = 4;
             this.LblViewboxXY.Text = "ViewBox (x / y):";
             // 
@@ -231,7 +228,7 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(188, 20);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(14, 16);
+            this.label3.Size = new System.Drawing.Size(13, 16);
             this.label3.TabIndex = 3;
             this.label3.Text = "x";
             // 
@@ -262,10 +259,10 @@
             // LblViewport
             // 
             this.LblViewport.AutoSize = true;
-            this.LblViewport.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LblViewport.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.LblViewport.Location = new System.Drawing.Point(7, 20);
             this.LblViewport.Name = "LblViewport";
-            this.LblViewport.Size = new System.Drawing.Size(102, 16);
+            this.LblViewport.Size = new System.Drawing.Size(101, 16);
             this.LblViewport.TabIndex = 0;
             this.LblViewport.Text = "Viewport (w x h):";
             // 
@@ -281,7 +278,7 @@
             this.GbSizeSelection.Controls.Add(this.NudDpi);
             this.GbSizeSelection.Controls.Add(this.LblCanvasWH);
             this.GbSizeSelection.Controls.Add(this.LblResolution);
-            this.GbSizeSelection.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.GbSizeSelection.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.GbSizeSelection.Location = new System.Drawing.Point(13, 134);
             this.GbSizeSelection.Name = "GbSizeSelection";
             this.GbSizeSelection.Size = new System.Drawing.Size(285, 94);
@@ -308,7 +305,7 @@
             this.CbKeepAR.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CbKeepAR.Location = new System.Drawing.Point(125, 71);
             this.CbKeepAR.Name = "CbKeepAR";
-            this.CbKeepAR.Size = new System.Drawing.Size(132, 20);
+            this.CbKeepAR.Size = new System.Drawing.Size(131, 20);
             this.CbKeepAR.TabIndex = 13;
             this.CbKeepAR.Text = "Keep aspect ratio";
             this.CbKeepAR.UseVisualStyleBackColor = true;
@@ -318,7 +315,7 @@
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(196, 47);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(14, 16);
+            this.label9.Size = new System.Drawing.Size(13, 16);
             this.label9.TabIndex = 12;
             this.label9.Text = "x";
             // 
@@ -386,7 +383,7 @@
             this.LblCanvasWH.AutoSize = true;
             this.LblCanvasWH.Location = new System.Drawing.Point(7, 47);
             this.LblCanvasWH.Name = "LblCanvasWH";
-            this.LblCanvasWH.Size = new System.Drawing.Size(96, 16);
+            this.LblCanvasWH.Size = new System.Drawing.Size(95, 16);
             this.LblCanvasWH.TabIndex = 1;
             this.LblCanvasWH.Text = "Canvas (w x h):";
             // 
@@ -395,7 +392,7 @@
             this.LblResolution.AutoSize = true;
             this.LblResolution.Location = new System.Drawing.Point(7, 20);
             this.LblResolution.Name = "LblResolution";
-            this.LblResolution.Size = new System.Drawing.Size(108, 16);
+            this.LblResolution.Size = new System.Drawing.Size(107, 16);
             this.LblResolution.TabIndex = 0;
             this.LblResolution.Text = "Resolution (DPI):";
             // 
@@ -409,7 +406,7 @@
             this.GbLayers.Controls.Add(this.RbAllLayers);
             this.GbLayers.Controls.Add(this.RbGroups);
             this.GbLayers.Controls.Add(this.RbFlatten);
-            this.GbLayers.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.GbLayers.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.GbLayers.Location = new System.Drawing.Point(13, 234);
             this.GbLayers.Name = "GbLayers";
             this.GbLayers.Size = new System.Drawing.Size(285, 97);
@@ -421,9 +418,9 @@
             // 
             this.CbGroupBoundaries.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.CbGroupBoundaries.AutoSize = true;
-            this.CbGroupBoundaries.Location = new System.Drawing.Point(105, 65);
+            this.CbGroupBoundaries.Location = new System.Drawing.Point(106, 65);
             this.CbGroupBoundaries.Name = "CbGroupBoundaries";
-            this.CbGroupBoundaries.Size = new System.Drawing.Size(135, 20);
+            this.CbGroupBoundaries.Size = new System.Drawing.Size(134, 20);
             this.CbGroupBoundaries.TabIndex = 5;
             this.CbGroupBoundaries.Text = "Group boundaries";
             this.ToolTip1.SetToolTip(this.CbGroupBoundaries, "Imports group boundaries as empty layers.");
@@ -435,9 +432,9 @@
             this.CbHiddenLayers.AutoSize = true;
             this.CbHiddenLayers.Checked = true;
             this.CbHiddenLayers.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CbHiddenLayers.Location = new System.Drawing.Point(105, 42);
+            this.CbHiddenLayers.Location = new System.Drawing.Point(106, 42);
             this.CbHiddenLayers.Name = "CbHiddenLayers";
-            this.CbHiddenLayers.Size = new System.Drawing.Size(111, 20);
+            this.CbHiddenLayers.Size = new System.Drawing.Size(110, 20);
             this.CbHiddenLayers.TabIndex = 4;
             this.CbHiddenLayers.Text = "Hidden layers";
             this.CbHiddenLayers.UseVisualStyleBackColor = true;
@@ -448,9 +445,9 @@
             this.CbOpacity.AutoSize = true;
             this.CbOpacity.Checked = true;
             this.CbOpacity.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CbOpacity.Location = new System.Drawing.Point(105, 20);
+            this.CbOpacity.Location = new System.Drawing.Point(106, 20);
             this.CbOpacity.Name = "CbOpacity";
-            this.CbOpacity.Size = new System.Drawing.Size(177, 20);
+            this.CbOpacity.Size = new System.Drawing.Size(176, 20);
             this.CbOpacity.TabIndex = 3;
             this.CbOpacity.Text = "Opacity as layer property";
             this.CbOpacity.UseVisualStyleBackColor = true;
@@ -460,7 +457,7 @@
             this.RbAllLayers.AutoSize = true;
             this.RbAllLayers.Location = new System.Drawing.Point(10, 65);
             this.RbAllLayers.Name = "RbAllLayers";
-            this.RbAllLayers.Size = new System.Drawing.Size(85, 20);
+            this.RbAllLayers.Size = new System.Drawing.Size(84, 20);
             this.RbAllLayers.TabIndex = 2;
             this.RbAllLayers.Text = "All Layers";
             this.RbAllLayers.UseVisualStyleBackColor = true;
@@ -470,7 +467,7 @@
             this.RbGroups.AutoSize = true;
             this.RbGroups.Location = new System.Drawing.Point(10, 42);
             this.RbGroups.Name = "RbGroups";
-            this.RbGroups.Size = new System.Drawing.Size(70, 20);
+            this.RbGroups.Size = new System.Drawing.Size(69, 20);
             this.RbGroups.TabIndex = 1;
             this.RbGroups.Text = "Groups";
             this.RbGroups.UseVisualStyleBackColor = true;
@@ -481,7 +478,7 @@
             this.RbFlatten.Checked = true;
             this.RbFlatten.Location = new System.Drawing.Point(10, 19);
             this.RbFlatten.Name = "RbFlatten";
-            this.RbFlatten.Size = new System.Drawing.Size(66, 20);
+            this.RbFlatten.Size = new System.Drawing.Size(65, 20);
             this.RbFlatten.TabIndex = 0;
             this.RbFlatten.TabStop = true;
             this.RbFlatten.Text = "Flatten";
@@ -491,13 +488,13 @@
             // 
             this.LnkGitHub.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.LnkGitHub.AutoSize = true;
-            this.LnkGitHub.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LnkGitHub.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.LnkGitHub.Location = new System.Drawing.Point(10, 371);
             this.LnkGitHub.Name = "LnkGitHub";
-            this.LnkGitHub.Size = new System.Drawing.Size(112, 16);
+            this.LnkGitHub.Size = new System.Drawing.Size(48, 16);
             this.LnkGitHub.TabIndex = 14;
             this.LnkGitHub.TabStop = true;
-            this.LnkGitHub.Text = "Project on GitHub";
+            this.LnkGitHub.Text = "GitHub";
             // 
             // ProgressBar
             // 
@@ -523,9 +520,21 @@
             this.ProgressLabel.BackColor = System.Drawing.Color.Transparent;
             this.ProgressLabel.Location = new System.Drawing.Point(122, 342);
             this.ProgressLabel.Name = "ProgressLabel";
-            this.ProgressLabel.Size = new System.Drawing.Size(41, 13);
+            this.ProgressLabel.Size = new System.Drawing.Size(42, 15);
             this.ProgressLabel.TabIndex = 16;
             this.ProgressLabel.Text = "Ready!";
+            // 
+            // LnkForum
+            // 
+            this.LnkForum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.LnkForum.AutoSize = true;
+            this.LnkForum.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.LnkForum.Location = new System.Drawing.Point(62, 371);
+            this.LnkForum.Name = "LnkForum";
+            this.LnkForum.Size = new System.Drawing.Size(45, 16);
+            this.LnkForum.TabIndex = 17;
+            this.LnkForum.TabStop = true;
+            this.LnkForum.Text = "Forum";
             // 
             // SvgImportDialog
             // 
@@ -533,6 +542,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(310, 403);
+            this.Controls.Add(this.LnkForum);
             this.Controls.Add(this.ProgressLabel);
             this.Controls.Add(this.ProgressBar);
             this.Controls.Add(this.LnkGitHub);
@@ -584,19 +594,20 @@
         private System.Windows.Forms.NumericUpDown NudDpi;
         private System.Windows.Forms.Label LblCanvasWH;
         private System.Windows.Forms.Label LblResolution;
-        private System.Windows.Forms.CheckBox CbKeepAR;
         private System.Windows.Forms.GroupBox GbLayers;
         private System.Windows.Forms.RadioButton RbAllLayers;
         private System.Windows.Forms.RadioButton RbGroups;
         private System.Windows.Forms.RadioButton RbFlatten;
-        private System.Windows.Forms.CheckBox CbHiddenLayers;
-        private System.Windows.Forms.CheckBox CbOpacity;
-        private System.Windows.Forms.CheckBox CbGroupBoundaries;
         private System.Windows.Forms.PictureBox PbWarning;
         private System.Windows.Forms.LinkLabel LnkUseSvgSettings;
         private System.Windows.Forms.LinkLabel LnkGitHub;
         private System.Windows.Forms.ProgressBar ProgressBar;
         private TransparentLabel ProgressLabel;
         private System.Windows.Forms.ToolTip ToolTip1;
+        private System.Windows.Forms.LinkLabel LnkForum;
+        private MyCheckBox CbKeepAR;
+        private MyCheckBox CbHiddenLayers;
+        private MyCheckBox CbOpacity;
+        private MyCheckBox CbGroupBoundaries;
     }
 }

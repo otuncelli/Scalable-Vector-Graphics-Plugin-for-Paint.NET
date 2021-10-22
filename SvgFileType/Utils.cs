@@ -26,9 +26,9 @@ namespace SvgFileTypePlugin
             return MainFormLazy.Value;
         }
 
-        public static DialogResult ThreadSafeShowDialog(Form owner, Func<DialogResult> func)
+        public static DialogResult ThreadSafeShowDialog(Form owner, Func<IWin32Window, DialogResult> func)
         {
-            return owner.InvokeRequired ? (DialogResult)owner.Invoke(func) : func();
+            return owner.InvokeRequired ? (DialogResult)owner.Invoke(func, owner) : func(owner);
         }
 
         public static int CalcMemoryNeeded(int width, int height)
