@@ -1,12 +1,11 @@
 ﻿# ![W3C SVG Logo](https://www.w3.org/Icons/SVG/svg-logo-v.png) Scalable Vector Graphics (SVG) Plugin for Paint.NET 
 
 [![](https://img.shields.io/github/release-pre/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET.svg?style=flat)](https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/releases)
-[![](https://img.shields.io/github/downloads/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/total.svg?style=flat)](https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/releases)
+[![](https://img.shields.io/github/downloads/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/latest/total)](https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/releases)
 
-This is a Paint.NET filetype plugin for loading SVG (Scalable Vector Graphics) and its compressed variant SVGZ files. 
-SVG elements can be rendered as a flat image file or each on a separate layer.
+This is a Paint.NET filetype plugin for loading SVG (Scalable Vector Graphics) and its compressed variant SVGZ files. SVG elements can be rendered as a flat image file or each on a separate layer.
 
-The plugin is a wrapper around the [SVG.NET Library](https://github.com/vvvv/SVG) which does the actual SVG reading.
+The plugin is a wrapper around the [SVG.NET Library](https://github.com/svg-net/SVG) which does the actual SVG reading.
 
 Tested on Paint.NET v4.2.16 & Paint.NET v4.3.2.
 
