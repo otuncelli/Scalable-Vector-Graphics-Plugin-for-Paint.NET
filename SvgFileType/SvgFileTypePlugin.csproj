@@ -11,7 +11,7 @@
 		<Product>SVG Plugin for Paint.NET</Product>
 		<AssemblyTitle>SVG Plugin for Paint.NET</AssemblyTitle>
 		<Copyright>Copyright © 2021 Osman Tunçelli</Copyright>
-		<Version>1.0.5.0</Version>
+		<Version>1.0.5.1</Version>
 		<NoWarn>FodyPackageReference</NoWarn>
 		<OutputType>Library</OutputType>
 		<!--<OutputType>Exe</OutputType>-->
@@ -49,13 +49,13 @@
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net5.0-windows'">
 		<Reference Include="PaintDotNet.Base">
-			<HintPath>E:\Downloads\paint.net.4.3.1.portable.x64\PaintDotNet.Base.dll</HintPath>
+			<HintPath>E:\Downloads\paint.net.4.3.2.portable.x64\PaintDotNet.Base.dll</HintPath>
 		</Reference>
 		<Reference Include="PaintDotNet.Core">
-			<HintPath>E:\Downloads\paint.net.4.3.1.portable.x64\PaintDotNet.Core.dll</HintPath>
+			<HintPath>E:\Downloads\paint.net.4.3.2.portable.x64\PaintDotNet.Core.dll</HintPath>
 		</Reference>
 		<Reference Include="PaintDotNet.Data">
-			<HintPath>E:\Downloads\paint.net.4.3.1.portable.x64\PaintDotNet.Data.dll</HintPath>
+			<HintPath>E:\Downloads\paint.net.4.3.2.portable.x64\PaintDotNet.Data.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 
