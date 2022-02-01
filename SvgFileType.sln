@@ -1,9 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31424.327
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SvgFileTypePlugin", "SvgFileType\SvgFileTypePlugin.csproj", "{C32235C8-90B3-4C43-B589-B821C84839E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SvgFileTypePlugin", "SvgFileType\SvgFileTypePlugin.csproj", "{C32235C8-90B3-4C43-B589-B821C84839E9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitmapVectorizer", "BitmapVectorizer\BitmapVectorizer\BitmapVectorizer.csproj", "{2C7479CE-42CF-4D90-9650-6ACDF868B8D2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "resvg.net", "..\resvg.net\resvg.net\resvg.net.csproj", "{AC700075-39F4-4DB8-B65A-8B0C9264225C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaintDotNet.IndirectUI.Fluent", "..\PaintDotNet.IndirectUI.Fluent\PaintDotNet.IndirectUI.Fluent\PaintDotNet.IndirectUI.Fluent.csproj", "{0A612B08-8FC5-4068-9437-FC38476EA808}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{C32235C8-90B3-4C43-B589-B821C84839E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C32235C8-90B3-4C43-B589-B821C84839E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C32235C8-90B3-4C43-B589-B821C84839E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C7479CE-42CF-4D90-9650-6ACDF868B8D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C7479CE-42CF-4D90-9650-6ACDF868B8D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C7479CE-42CF-4D90-9650-6ACDF868B8D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C7479CE-42CF-4D90-9650-6ACDF868B8D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC700075-39F4-4DB8-B65A-8B0C9264225C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC700075-39F4-4DB8-B65A-8B0C9264225C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC700075-39F4-4DB8-B65A-8B0C9264225C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC700075-39F4-4DB8-B65A-8B0C9264225C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A612B08-8FC5-4068-9437-FC38476EA808}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A612B08-8FC5-4068-9437-FC38476EA808}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A612B08-8FC5-4068-9437-FC38476EA808}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A612B08-8FC5-4068-9437-FC38476EA808}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

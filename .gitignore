@@ -243,11 +243,8 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
-/SvgFileType/*.bak
-/SvgFileType/Program.cs
-/SVGFileTypePlugin_setup.exe
-/SvgFileTypePlugin.zip
-/setup.nsi
-/CreateZippedRelease.bat
-/header.bmp
-/SvgFileType/Properties
+
+# CUSTOM
+*.editorconfig
+Installer/
+SvgFileType/Properties/

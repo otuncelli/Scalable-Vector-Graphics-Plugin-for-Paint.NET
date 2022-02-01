@@ -1,31 +1,18 @@
-﻿// Copyright 2021 Osman Tunçelli. All rights reserved.
-// Use of this source code is governed by a LGPL license that can be
-// found in the COPYING file.
+﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+// Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
-using Svg;
 using System;
-using System.Drawing;
+using Svg;
 
-namespace SvgFileTypePlugin
+namespace SvgFileTypePlugin.Extensions;
+
+internal static class SvgUnitExtensions
 {
-    internal static class SvgUnitExtensions
+    public static int ToDeviceValue(this SvgUnit unit, SvgElement owner, UnitRenderingType urt = UnitRenderingType.Other)
     {
-        public static int ToDeviceValue(this SvgUnit unit, SvgElement owner)
-        {
-            if (owner == null)
-            {
-                throw new ArgumentNullException(nameof(owner));
-            }
-
-            using (var renderer = SvgRenderer.FromNull())
-            {
-                return (int)Math.Round(unit.ToDeviceValue(renderer, UnitRenderingType.Other, owner));
-            }
-        }
-        
-        //public static SizeF GetDeviceDimensions(this SvgDocument svg)
-        //{
-        //    return new SizeF(svg.Width.ToDeviceValue(svg), svg.Height.ToDeviceValue(svg));
-        //}
+        Ensure.IsNotNull(owner, nameof(owner));
+        using ISvgRenderer renderer = SvgRenderer.FromNull();
+        float value = unit.ToDeviceValue(renderer, urt, owner);
+        return checked((int)Math.Round(value));
     }
 }

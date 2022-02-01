@@ -1,67 +1,157 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
-	<PropertyGroup>
-		<TargetFrameworks>net5.0-windows;net47</TargetFrameworks>
-		<UseWindowsForms>true</UseWindowsForms>
-		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-		<AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-		<AssemblyName>SvgFileType</AssemblyName>
-		<RootNamespace>SvgFileTypePlugin</RootNamespace>
-		<Product>SVG Plugin for Paint.NET</Product>
-		<AssemblyTitle>SVG Plugin for Paint.NET</AssemblyTitle>
-		<Copyright>Copyright © 2021 Osman Tunçelli</Copyright>
-		<Version>1.0.5.1</Version>
-		<NoWarn>FodyPackageReference</NoWarn>
-		<OutputType>Library</OutputType>
-		<!--<OutputType>Exe</OutputType>-->
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFrameworks>net7.0-windows</TargetFrameworks>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <DefineConstants>TRACE;RESVG</DefineConstants> <!-- DONTCHECKUPDATES;SKIA -->
+    <NoWarn>FodyPackageReference;MSB3277</NoWarn>
+    <OutputType>Library</OutputType>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    <RootNamespace>SvgFileTypePlugin</RootNamespace>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net47|AnyCPU'">
-	  <NoWarn>$(NoWarn);1701;1702</NoWarn>
-	</PropertyGroup>
+  <PropertyGroup Label="AssemblyInfo" Condition="'$(GenerateAssemblyInfo)'=='true' Or '$(GenerateAssemblyInfo)'==''">
+    <AssemblyName>SvgFileType</AssemblyName>
+    <AssemblyTitle>SVG File Type Plugin for Paint.NET</AssemblyTitle>
+    <Copyright>Copyright © 2023 Osman Tunçelli</Copyright>
+    <Company>$(Copyright)</Company>
+    <Product>$(AssemblyTitle)</Product>
+    <Version>1.0.6.0</Version>
+  </PropertyGroup>
 
-	<ItemGroup Condition="'$(Configuration)'=='Release'">
-		<Compile Remove="Program.cs" />
-	</ItemGroup>
+  <PropertyGroup Label="Base Variables">
+    <PluginType>FileType</PluginType>
+    <PdnRoot>C:\Program Files\paint.net</PdnRoot>
+    <PluginDir>$(USERPROFILE)\Documents\paint.net App Files\$(PluginType)s\$(RootNamespace)\</PluginDir>
+  </PropertyGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="Fody" Version="6.6.0">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	  </PackageReference>
-		<PackageReference Include="ILMerge.Fody" Version="1.18.0" />
-		<PackageReference Include="Fizzler" Version="1.2.1" />
-		<PackageReference Include="Svg" Version="3.3.0" />
-	</ItemGroup>
+  <PropertyGroup Condition="$(DefineConstants.Contains('SKIA'))=='true'">
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net47'">
-	  <Reference Include="PaintDotNet.Base">
-	    <HintPath>C:\Program Files\paint.net\PaintDotNet.Base.dll</HintPath>
-	  </Reference>
-	  <Reference Include="PaintDotNet.Core">
-	    <HintPath>C:\Program Files\paint.net\PaintDotNet.Core.dll</HintPath>
-	  </Reference>
-	  <Reference Include="PaintDotNet.Data">
-	    <HintPath>C:\Program Files\paint.net\PaintDotNet.Data.dll</HintPath>
-	  </Reference>
-	</ItemGroup>
+  <ItemGroup>
+    <Reference Include="PaintDotNet.Base">
+      <Private>false</Private>
+      <HintPath>$(PdnRoot)\PaintDotNet.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="PaintDotNet.Core">
+      <Private>false</Private>
+      <HintPath>$(PdnRoot)\PaintDotNet.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="PaintDotNet.Data">
+      <Private>false</Private>
+      <HintPath>$(PdnRoot)\PaintDotNet.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="PaintDotNet.Effects">
+      <Private>false</Private>
+      <HintPath>$(PdnRoot)\PaintDotNet.Effects.dll</HintPath>
+    </Reference>
+    <Reference Include="PaintDotNet.PropertySystem">
+      <Private>false</Private>
+      <HintPath>$(PdnRoot)\PaintDotNet.PropertySystem.dll</HintPath>
+    </Reference>
+    <Reference Include="PaintDotNet.ComponentModel">
+      <Private>false</Private>
+      <HintPath>$(PdnRoot)\PaintDotNet.ComponentModel.dll</HintPath>
+    </Reference>
+    <Reference Include="PaintDotNet.Fundamentals">
+      <Private>false</Private>
+      <HintPath>$(PdnRoot)\PaintDotNet.Fundamentals.dll</HintPath>
+    </Reference>
+    <Reference Include="PaintDotNet.ObjectModel">
+      <Private>false</Private>
+      <HintPath>$(PdnRoot)\PaintDotNet.ObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="PaintDotNet.Primitives">
+      <Private>false</Private>
+      <HintPath>$(PdnRoot)\PaintDotNet.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="PaintDotNet.PropertySystem">
+      <Private>false</Private>
+      <HintPath>$(PdnRoot)\PaintDotNet.PropertySystem.dll</HintPath>
+    </Reference>
+    <Reference Include="PaintDotNet.Windows">
+      <Private>false</Private>
+      <HintPath>$(PdnRoot)\PaintDotNet.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="PaintDotNet.Windows.Core">
+      <Private>false</Private>
+      <HintPath>$(PdnRoot)\PaintDotNet.Windows.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="PaintDotNet.Windows.Framework">
+      <Private>false</Private>
+      <HintPath>$(PdnRoot)\PaintDotNet.Windows.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="PaintDotNet.Effects.Core">
+      <Private>false</Private>
+      <HintPath>$(PdnRoot)\PaintDotNet.Effects.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="PaintDotNet.Effects.Gpu">
+      <Private>false</Private>
+      <HintPath>$(PdnRoot)\PaintDotNet.Effects.Gpu.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net5.0-windows'">
-		<Reference Include="PaintDotNet.Base">
-			<HintPath>E:\Downloads\paint.net.4.3.2.portable.x64\PaintDotNet.Base.dll</HintPath>
-		</Reference>
-		<Reference Include="PaintDotNet.Core">
-			<HintPath>E:\Downloads\paint.net.4.3.2.portable.x64\PaintDotNet.Core.dll</HintPath>
-		</Reference>
-		<Reference Include="PaintDotNet.Data">
-			<HintPath>E:\Downloads\paint.net.4.3.2.portable.x64\PaintDotNet.Data.dll</HintPath>
-		</Reference>
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Svg" Version="3.4.4" />
+    <Compile Update="Localization\StringResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>StringResources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Localization\StringResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Localization\StringResources_tr.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+  </ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="copy &quot;$(TargetPath)&quot; &quot;E:\Downloads\paint.net.4.3.1.portable.x64\FileTypes\SvgFileTypePlugin&quot; /y" />
-		<Exec Command="copy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;E:\Downloads\paint.net.4.3.1.portable.x64\FileTypes\SvgFileTypePlugin&quot; /y" Condition="'$(ConfigurationName)' == 'Debug'" />
-	</Target>
+  <ItemGroup Condition="$(DefineConstants.Contains('SKIA'))=='true'">
+    <PackageReference Include="Svg.Skia" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(DefineConstants.Contains('SKIA'))=='false'">
+    <PackageReference Include="Fody" Version="6.8.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="ILMerge.Fody" Version="1.24.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <Target Name="ChangeAliasesOfStrongNameAssemblies" Condition="$(DefineConstants.Contains('SKIA'))=='true'" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
+    <ItemGroup>
+      <ReferencePath Condition="'%(FileName)' == 'Svg.Custom'">
+        <Aliases>SvgCustom</Aliases>
+      </ReferencePath>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="ILRepack" Condition="$(DefineConstants.Contains('SKIA'))=='true'" AfterTargets="PostBuildEvent">
+    <Exec Command="ilrepack /noRepackRes /internalize /union &quot;$(TargetPath)&quot; &quot;$(TargetDir)Svg.Skia.dll&quot; &quot;$(TargetDir)Svg.Model.dll&quot; &quot;$(TargetDir)Svg.dll&quot; &quot;$(TargetDir)ExCss.dll&quot;  &quot;$(TargetDir)Fizzler.dll&quot; &quot;$(TargetDir)BitmapVectorizer.dll&quot; &quot;$(TargetDir)PaintDotNet.IndirectUI.Fluent.dll&quot; &quot;$(TargetDir)SkiaSharp.dll&quot; &quot;$(TargetDir)SkiaSharp.HarfBuzz.dll&quot; &quot;$(TargetDir)HarfBuzzSharp.dll&quot; &quot;$(TargetDir)ShimSkiaSharp.dll&quot; &quot;$(TargetDir)Svg.Custom.dll&quot; /lib:&quot;$(PdnRoot)&quot; /lib:&quot;D:\workspace\Scalable-Vector-Graphics-Plugin-for-Paint.NET\System.Drawing.Common.dll&quot; /out:&quot;$(TargetDir)SvgFileType.dll&quot;" />
+    <Exec Command="copy &quot;$(TargetDir)runtimes\win-x64\native\*.dll&quot; &quot;$(PluginDir)&quot; /y" />
+  </Target>
+
+  <Target Name="Copy to plugin directory" AfterTargets="PostBuildEvent">
+    <Exec Command="if not exist &quot;$(PluginDir)&quot; mkdir &quot;$(PluginDir)&quot;" />
+    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;$(PluginDir)&quot; /y" />
+    <Exec Command="copy &quot;$(TargetDir)$(TargetName).pdb&quot; &quot;$(PluginDir)&quot; /y" Condition="'$(ConfigurationName)' == 'Debug'" />
+  </Target>
+
+  <Target Name="OuterPreBuild" BeforeTargets="DispatchToInnerBuilds">
+    <Exec Command="powershell -NoProfile -ExecutionPolicy RemoteSigned -file &quot;Localization\InjectResourceManager.ps1&quot;" />
+  </Target>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\PaintDotNet.IndirectUI.Fluent\PaintDotNet.IndirectUI.Fluent\PaintDotNet.IndirectUI.Fluent.csproj" />
+    <ProjectReference Include="..\..\resvg.net\resvg.net\resvg.net.csproj" />
+    <ProjectReference Include="..\BitmapVectorizer\BitmapVectorizer\BitmapVectorizer.csproj" />
+  </ItemGroup>
 
 </Project>

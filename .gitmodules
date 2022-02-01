@@ -1,0 +1,9 @@
+[submodule "resvg.net"]
+	path = resvg.net
+	url = https://github.com/otuncelli/resvg.net.git
+[submodule "PaintDotNet.IndirectUI.Fluent"]
+	path = PaintDotNet.IndirectUI.Fluent
+	url = https://github.com/otuncelli/PaintDotNet.IndirectUI.Fluent.git
+[submodule "BitmapVectorizer"]
+	path = BitmapVectorizer
+	url = https://github.com/otuncelli/BitmapVectorizer.git

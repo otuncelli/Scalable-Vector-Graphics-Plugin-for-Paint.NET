@@ -1,33 +1,49 @@
-﻿// Copyright 2021 Osman Tunçelli. All rights reserved.
-// Use of this source code is governed by a LGPL license that can be
-// found in the COPYING file.
+﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+// Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
-using PaintDotNet;
 using System;
 using System.Reflection;
+using PaintDotNet;
 
-namespace SvgFileTypePlugin
+namespace SvgFileTypePlugin;
+
+public sealed class MyPluginSupportInfo : IPluginSupportInfo, IPluginSupportInfoProvider
 {
-    public sealed class MyPluginSupportInfo : IPluginSupportInfo, IPluginSupportInfoProvider
-    {
-        internal static readonly MyPluginSupportInfo Instance = new MyPluginSupportInfo();
-        internal const string Url = "https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET";
-        internal const string ForumUrl = "https://forums.getpaint.net/topic/117086-scalable-vector-graphics-filetype-alternative-plugin-svg-svgz/";
+    #region Properties
 
-        #region IPluginSupportInfo
+    internal static MyPluginSupportInfo Instance { get; } = new MyPluginSupportInfo();
 
-        public string Author => "Osman Tunçelli";
-        public string Copyright => GetType().Assembly.GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright;
-        public string DisplayName => GetType().Assembly.GetCustomAttribute<AssemblyProductAttribute>().Product;
-        public Version Version => GetType().Assembly.GetName().Version;
-        public Uri WebsiteUri => String.IsNullOrEmpty(Url) ? null : new Uri(Url);
+    #region IPluginSupportInfo
 
-        #endregion
+    public string Author { get; } = "Osman Tunçelli";
 
-        #region IPluginSupportInfoProvider
+    public string Copyright { get; } = GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright;
 
-        public IPluginSupportInfo GetPluginSupportInfo() => new MyPluginSupportInfo();
+    public string DisplayName { get; } = GetCustomAttribute<AssemblyProductAttribute>().Product;
 
-        #endregion
-    }
+    public Version Version { get; } = GetAssembly().GetName().Version;
+
+    public Uri WebsiteUri { get; } = new Uri("https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET");
+
+    #endregion
+
+    internal Uri ForumUri { get; } = new Uri("https://forums.getpaint.net/index.php?showtopic=117086");
+
+    #endregion
+
+    #region IPluginSupportInfoProvider
+
+    public IPluginSupportInfo GetPluginSupportInfo() => new MyPluginSupportInfo();
+
+    #endregion
+
+    #region Static Methods
+
+    private static T GetCustomAttribute<T>() where T : Attribute
+        => GetAssembly().GetCustomAttribute<T>();
+
+    private static Assembly GetAssembly()
+        => typeof(MyPluginSupportInfo).Assembly;
+
+    #endregion
 }

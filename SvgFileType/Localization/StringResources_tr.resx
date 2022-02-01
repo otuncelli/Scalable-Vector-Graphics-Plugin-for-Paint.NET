@@ -1,0 +1,419 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AllElements" xml:space="preserve">
+    <value>Tüm Öğeler</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Angle" xml:space="preserve">
+    <value>Döndür</value>
+    <comment>Export</comment>
+  </data>
+  <data name="AnUpdateIsAvailable" xml:space="preserve">
+    <value>Bir güncelleme mevcut!</value>
+    <comment>Import</comment>
+  </data>
+  <data name="BrightnessCutoff" xml:space="preserve">
+    <value>Parlaklık Kesme</value>
+    <comment>Export</comment>
+  </data>
+  <data name="BrightnessCutoffDesc" xml:space="preserve">
+    <value>Eşik değerinden daha koyu olan alanları algılar ve onları çevreleyen bir yol oluşturur.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>İptal</value>
+    <comment>Import</comment>
+  </data>
+  <data name="CanceledUponYourRequest" xml:space="preserve">
+    <value>Talebiniz üzerine iptal edildi.</value>
+    <comment>Generic</comment>
+  </data>
+  <data name="Canvas" xml:space="preserve">
+    <value>Tuval (G×Y)</value>
+    <comment>Import</comment>
+  </data>
+  <data name="CanvasIsTooBig" xml:space="preserve">
+    <value>Tuval çok büyük.</value>
+    <comment>Generic</comment>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Renk</value>
+    <comment>Export</comment>
+  </data>
+  <data name="DiscussionLink" xml:space="preserve">
+    <value>Tartışma</value>
+    <comment>Export</comment>
+  </data>
+  <data name="EdgeDetectionMode" xml:space="preserve">
+    <value>Kenar Algılama Modu</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Enclose" xml:space="preserve">
+    <value>Çevrele</value>
+    <comment>Export</comment>
+  </data>
+  <data name="EndLayerGroup" xml:space="preserve">
+    <value>Bitiş Katman Grubu: {0}</value>
+    <comment>Import</comment>
+  </data>
+  <data name="ExportAsPdnShape" xml:space="preserve">
+    <value>Şekil olarak kaydet</value>
+    <comment>Export</comment>
+  </data>
+  <data name="FillColor" xml:space="preserve">
+    <value>Dolgu Rengi</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Flatten" xml:space="preserve">
+    <value>Düzleştirilmiş</value>
+    <comment>Import</comment>
+  </data>
+  <data name="GitHubLink" xml:space="preserve">
+    <value>GitHub</value>
+    <comment>Export</comment>
+  </data>
+  <data name="GroupBoundaries" xml:space="preserve">
+    <value>Grup sınırları</value>
+    <comment>Import</comment>
+  </data>
+  <data name="GroupBoundariesToolTip" xml:space="preserve">
+    <value>Grup sınırlarını boş katman olarak içe aktarır.</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Groups" xml:space="preserve">
+    <value>Gruplar</value>
+    <comment>Import</comment>
+  </data>
+  <data name="HighpassFilterRadius" xml:space="preserve">
+    <value>Yüksek Geçiş</value>
+    <comment>Export</comment>
+  </data>
+  <data name="HighpassFilterRadiusDesc" xml:space="preserve">
+    <value>Arka plan varyasyonları gibi büyük ölçekli düzensizlikleri bastırırken çizgiler gibi küçük ölçekli ayrıntıları korur.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ImportHiddenElements" xml:space="preserve">
+    <value>Gizli elementler</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Invert" xml:space="preserve">
+    <value>Ters çevir</value>
+    <comment>Export</comment>
+  </data>
+  <data name="KeepAspectRatio" xml:space="preserve">
+    <value>En-boy oranını koru</value>
+    <comment>Import</comment>
+  </data>
+  <data name="LayerGroup" xml:space="preserve">
+    <value>Başlangıç Katman Grubu: {0}</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Layers" xml:space="preserve">
+    <value>Katmanlar</value>
+    <comment>Import</comment>
+  </data>
+  <data name="LowpassFilterRadius" xml:space="preserve">
+    <value>Düşük Geçiş</value>
+    <comment>Export</comment>
+  </data>
+  <data name="LowpassFilterRadiusDesc" xml:space="preserve">
+    <value>Ön plan ayrıntılarını yumuşatır.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="MemoryWarningText" xml:space="preserve">
+    <value>Yeterli miktarda kullanılabilir bellek olduğundan emin olunuz!</value>
+    <comment>Import</comment>
+  </data>
+  <data name="NoPath" xml:space="preserve">
+    <value>YOL YOK</value>
+    <comment>Export</comment>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>TAMAM</value>
+    <comment>Import</comment>
+  </data>
+  <data name="OpacityAsLayerProperty" xml:space="preserve">
+    <value>Element saydamlığı katman niteliği olarak</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Optimize" xml:space="preserve">
+    <value>Optimize et</value>
+    <comment>Export</comment>
+  </data>
+  <data name="OptimizeDesc" xml:space="preserve">
+    <value>Bitişik Bezier eğrilerini birleştirerek yolları optimize etmeye çalışır.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PdnShapeExportOptions" xml:space="preserve">
+    <value>Paint.NET Şekil Dışa Aktarma Seçenekleri</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PdnShapeExportOptionsDesc" xml:space="preserve">
+    <value>* Şekil için bir isim giriniz</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PluginVersion" xml:space="preserve">
+    <value>Eklenti Sürümü: {0}</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PreviewMode" xml:space="preserve">
+    <value>Önizleme Modu</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PreviewModeFast" xml:space="preserve">
+    <value>Hızlı</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PreviewModeSlow" xml:space="preserve">
+    <value>Yavaş</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value>Hazır</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Resolution" xml:space="preserve">
+    <value>Çözünürlük (DPI)</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Scale" xml:space="preserve">
+    <value>Ölçekle</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ScaleBeforeThreshold" xml:space="preserve">
+    <value>Eşikten önce ölçeklendir</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ScanMode" xml:space="preserve">
+    <value>Tarama Modu</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ScanModeOpaque" xml:space="preserve">
+    <value>Opak</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ScanModeTransparent" xml:space="preserve">
+    <value>Saydam</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Shape" xml:space="preserve">
+    <value>Şekil</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ShapeSaved" xml:space="preserve">
+    <value>Resim taraması Paint.NET Şekli olarak kaydedildi.
+-----
+{0}
+-----</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ShapeSavedCaption" xml:space="preserve">
+    <value>Başarılı</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ShapeSavedRestart" xml:space="preserve">
+    <value>Kullanmak için Paint.NET'i yeniden başlatmalısınız.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="SizeSelectionByUser" xml:space="preserve">
+    <value>Kullanıcı tarafından istenen boyutlar</value>
+    <comment>Import</comment>
+  </data>
+  <data name="SizeSettingsGivenInSvgFile" xml:space="preserve">
+    <value>SVG dosyasında belirtilen boyut değerleri</value>
+    <comment>Import</comment>
+  </data>
+  <data name="SmoothCorners" xml:space="preserve">
+    <value>Pürüzsüz Köşeler</value>
+    <comment>Export</comment>
+  </data>
+  <data name="SmoothCornersDesc" xml:space="preserve">
+    <value>Keskin köşeleri yumuşatır.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="SuppressSpeckles" xml:space="preserve">
+    <value>Benekleri Yoksay</value>
+    <comment>Export</comment>
+  </data>
+  <data name="SuppressSpecklesDesc" xml:space="preserve">
+    <value>Biteşlemdeki küçük noktaları (benekleri) yoksay.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Tight" xml:space="preserve">
+    <value>Sıkı</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicy" xml:space="preserve">
+    <value>Dönüş Politikası</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyBlack" xml:space="preserve">
+    <value>Siyah</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyDesc" xml:space="preserve">
+    <value>Bit eşlemlerin yollara ayrıştırılması sırasında belirsizliklerin nasıl çözüleceğini belirler.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyLeft" xml:space="preserve">
+    <value>Sol</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyMajority" xml:space="preserve">
+    <value>Çoğunluk</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyMinority" xml:space="preserve">
+    <value>Azınlık</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyRandom" xml:space="preserve">
+    <value>Rastgele</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyRight" xml:space="preserve">
+    <value>Sağ</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyWhite" xml:space="preserve">
+    <value>Beyaz</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Untitled" xml:space="preserve">
+    <value>İsimsiz</value>
+    <comment>Export</comment>
+  </data>
+  <data name="UseSizeSettingsGivenInSvg" xml:space="preserve">
+    <value>▼ SVG'de belirtilen boyut değerlerini kullan ▼</value>
+    <comment>Import</comment>
+  </data>
+  <data name="ViewBoxWH" xml:space="preserve">
+    <value>ViewBox (G×Y)</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Viewport" xml:space="preserve">
+    <value>Viewport (G×Y)</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Working" xml:space="preserve">
+    <value>Çalışıyor...</value>
+    <comment>Import</comment>
+  </data>
+</root>

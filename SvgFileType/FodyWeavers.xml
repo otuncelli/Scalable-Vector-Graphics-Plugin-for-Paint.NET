@@ -1,4 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
-  <ILMerge IncludeAssemblies="Fizzler|Svg" NamespacePrefix="SvgFileTypePlugin$" FullImport="false" />
+    <ILMerge IncludeAssemblies="Svg|ExCss|Fizzler|resvg.net|BitmapVectorizer|SimplePaletteQuantizer|PaintDotNet.IndirectUI.Fluent" NamespacePrefix="" IncludeResources="\.(resources|dtd|zip)$" CompactMode="0" FullImport="0" />
 </Weavers>
