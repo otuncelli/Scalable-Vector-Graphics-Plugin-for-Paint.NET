@@ -99,10 +99,16 @@ public sealed class SvgFileType : PropertyBasedFileType
 
     public override PropertyCollection OnCreateSavePropertyCollection()
     {
-        PropertyName[] targets = new PropertyName[] 
+        PropertyName[] targets1 = new PropertyName[] 
         {
             PropertyNames.PdnShape, 
             PropertyNames.PdnShapeName 
+        };
+
+        PropertyName[] targets2 = new PropertyName[]
+        {
+            PropertyNames.LowpassFilter,
+            PropertyNames.GreymapScale
         };
 
         FluentPropertyCollection properties = new FluentPropertyCollection()
@@ -127,7 +133,8 @@ public sealed class SvgFileType : PropertyBasedFileType
             .AddDouble(PropertyNames.Angle, 0, 0, 360)
             .AddUri(PropertyNames.GitHubLink, MyPluginSupportInfo.Instance.WebsiteUri)
             .AddUri(PropertyNames.DiscussionLink, MyPluginSupportInfo.Instance.ForumUri)
-            .WithReadOnlyRule(targets, PropertyNames.ScanMode, ScanMode.Transparent, inverse: true)
+            .WithReadOnlyRule(targets1, PropertyNames.ScanMode, ScanMode.Transparent, inverse: true)
+            .WithReadOnlyRule(targets2, PropertyNames.HighpassFilter, 0)
             .WithReadOnlyRule(PropertyNames.FillColor, PropertyNames.ScanMode, ScanMode.Opaque, inverse: true);
         return properties;
     }
