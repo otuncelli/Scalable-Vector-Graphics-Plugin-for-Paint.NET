@@ -1,4 +1,4 @@
-﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+﻿// Copyright 2025 Osman Tunçelli. All rights reserved.
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
 using System;
@@ -13,7 +13,7 @@ namespace SvgFileTypePlugin.Localization;
 
 internal sealed class SingleAssemblyResourceManager : ResourceManager
 {
-    private readonly ConcurrentDictionary<CultureInfo, Lazy<ResourceSet>> resourceSets = new();
+    private readonly ConcurrentDictionary<CultureInfo, Lazy<ResourceSet?>> resourceSets = new();
 
     private const string DefaultCultureName = "en-US";
 
@@ -33,30 +33,30 @@ internal sealed class SingleAssemblyResourceManager : ResourceManager
     {
     }
 
-    protected override ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
+    protected override ResourceSet? InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
     {
         /* If you call GetOrAdd simultaneously on different threads, addValueFactory may be called 
          * multiple times, but its key/value pair might not be added to the dictionary for every call.*/
-        return resourceSets.GetOrAdd(culture, c => new Lazy<ResourceSet>(() => CustomGetResourceSet(c, createIfNotExists, tryParents))).Value;
+        return resourceSets.GetOrAdd(culture, c => new Lazy<ResourceSet?>(() => CustomGetResourceSet(c, createIfNotExists, tryParents))).Value;
     }
 
-    private ResourceSet CustomGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
+    private ResourceSet? CustomGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
     {
         string filename = GetResourceFileName(culture);
-        using Stream stream = MainAssembly?.GetManifestResourceStream(filename);
+        using Stream? stream = MainAssembly?.GetManifestResourceStream(filename);
         Logger.WriteLineIf(stream != null, $"Translations loaded for '{culture}'.");
-        ResourceSet resourceSet = stream != null
-            ? new ResourceSet(stream)
-            : base.InternalGetResourceSet(culture, createIfNotExists, tryParents);
+        ResourceSet? resourceSet = stream is null
+            ? base.InternalGetResourceSet(culture, createIfNotExists, tryParents)
+            : new ResourceSet(stream);
         return resourceSet;
     }
 
     public override void ReleaseAllResources()
     {
         base.ReleaseAllResources();
-        foreach (Lazy<ResourceSet> resourceSet in resourceSets.Values)
+        foreach (Lazy<ResourceSet?> resourceSet in resourceSets.Values)
         {
-            if (resourceSet.IsValueCreated)
+            if (resourceSet.IsValueCreated && resourceSet.Value is not null)
             {
                 resourceSet.Value.Close();
                 resourceSet.Value.Dispose();

@@ -1,4 +1,4 @@
-﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+﻿// Copyright 2025 Osman Tunçelli. All rights reserved.
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
 using System;
@@ -14,15 +14,15 @@ namespace SvgFileTypePlugin;
 
 internal static partial class UIHelper
 {
-    public static Form GetMainForm()
+    public static Form? GetMainForm()
     {
-        IntPtr handle = Process.GetCurrentProcess().MainWindowHandle;
-        return (Form)Control.FromHandle(handle) ?? Application.OpenForms["MainForm"] ?? Application.OpenForms[0];
+        nint handle = Process.GetCurrentProcess().MainWindowHandle;
+        return (Form?)Control.FromHandle(handle) ?? Application.OpenForms["MainForm"] ?? Application.OpenForms[0];
     }
 
     public static bool IsSaveConfigDialogVisible()
     {
-        Form main = GetMainForm();
+        Form? main = GetMainForm();
         return Application.OpenForms
             .OfType<PdnBaseForm>()
             .Where(form => form != main)
@@ -33,15 +33,15 @@ internal static partial class UIHelper
             .Any();
     }
 
-    public static TResult RunOnUIThread<TResult>(Func<TResult> d)
+    public static TResult? RunOnUIThread<TResult>(Func<TResult> d)
     {
         IUISynchronizationContext ctx = Services.Get<IUISynchronizationContext>();
         if (ctx.IsOnUIThread)
         {
             return d();
         }
-        TResult result = default;
-        Exception error = null;
+        TResult? result = default;
+        Exception? error = null;
         ctx.Send(new SendOrPostCallback(_ =>
         {
             try
@@ -69,7 +69,7 @@ internal static partial class UIHelper
             d();
             return;
         }
-        Exception error = null;
+        Exception? error = null;
         ctx.Send(new SendOrPostCallback(_ =>
         {
             try

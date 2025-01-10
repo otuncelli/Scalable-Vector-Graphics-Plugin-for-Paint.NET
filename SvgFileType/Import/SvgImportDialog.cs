@@ -1,4 +1,4 @@
-﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+﻿// Copyright 2025 Osman Tunçelli. All rights reserved.
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
 using System;
@@ -21,15 +21,16 @@ internal partial class SvgImportDialog : MyBaseForm
 {
     #region Properties
 
-    private Document document;
-    private Exception reason;
+    private Document? document;
+    private Exception? reason;
     private const string NotAvailable = "-";
     private const int CanvasSizeWarningThreshold = 1280;
-    private object lastModifiedNud;
+    private object? lastModifiedNud;
     private readonly Size docSize;
     private bool dontUpdate;
     private readonly SvgDocument svg;
     private int layerCount;
+    private CancellationTokenSource? cts;
 
     #endregion
 
@@ -37,7 +38,8 @@ internal partial class SvgImportDialog : MyBaseForm
 
     private SvgImportDialog(SvgDocument svg) : base(UIHelper.GetMainForm())
     {
-        Ensure.IsNotNull(svg, nameof(svg));
+        ArgumentNullException.ThrowIfNull(svg);
+
         this.svg = svg;
         InitializeComponent();
         SetUseAppThemeColors();
@@ -126,7 +128,7 @@ internal partial class SvgImportDialog : MyBaseForm
 
     private void PopulateControls()
     {
-        Text = String.Join(" v", MyPluginSupportInfo.Instance.DisplayName, MyPluginSupportInfo.Instance.Version);
+        Text = string.Join(" v", MyPluginSupportInfo.Instance.DisplayName, MyPluginSupportInfo.Instance.Version);
         PbWarning.Image = SystemIcons.Warning.ToBitmap();
         GbInfo.Text = SR.SizeSettingsGivenInSvgFile;
         LnkUseSvgSettings.Text = SR.UseSizeSettingsGivenInSvg;
@@ -155,10 +157,7 @@ internal partial class SvgImportDialog : MyBaseForm
 
     private void UpdateOtherInput()
     {
-        if (lastModifiedNud == null)
-        {
-            lastModifiedNud = NudCanvasW.Value > NudCanvasH.Value ? NudCanvasW : NudCanvasH;
-        }
+        lastModifiedNud ??= NudCanvasW.Value > NudCanvasH.Value ? NudCanvasW : NudCanvasH;
 
         if (ReferenceEquals(lastModifiedNud, NudCanvasW))
         {
@@ -288,20 +287,20 @@ internal partial class SvgImportDialog : MyBaseForm
         CancelButton = BtnCancel;
     }
 
-    private void NudCanvas_ValueChanged(object sender, EventArgs e)
+    private void NudCanvas_ValueChanged(object? sender, EventArgs e)
     {
         if (dontUpdate) { return; }
         lastModifiedNud = sender;
         UpdateOtherInput();
     }
 
-    private void CbKeepAR_CheckedChanged(object sender, EventArgs e)
+    private void CbKeepAR_CheckedChanged(object? sender, EventArgs e)
     {
         if (dontUpdate) { return; }
         UpdateOtherInput();
     }
 
-    private void NudCanvas_KeyUp(object sender, KeyEventArgs e)
+    private void NudCanvas_KeyUp(object? sender, KeyEventArgs e)
     {
         if (dontUpdate) { return; }
         lastModifiedNud = sender;
@@ -318,23 +317,26 @@ internal partial class SvgImportDialog : MyBaseForm
         }
     }
 
-    private void NudCanvas_LostFocus(object sender, EventArgs e)
+    private void NudCanvas_LostFocus(object? sender, EventArgs e)
     {
         if (sender is not NumericUpDown nud)
         {
             return;
         }
 
-        TextBox textbox = nud.Controls.OfType<TextBox>().FirstOrDefault();
-        if (textbox != null)
+        TextBox? textbox = nud.Controls.OfType<TextBox>().FirstOrDefault();
+        if (textbox is not null)
         {
             textbox.Text = Math.Round(nud.Value, nud.DecimalPlaces).ToString();
         }
     }
 
-    private void Rb_CheckedChanged(object sender, EventArgs e) => UpdateLayerMode();
+    private void Rb_CheckedChanged(object? sender, EventArgs e)
+    {
+        UpdateLayerMode();
+    }
 
-    private void LnkUseSvgSettings_Click(object sender, EventArgs e)
+    private void LnkUseSvgSettings_Click(object? sender, EventArgs e)
     {
         // Keep original image size and show warning
         dontUpdate = true;
@@ -345,23 +347,24 @@ internal partial class SvgImportDialog : MyBaseForm
         PbWarning.Visible = !RbFlatten.Checked && (docSize.Width > CanvasSizeWarningThreshold || docSize.Height > CanvasSizeWarningThreshold);
     }
 
-    private static void LaunchUrl(Uri uri) => Process.Start("explorer", $@"""{uri}""");
+    private static void LaunchUrl(Uri uri)
+    {
+        Process.Start("explorer", $@"""{uri}""");
+    }
 
-    private void LnkGitHub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    private void LnkGitHub_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
     {
         if (e.Button != MouseButtons.Left) { return; }
         LaunchUrl(MyPluginSupportInfo.Instance.WebsiteUri);
     }
 
-    private void LnkForum_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    private void LnkForum_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
     {
         if (e.Button != MouseButtons.Left) { return; }
         LaunchUrl(MyPluginSupportInfo.Instance.ForumUri);
     }
 
-    private CancellationTokenSource cts;
-
-    private async void BtnOk_Click(object sender, EventArgs e)
+    private async void BtnOk_Click(object? sender, EventArgs e)
     {
         this.Descendants().OfType<GroupBox>().ToList().ForEach(gb => gb.Enabled = false);
         BtnOk.Enabled = false;
@@ -390,23 +393,24 @@ internal partial class SvgImportDialog : MyBaseForm
                     {
                         reason = new WarningException(null, ex);
                     }
-                }, TaskContinuationOptions.OnlyOnFaulted);
+                }, TaskContinuationOptions.OnlyOnFaulted)
+                    .ConfigureAwait(false);
             }
-        }
-        catch (Exception ex)
-        {
-            reason = ex;
         }
         //catch (TaskCanceledException)
         //{
         //}
+        catch (Exception ex)
+        {
+            reason = ex;
+        }
         finally
         {
-            Close();
+            Invoke(Close);
         }
     }
 
-    private void BtnCancel_Click(object sender, EventArgs e)
+    private void BtnCancel_Click(object? sender, EventArgs e)
     {
         BtnCancel.Enabled = false;
         if (cts != null)
@@ -424,52 +428,11 @@ internal partial class SvgImportDialog : MyBaseForm
 
     #endregion
 
-#if !DONTCHECKUPDATES
-    private async Task CheckUpdatesAsync()
-    {
-        try
-        {
-            Version latest = await Utils.GetLatestVersionAsync();
-            Version current = MyPluginSupportInfo.Instance.Version;
-            StatusStrip.RunOnUIThread(() =>
-            {
-                if (current < latest)
-                {
-                    UpdateAvailLabel.Visible = true;
-                    UpdateAvailLabel.Text = SR.AnUpdateIsAvailable + $" ({latest})";
-                    UpdateAvailLabel.ForeColor = Color.Red;
-                }
-                else
-                {
-                    UpdateAvailLabel.Visible = false;
-                }
-            });
-        }
-        catch (Exception ex)
-        {
-            // ignore
-            Logger.WriteLine("An error happened while checking updates: " + ex.Message);
-        }
-    }
-#endif
-
-
-#if DONTCHECKUPDATES
     protected override void OnLoad(EventArgs e)
     {
         ClientSize = RootPanel.Size;
         base.OnLoad(e);
     }
-#else
-    protected override async void OnLoad(EventArgs e)
-    {
-        ClientSize = RootPanel.Size;
-        base.OnLoad(e);
-        if (DesignMode) { return; }
-        await CheckUpdatesAsync();
-    }
-#endif
-
 
     #region Public Static
 

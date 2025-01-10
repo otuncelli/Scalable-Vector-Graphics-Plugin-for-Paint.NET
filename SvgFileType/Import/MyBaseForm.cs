@@ -1,4 +1,4 @@
-﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+﻿// Copyright 2025 Osman Tunçelli. All rights reserved.
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
 using System;
@@ -16,15 +16,17 @@ internal class MyBaseForm : Form
 {
     #region Properties
 
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public bool UseAppThemeColors { get; private set; }
 
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public bool ImmersiveDarkMode { get; set; }
 
     #endregion
 
     #region Constructor
 
-    protected MyBaseForm(Form owner)
+    protected MyBaseForm(Form? owner)
     {
         Owner = owner;
         FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -132,11 +134,13 @@ internal class MyBaseForm : Form
 
     #region Control Event Handlers
 
-    private static void Control_HandleCreated(object sender, EventArgs e)
+    private static void Control_HandleCreated(object? sender, EventArgs e)
     {
-        Control control = (Control)sender;
-        bool isDark = control.ForeColor.GetBrightness() > control.BackColor.GetBrightness();
-        Native.ControlSetDarkMode(control, isDark);
+        if (sender is not Control ctrl)
+            return;
+
+        bool isDark = ctrl.ForeColor.GetBrightness() > ctrl.BackColor.GetBrightness();
+        Native.ControlSetDarkMode(ctrl, isDark);
     }
 
     private static void SubscribeOnPaint(Control control, PaintEventHandler handler)
@@ -146,44 +150,47 @@ internal class MyBaseForm : Form
         control.Paint += handler;
     }
 
-    private static void GroupBox_Paint(object sender, PaintEventArgs e)
+    private static void GroupBox_Paint(object? sender, PaintEventArgs e)
     {
-        GroupBox groupBox = (GroupBox)sender;
-        if (groupBox.Enabled) { return; }
+        if (sender is not GroupBox ctrl || ctrl.Enabled)
+            return;
+
         Color foreColor = SystemColors.GrayText;
-        bool rtl = groupBox.RightToLeft == RightToLeft.Yes;
+        bool rtl = ctrl.RightToLeft == RightToLeft.Yes;
         TextFormatFlags tff = ConvertAlignment(ContentAlignment.MiddleLeft, rtl) | TextFormatFlags.WordBreak;
-        DrawBackground(e.Graphics, groupBox.BackColor, e.ClipRectangle);
-        GroupBoxRenderer.DrawGroupBox(e.Graphics, e.ClipRectangle, groupBox.Text, groupBox.Font, foreColor, tff, System.Windows.Forms.VisualStyles.GroupBoxState.Disabled);
+        DrawBackground(e.Graphics, ctrl.BackColor, e.ClipRectangle);
+        GroupBoxRenderer.DrawGroupBox(e.Graphics, e.ClipRectangle, ctrl.Text, ctrl.Font, foreColor, tff, System.Windows.Forms.VisualStyles.GroupBoxState.Disabled);
     }
 
-    private static void Label_Paint(object sender, PaintEventArgs e)
+    private static void Label_Paint(object? sender, PaintEventArgs e)
     {
-        Label label = (Label)sender;
-        if (label.Enabled) { return; }
+        if (sender is not Label ctrl || ctrl.Enabled)
+            return;
+
         Color foreColor = SystemColors.GrayText;
-        bool rtl = label.RightToLeft == RightToLeft.Yes;
-        TextFormatFlags tff = ConvertAlignment(label.TextAlign, rtl) | TextFormatFlags.WordBreak;
-        DrawBackground(e.Graphics, label.BackColor, e.ClipRectangle);
-        TextRenderer.DrawText(e.Graphics, label.Text, label.Font, e.ClipRectangle, foreColor, tff);
+        bool rtl = ctrl.RightToLeft == RightToLeft.Yes;
+        TextFormatFlags tff = ConvertAlignment(ctrl.TextAlign, rtl) | TextFormatFlags.WordBreak;
+        DrawBackground(e.Graphics, ctrl.BackColor, e.ClipRectangle);
+        TextRenderer.DrawText(e.Graphics, ctrl.Text, ctrl.Font, e.ClipRectangle, foreColor, tff);
     }
 
-    private static void CheckRadio_Paint(object sender, PaintEventArgs e)
+    private static void CheckRadio_Paint(object? sender, PaintEventArgs e)
     {
-        ButtonBase button = (ButtonBase)sender;
-        if (button.Enabled) { return; }
+        if (sender is not ButtonBase ctrl || ctrl.Enabled)
+            return;
+
         Color foreColor = SystemColors.GrayText;
         Size glyphSize = CheckBoxRenderer.GetGlyphSize(e.Graphics, System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedNormal);
-        bool rtl = button.RightToLeft == RightToLeft.Yes;
-        TextFormatFlags tff = ConvertAlignment(button.TextAlign, rtl) |
+        bool rtl = ctrl.RightToLeft == RightToLeft.Yes;
+        TextFormatFlags tff = ConvertAlignment(ctrl.TextAlign, rtl) |
             TextFormatFlags.LeftAndRightPadding |
             TextFormatFlags.Internal;
         Rectangle rect = e.ClipRectangle;
         Size size = new Size(rect.Width - 1 - glyphSize.Width, rect.Height);
         Point point = rtl ? new Point(rect.X - 1, rect.Y) : new Point(rect.X + glyphSize.Width + 1, rect.Y + 1);
         rect = new Rectangle(point, size);
-        DrawBackground(e.Graphics, button.BackColor, rect);
-        TextRenderer.DrawText(e.Graphics, button.Text, button.Font, rect, foreColor, tff);
+        DrawBackground(e.Graphics, ctrl.BackColor, rect);
+        TextRenderer.DrawText(e.Graphics, ctrl.Text, ctrl.Font, rect, foreColor, tff);
     }
 
     #endregion
@@ -192,28 +199,20 @@ internal class MyBaseForm : Form
 
     private static bool IsRight(ContentAlignment alignment)
     {
-        switch (alignment)
+        return alignment switch
         {
-            case ContentAlignment.TopRight:
-            case ContentAlignment.BottomRight:
-            case ContentAlignment.MiddleRight:
-                return true;
-            default:
-                return false;
-        }
+            ContentAlignment.TopRight or ContentAlignment.BottomRight or ContentAlignment.MiddleRight => true,
+            _ => false,
+        };
     }
 
     private static bool IsLeft(ContentAlignment alignment)
     {
-        switch (alignment)
+        return alignment switch
         {
-            case ContentAlignment.TopLeft:
-            case ContentAlignment.BottomLeft:
-            case ContentAlignment.MiddleLeft:
-                return true;
-            default:
-                return false;
-        }
+            ContentAlignment.TopLeft or ContentAlignment.BottomLeft or ContentAlignment.MiddleLeft => true,
+            _ => false,
+        };
     }
 
     public static TextFormatFlags ConvertAlignment(ContentAlignment alignment, bool rtl)
@@ -337,7 +336,9 @@ internal class MyBaseForm : Form
         }
 
         private static bool IsWindows10OrGreater(int build = -1)
-            => Environment.OSVersion.Version.Major >= 10 && Environment.OSVersion.Version.Build >= build;
+        {
+            return Environment.OSVersion.Version.Major >= 10 && Environment.OSVersion.Version.Build >= build;
+        }
 
         [DllImport("uxtheme", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Unicode)]
         private static extern int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string pszSubIdList);

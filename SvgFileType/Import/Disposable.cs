@@ -1,4 +1,4 @@
-﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+﻿// Copyright 2025 Osman Tunçelli. All rights reserved.
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
 using System;
@@ -17,7 +17,7 @@ internal static class Disposable
     /// </summary>    
     private sealed class DisposableAction : IDisposable
     {
-        private Action _dispose;
+        private Action? _dispose;
 
         /// <summary>    
         /// Initializes a new instance of the <see cref="DisposableAction"/> class.    
@@ -41,8 +41,8 @@ internal static class Disposable
         /// </param>    
         public DisposableAction(Action construct, Action dispose)
         {
-            if (construct == null) throw new ArgumentNullException(nameof(construct));
-            if (dispose == null) throw new ArgumentNullException(nameof(dispose));
+            ArgumentNullException.ThrowIfNull(construct);
+            ArgumentNullException.ThrowIfNull(dispose);
 
             construct();
 
@@ -57,7 +57,7 @@ internal static class Disposable
         {
             try
             {
-                _dispose();
+                _dispose?.Invoke();
             }
             finally
             {

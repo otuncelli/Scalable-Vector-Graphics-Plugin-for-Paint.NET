@@ -1,4 +1,4 @@
-﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+﻿// Copyright 2025 Osman Tunçelli. All rights reserved.
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
 using System;
@@ -33,17 +33,24 @@ public sealed class MyPluginSupportInfo : IPluginSupportInfo, IPluginSupportInfo
 
     #region IPluginSupportInfoProvider
 
-    public IPluginSupportInfo GetPluginSupportInfo() => new MyPluginSupportInfo();
+    public IPluginSupportInfo GetPluginSupportInfo()
+    {
+        return new MyPluginSupportInfo();
+    }
 
     #endregion
 
     #region Static Methods
 
     private static T GetCustomAttribute<T>() where T : Attribute
-        => GetAssembly().GetCustomAttribute<T>();
+    {
+        return GetAssembly().GetCustomAttribute<T>();
+    }
 
     private static Assembly GetAssembly()
-        => typeof(MyPluginSupportInfo).Assembly;
+    {
+        return typeof(MyPluginSupportInfo).Assembly;
+    }
 
     #endregion
 }

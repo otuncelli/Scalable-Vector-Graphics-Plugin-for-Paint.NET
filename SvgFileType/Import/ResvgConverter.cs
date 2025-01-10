@@ -1,5 +1,6 @@
-﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+﻿// Copyright 2025 Osman Tunçelli. All rights reserved.
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
+
 #define USE_RESVGFORLAYERED
 
 #if RESVG
@@ -33,12 +34,18 @@ internal sealed class ResvgConverter : DefaultSvgConverter
 
     public override Document GetFlatDocument(SvgDocument svg, SvgImportConfig config, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(svg);
+        ArgumentNullException.ThrowIfNull(config);
+
         using Stream stream = svg.AsStream();
         return GetFlatDocument(stream, config, cancellationToken);
     }
 
     public override Document GetFlatDocument(Stream stream, SvgImportConfig config, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(config);
+
         Logger.WriteLine($"Using {Name}...");
         int width = config.Width;
         int height = config.Height;
@@ -65,8 +72,11 @@ internal sealed class ResvgConverter : DefaultSvgConverter
     }
 
 #if USE_RESVGFORLAYERED
-    public override Document GetLayeredDocument(IReadOnlyCollection<SvgVisualElement> elements, SvgImportConfig config, Action<int> progress = null, CancellationToken cancellationToken = default)
+    public override Document GetLayeredDocument(IReadOnlyCollection<SvgVisualElement> elements, SvgImportConfig config, Action<int>? progress = null, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(elements);
+        ArgumentNullException.ThrowIfNull(config);
+
         Logger.WriteLine($"Using {Name}...");
         cancellationToken.ThrowIfCancellationRequested();
         IEnumerable<BitmapLayer> GetLayers()
@@ -81,7 +91,7 @@ internal sealed class ResvgConverter : DefaultSvgConverter
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                BitmapLayer layer = null;
+                BitmapLayer? layer = null;
 
                 if (element is GroupBoundary boundaryNode)
                 {
@@ -146,6 +156,9 @@ internal sealed class ResvgConverter : DefaultSvgConverter
 
     protected override void RenderSvgDocument(SvgElement element, object context)
     {
+        ArgumentNullException.ThrowIfNull(element);
+        ArgumentNullException.ThrowIfNull(context);
+
         (ResvgOptions options, Surface surface) = (ValueTuple<ResvgOptions, Surface>)context;
         if (element is SvgUse use)
         {

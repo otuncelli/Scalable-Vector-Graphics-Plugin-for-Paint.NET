@@ -1,6 +1,7 @@
-﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+﻿// Copyright 2025 Osman Tunçelli. All rights reserved.
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
+using System;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
@@ -15,16 +16,16 @@ internal static class SvgImport
 {
     public static Document Load(Stream stream)
     {
-        Ensure.IsNotNull(stream, nameof(stream));
-        Ensure.IsTrue(stream.CanRead, () => throw new IOException("input stream is not readable."));
-        Ensure.IsTrue(stream.CanSeek, () => throw new IOException("input stream is not seekable."));
+        ArgumentNullException.ThrowIfNull(stream);
+        if (!stream.CanRead)
+            throw new IOException("input stream is not readable.");
+        if (!stream.CanSeek)
+            throw new IOException("input stream is not seekable.");
 
         ISvgConverter svg2doc = SvgConverterFactory.Get();
 
         if (stream.Length <= 0)
-        {
             return svg2doc.GetNoPathDocument();
-        }
 
         SvgDocument svg = Open(stream);
         if (UIHelper.IsSaveConfigDialogVisible())
@@ -54,7 +55,7 @@ internal static class SvgImport
             throw new IOException("input stream is not a valid SVG.");
         }
         stream.Position = 0;
-        GZipStream gzip = null;
+        GZipStream? gzip = null;
         if (buf[0] == 0x1f && buf[1] == 0x8b && buf[2] == 0x8)
         {
             gzip = new GZipStream(stream, CompressionMode.Decompress, leaveOpen: true);

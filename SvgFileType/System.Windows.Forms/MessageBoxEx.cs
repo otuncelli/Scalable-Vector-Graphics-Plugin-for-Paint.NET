@@ -1,4 +1,4 @@
-﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+﻿// Copyright 2025 Osman Tunçelli. All rights reserved.
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
 using System.Diagnostics;
@@ -10,16 +10,14 @@ using System.Threading.Tasks;
 
 namespace System.Windows.Forms;
 
-using Point = System.Drawing.Point;
-
 /// <summary>
 /// Parent centered MessageBox dialog in C#
 /// </summary>
 internal static class MessageBoxEx
 {
-    private static IWin32Window _owner;
+    private static IWin32Window? _owner;
     private static readonly HookProc _hookProc = MessageBoxHookProc;
-    private static IntPtr _hHook = IntPtr.Zero;
+    private static nint _hHook = nint.Zero;
 
     private const int WH_CALLWNDPROCRET = 12;
     // private const int WH_CALLWNDPROC = 4;
@@ -164,31 +162,31 @@ internal static class MessageBoxEx
 
     #region Private Methods
 
-    private static void Initialize(IWin32Window owner = null)
+    private static void Initialize(IWin32Window? owner = null)
     {
         _owner = owner;
-        if (_hHook != IntPtr.Zero)
+        if (_hHook != nint.Zero)
         {
             throw new NotSupportedException("Multiple calls are not supported");
         }
-        if (owner == null)
+        if (_owner == null)
         {
             return;
         }
 
-        IntPtr ownerHandle = _owner.Handle;
+        nint ownerHandle = _owner.Handle;
         uint threadId = NativeMethods.GetWindowThreadProcessId(ownerHandle, out uint _);
-        _hHook = NativeMethods.SetWindowsHookEx(WH_CALLWNDPROCRET, _hookProc, IntPtr.Zero, threadId);
+        _hHook = NativeMethods.SetWindowsHookEx(WH_CALLWNDPROCRET, _hookProc, nint.Zero, threadId);
     }
 
-    private static IntPtr MessageBoxHookProc(int nCode, IntPtr wParam, CWPRETSTRUCT lParam)
+    private static nint MessageBoxHookProc(int nCode, nint wParam, CWPRETSTRUCT lParam)
     {
         if (nCode < 0)
         {
             return NativeMethods.CallNextHookEx(_hHook, nCode, wParam, lParam);
         }
 
-        IntPtr hook = _hHook;
+        nint hook = _hHook;
 
         if (lParam.message == (uint)CbtHookAction.HCBT_ACTIVATE)
         {
@@ -200,14 +198,14 @@ internal static class MessageBoxEx
             {
                 int ret = NativeMethods.UnhookWindowsHookEx(_hHook);
                 Debug.WriteLineIf(ret == 0, $"Win32 Error: {Marshal.GetLastWin32Error()} when unhooking.");
-                _hHook = IntPtr.Zero;
+                _hHook = nint.Zero;
             }
         }
 
         return NativeMethods.CallNextHookEx(hook, nCode, wParam, lParam);
     }
 
-    private static void CenterWindow(IntPtr hChildWnd)
+    private static void CenterWindow(nint hChildWnd)
     {
         Rectangle recChild = Rectangle.Empty;
         bool success = NativeMethods.GetWindowRect(hChildWnd, ref recChild);
@@ -216,6 +214,8 @@ internal static class MessageBoxEx
         int height = recChild.Height - recChild.Y;
 
         Rectangle recParent = Rectangle.Empty;
+
+        Debug.Assert(_owner is not null);
         success = NativeMethods.GetWindowRect(_owner.Handle, ref recParent);
 
         if (!success || (recParent.X == -32000 && recParent.Y == -32000))
@@ -242,7 +242,7 @@ internal static class MessageBoxEx
         //ptStart.Y = ptStart.Y < 0 ? 0 : ptStart.Y;
 
         //int result = NativeMethods.MoveWindow(hChildWnd, ptStart.X, ptStart.Y, width, height, false);
-        Task.Factory.StartNew(() => NativeMethods.SetWindowPos(hChildWnd, IntPtr.Zero, ptStart.X, ptStart.Y, width, height, DefaultWindowPosFlags));
+        Task.Factory.StartNew(() => NativeMethods.SetWindowPos(hChildWnd, nint.Zero, ptStart.X, ptStart.Y, width, height, DefaultWindowPosFlags));
     }
 
     #endregion
@@ -251,7 +251,7 @@ internal static class MessageBoxEx
 
     [SuppressUnmanagedCodeSecurity]
     [UnmanagedFunctionPointer(CallingConvention.Winapi, SetLastError = true)]
-    private delegate IntPtr HookProc(int nCode, IntPtr wParam, CWPRETSTRUCT lParam);
+    private delegate nint HookProc(int nCode, nint wParam, CWPRETSTRUCT lParam);
 
     [SuppressUnmanagedCodeSecurity]
     private static class NativeMethods
@@ -259,34 +259,34 @@ internal static class MessageBoxEx
         private const string User32 = "user32";
 
         [DllImport(User32, SetLastError = true)]
-        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+        public static extern uint GetWindowThreadProcessId(nint hWnd, out uint lpdwProcessId);
 
         [DllImport(User32, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetWindowRect(IntPtr hWnd, ref Rectangle lpRect);
+        public static extern bool GetWindowRect(nint hWnd, ref Rectangle lpRect);
 
         [DllImport(User32, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, SetWindowPosFlags uFlags);
+        public static extern bool SetWindowPos(nint hWnd, nint hWndInsertAfter, int x, int y, int cx, int cy, SetWindowPosFlags uFlags);
 
         [DllImport(User32, SetLastError = true)]
-        public static extern IntPtr SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hInstance, uint threadId);
+        public static extern nint SetWindowsHookEx(int idHook, HookProc lpfn, nint hInstance, uint threadId);
 
         [DllImport(User32, SetLastError = true)]
-        public static extern int UnhookWindowsHookEx(IntPtr idHook);
+        public static extern int UnhookWindowsHookEx(nint idHook);
 
         [DllImport(User32, SetLastError = true)]
-        public static extern IntPtr CallNextHookEx(IntPtr idHook, int nCode, IntPtr wParam, CWPRETSTRUCT lParam);
+        public static extern nint CallNextHookEx(nint idHook, int nCode, nint wParam, CWPRETSTRUCT lParam);
     }
 
     [StructLayout(LayoutKind.Sequential)]
     private ref struct CWPRETSTRUCT
     {
-        public IntPtr lResult;
-        public IntPtr lParam;
-        public IntPtr wParam;
+        public nint lResult;
+        public nint lParam;
+        public nint wParam;
         public uint message;
-        public IntPtr hwnd;
+        public nint hwnd;
     };
 
     private enum CbtHookAction : uint
@@ -304,7 +304,9 @@ internal static class MessageBoxEx
     }
 
     [Flags]
+#pragma warning disable IDE0079 // Remove unnecessary suppression
     [SuppressMessage("Design", "CA1069:Enums values should not be duplicated", Justification = "https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowpos")]
+#pragma warning restore IDE0079 // Remove unnecessary suppression
     private enum SetWindowPosFlags : uint
     {
         /// <summary>If the calling thread and the thread that owns the window are attached to different input queues, 

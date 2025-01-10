@@ -1,5 +1,6 @@
-﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+﻿// Copyright 2025 Osman Tunçelli. All rights reserved.
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
+
 #define USE_D2DFORLAYERED
 
 using System.Drawing;
@@ -22,9 +23,9 @@ using System.Collections.Generic;
 
 namespace SvgFileTypePlugin.Import;
 
-internal class Direct2DSvgConverter : DefaultSvgConverter
+internal class D2DSvgConverter : DefaultSvgConverter
 {
-    public static new Direct2DSvgConverter Instance { get; } = new Direct2DSvgConverter();
+    public static new D2DSvgConverter Instance { get; } = new D2DSvgConverter();
 
     public override string Name => "Direct2D";
 
@@ -101,7 +102,7 @@ internal class Direct2DSvgConverter : DefaultSvgConverter
     }
 
 #if USE_D2DFORLAYERED // Unfortunately, D2D doesn't support text elements.
-    public override Document GetLayeredDocument(IReadOnlyCollection<SvgVisualElement> elements, SvgImportConfig config, Action<int> progress = null, CancellationToken cancellationToken = default)
+    public override Document GetLayeredDocument(IReadOnlyCollection<SvgVisualElement> elements, SvgImportConfig config, Action<int>? progress = null, CancellationToken cancellationToken = default)
     {
         Logger.WriteLine($"Using {Name}...");
         cancellationToken.ThrowIfCancellationRequested();
@@ -118,7 +119,7 @@ internal class Direct2DSvgConverter : DefaultSvgConverter
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                BitmapLayer layer = null;
+                BitmapLayer? layer = null;
 
                 if (element is GroupBoundary boundaryNode)
                 {

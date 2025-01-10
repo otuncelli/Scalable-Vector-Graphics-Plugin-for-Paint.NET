@@ -1,4 +1,4 @@
-﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+﻿// Copyright 2025 Osman Tunçelli. All rights reserved.
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
 using System;
@@ -25,6 +25,9 @@ internal class DefaultSvgConverter : ISvgConverter
 
     public IEnumerable<SvgVisualElement> Prepare(SvgDocument svg, SvgImportConfig config, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(svg);
+        ArgumentNullException.ThrowIfNull(config);
+
         IEnumerable<SvgVisualElement> elements = PrepareRecursive(svg.Children, groupName: null, cancellationToken);
         if (config.LayersMode == LayersMode.Groups)
         {
@@ -51,12 +54,14 @@ internal class DefaultSvgConverter : ISvgConverter
 
     private static IEnumerable<SvgVisualElement> FilterGroups(IEnumerable<SvgVisualElement> elements, CancellationToken cancellationToken = default)
     {
-        HashSet<SvgVisualElement> groupElements = new HashSet<SvgVisualElement>();
+        ArgumentNullException.ThrowIfNull(elements);
+
+        HashSet<SvgVisualElement> groupElements = [];
         foreach (SvgVisualElement element in elements.NotOfType<GroupBoundary>())
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            SvgVisualElement visual = null;
+            SvgVisualElement? visual = null;
 
             if (element.GetGroupName() != null)
             {
@@ -72,15 +77,16 @@ internal class DefaultSvgConverter : ISvgConverter
             }
 
             visual ??= element;
-            if (!groupElements.Contains(visual))
+            if (groupElements.Contains(visual))
             {
-                groupElements.Add(visual);
-                yield return visual;
+                continue;
             }
+            groupElements.Add(visual);
+            yield return visual;
         }
     }
 
-    private static IEnumerable<SvgVisualElement> PrepareRecursive(SvgElementCollection elements, string groupName = null, CancellationToken cancellationToken = default)
+    private static IEnumerable<SvgVisualElement> PrepareRecursive(SvgElementCollection? elements, string? groupName = null, CancellationToken cancellationToken = default)
     {
         if (elements == null || elements.Count == 0)
         {
@@ -97,27 +103,27 @@ internal class DefaultSvgConverter : ISvgConverter
             if (visual.Visible && !visual.IsDisplayable())
             {
                 visual.Visibility = "hidden";
-                visual.Display = String.Empty; // null throws exception
+                visual.Display = string.Empty; // null throws exception
             }
 
             // Store visibility
             visual.StoreOriginalVisibility();
 
             // Save current group to indicate that elements inside a group.
-            if (!String.IsNullOrEmpty(groupName))
+            if (!string.IsNullOrEmpty(groupName))
             {
                 // Store group info
                 visual.SetGroupName(groupName);
             }
 
-            SvgGroup group = visual as SvgGroup;
+            SvgGroup? group = visual as SvgGroup;
             GroupBoundary boundary;
             if (group != null)
             {
                 groupName = GetLayerTitle(group, prependElementName: false);
 
                 // Return fake node to indicate group end. (order is reversed)
-                string name = String.Format(SR.EndLayerGroup, groupName);
+                string name = string.Format(SR.EndLayerGroup, groupName);
                 boundary = new GroupBoundary(group, name, false);
                 yield return boundary;
             }
@@ -133,7 +139,7 @@ internal class DefaultSvgConverter : ISvgConverter
             if (group != null)
             {
                 // Return fake node to indicate group start.
-                string name = String.Format(SR.LayerGroup, groupName);
+                string name = string.Format(SR.LayerGroup, groupName);
                 boundary = new GroupBoundary(group, name, true);
                 yield return boundary;
             }
@@ -152,8 +158,11 @@ internal class DefaultSvgConverter : ISvgConverter
 
     #region Render
 
-    public virtual Document GetFlatDocument(IReadOnlyCollection<SvgVisualElement> elements, SvgImportConfig config, Action<int> progress = null, CancellationToken cancellationToken = default)
+    public virtual Document GetFlatDocument(IReadOnlyCollection<SvgVisualElement> elements, SvgImportConfig config, Action<int>? progress = null, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(elements);
+        ArgumentNullException.ThrowIfNull(config);
+
         Logger.WriteLine($"Using {Name}...");
         cancellationToken.ThrowIfCancellationRequested();
         int layersProcessed = 0;
@@ -185,6 +194,9 @@ internal class DefaultSvgConverter : ISvgConverter
 
     public virtual Document GetFlatDocument(SvgDocument svg, SvgImportConfig config, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(svg);
+        ArgumentNullException.ThrowIfNull(config);
+
         IEnumerable<SvgVisualElement> elements = Prepare(svg, config, cancellationToken);
         List<SvgVisualElement> prepared = elements.ToList();
         return GetFlatDocument(prepared, config, null, cancellationToken);
@@ -192,12 +204,19 @@ internal class DefaultSvgConverter : ISvgConverter
 
     public Document GetFlatDocument(SvgDocument svg, Stream stream, SvgImportConfig config)
     {
+        ArgumentNullException.ThrowIfNull(svg);
+        ArgumentNullException.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(config);
+
         using MyCancellationTokenSource cts = new MyCancellationTokenSource(stream);
         return GetFlatDocument(svg, config, cts.Token);
     }
 
-    public virtual Document GetLayeredDocument(IReadOnlyCollection<SvgVisualElement> elements, SvgImportConfig config, Action<int> progress = null, CancellationToken cancellationToken = default)
+    public virtual Document GetLayeredDocument(IReadOnlyCollection<SvgVisualElement> elements, SvgImportConfig config, Action<int>? progress = null, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(elements);
+        ArgumentNullException.ThrowIfNull(config);
+
         Logger.WriteLine("Using GDI+...");
         cancellationToken.ThrowIfCancellationRequested();
         IEnumerable<BitmapLayer> GetLayers()
@@ -210,7 +229,7 @@ internal class DefaultSvgConverter : ISvgConverter
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                BitmapLayer layer = null;
+                BitmapLayer? layer = null;
 
                 if (element is GroupBoundary boundaryNode)
                 {
@@ -275,6 +294,9 @@ internal class DefaultSvgConverter : ISvgConverter
 
     protected virtual void RenderSvgDocument(SvgElement element, object context)
     {
+        ArgumentNullException.ThrowIfNull(element);
+        ArgumentNullException.ThrowIfNull(context);
+
         Graphics g = (Graphics)context;
         if (element is SvgUse use)
         {
@@ -289,8 +311,12 @@ internal class DefaultSvgConverter : ISvgConverter
 
     protected virtual void RenderSvgUseElement(SvgUse use, Action<SvgElement> renderCallback)
     {
-        SvgElement refCopy = use.CopyReferencedRootElement();
-        if (refCopy == null) { return; }
+        ArgumentNullException.ThrowIfNull(use);
+        ArgumentNullException.ThrowIfNull(renderCallback);
+
+        SvgElement? refCopy = use.CopyReferencedRootElement();
+        if (refCopy is null)
+            return;
         refCopy.Visibility = "visible";
         use.Visibility = "hidden";
         SvgElementCollection children = use.Parent.Children;
@@ -344,22 +370,27 @@ internal class DefaultSvgConverter : ISvgConverter
 
     protected static byte ToByteOpacity(float opacity)
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(opacity);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(opacity, 1f);
+
         int value = (int)MathF.Round(opacity * 255f);
         value = Math.Clamp(value, byte.MinValue, byte.MaxValue);
         return (byte)value;
     }
 
-    protected static void IncrementProgress(Action<int> progressCallback, ref int layersProcessed)
+    protected static void IncrementProgress(Action<int>? progressCallback, ref int layersProcessed)
     {
         progressCallback?.Invoke(++layersProcessed);
     }
 
-    private static readonly IReadOnlyCollection<string> TitleAttributes = new string[] { "label", "title", "inkscape:label" };
+    private static readonly IReadOnlyCollection<string> TitleAttributes = ["label", "title", "inkscape:label"];
 
     protected static string GetLayerTitle(SvgElement element, bool prependElementName = true)
     {
+        ArgumentNullException.ThrowIfNull(element);
+
         string elementName = element.GetName();
-        string layerName = null;
+        string? layerName = null;
 
         if (element.ID != null)
         {
@@ -371,7 +402,7 @@ internal class DefaultSvgConverter : ISvgConverter
             // get custom title attributes.
             foreach (string attr in TitleAttributes)
             {
-                if (element.CustomAttributes.TryGetValue(attr, out string title) && !string.IsNullOrEmpty(title))
+                if (element.CustomAttributes.TryGetValue(attr, out string? title) && !string.IsNullOrEmpty(title))
                 {
                     layerName = title;
                     break;
@@ -382,7 +413,7 @@ internal class DefaultSvgConverter : ISvgConverter
         if (string.IsNullOrEmpty(layerName) && element.Children != null)
         {
             // Get child title tag
-            SvgTitle title = element.Children.OfType<SvgTitle>().FirstOrDefault();
+            SvgTitle? title = element.Children.OfType<SvgTitle>().FirstOrDefault();
             if (!string.IsNullOrEmpty(title?.Content))
             {
                 layerName = title.Content;
@@ -397,7 +428,7 @@ internal class DefaultSvgConverter : ISvgConverter
                 && !string.IsNullOrEmpty(use.ReferencedElement.OriginalString))
             {
                 string str = use.ReferencedElement.OriginalString.Trim();
-                if (str.StartsWith("#"))
+                if (str.StartsWith('#'))
                 {
                     layerName = str[1..];
                 }
@@ -423,6 +454,9 @@ internal class DefaultSvgConverter : ISvgConverter
 
     protected static Document GetDocument(IEnumerable<BitmapLayer> layers, SvgImportConfig config)
     {
+        ArgumentNullException.ThrowIfNull(layers);
+        ArgumentNullException.ThrowIfNull(config);
+
         Document document = new Document(config.Width, config.Height);
         try
         {
@@ -445,34 +479,36 @@ internal class DefaultSvgConverter : ISvgConverter
     #region GroupBoundary
 
     /* a private type to determine boundaries of a group. */
-    protected sealed class GroupBoundary : SvgVisualElement
+    protected sealed class GroupBoundary(SvgGroup group, string name, bool isStart) : SvgVisualElement
     {
-        private readonly SvgGroup group;
-
-        public GroupBoundary(SvgGroup group, string name, bool isStart)
-        {
-            this.group = group;
-            IsStart = isStart;
-            Name = name;
-        }
+        private readonly SvgGroup group = group;
 
         public override bool Visible => group.Visible;
 
         public override float Opacity => group.Opacity;
 
-        public bool IsStart { get; }
+        public bool IsStart { get; } = isStart;
 
-        public string Name { get; }
+        public string Name { get; } = name;
 
         public override SvgDocument OwnerDocument => throw new NotImplementedException();
 
         public override RectangleF Bounds => throw new NotImplementedException();
 
-        public bool GetOriginalVisibility() => group.IsOriginallyVisible();
+        public bool GetOriginalVisibility()
+        {
+            return group.IsOriginallyVisible();
+        }
 
-        public override SvgElement DeepCopy() => throw new NotImplementedException();
+        public override SvgElement DeepCopy()
+        {
+            throw new NotImplementedException();
+        }
 
-        public override GraphicsPath Path(ISvgRenderer renderer) => throw new NotImplementedException();
+        public override GraphicsPath Path(ISvgRenderer renderer)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     #endregion

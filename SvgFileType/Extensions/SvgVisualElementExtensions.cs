@@ -1,4 +1,4 @@
-﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+﻿// Copyright 2025 Osman Tunçelli. All rights reserved.
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
 using System;
@@ -15,21 +15,23 @@ internal static class SvgVisualElementExtensions
 
     private const string OriginalVisibilityAttribute = "original_visibility";
 
-    public static bool IsOriginallyVisible(this SvgVisualElement elem)
-        => elem.CustomAttributes.TryGetValue(OriginalVisibilityAttribute, out string arg) &&
-            string.Equals(arg?.Trim(), "visible", StringComparison.OrdinalIgnoreCase);
-
-    public static void StoreOriginalVisibility(this SvgVisualElement elem)
+    public static bool IsOriginallyVisible(this SvgVisualElement element)
     {
-        SvgCustomAttributeCollection col = elem.CustomAttributes;
+        ArgumentNullException.ThrowIfNull(element);
+
+        return element.CustomAttributes.TryGetValue(OriginalVisibilityAttribute, out string? arg) 
+            && string.Equals(arg?.Trim(), "visible", StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static void StoreOriginalVisibility(this SvgVisualElement element)
+    {
+        ArgumentNullException.ThrowIfNull(element);
+
+        SvgCustomAttributeCollection col = element.CustomAttributes;
         if (col.ContainsKey(OriginalVisibilityAttribute))
-        {
-            col[OriginalVisibilityAttribute] = elem.Visibility;
-        }
+            col[OriginalVisibilityAttribute] = element.Visibility;
         else
-        {
-            col.Add(OriginalVisibilityAttribute, elem.Visibility);
-        }
+            col.Add(OriginalVisibilityAttribute, element.Visibility);
     }
 
     #endregion
@@ -38,40 +40,51 @@ internal static class SvgVisualElementExtensions
 
     private const string GroupNameAttribute = "group_name";
 
-    public static string GetGroupName(this SvgVisualElement elem)
-        => elem.CustomAttributes.TryGetValue(GroupNameAttribute, out string groupName) ? groupName : null;
-
-    public static void SetGroupName(this SvgVisualElement elem, string groupName)
+    public static string? GetGroupName(this SvgVisualElement element)
     {
-        SvgCustomAttributeCollection col = elem.CustomAttributes;
+        ArgumentNullException.ThrowIfNull(element);
+
+        return element.CustomAttributes.TryGetValue(GroupNameAttribute, out string? groupName) ? groupName : null;
+    }
+
+    public static void SetGroupName(this SvgVisualElement element, string? groupName)
+    {
+        ArgumentNullException.ThrowIfNull(element);
+
+        SvgCustomAttributeCollection col = element.CustomAttributes;
         if (col.ContainsKey(GroupNameAttribute))
         {
             if (string.IsNullOrEmpty(groupName))
-            {
                 col.Remove(GroupNameAttribute);
-            }
             else
-            {
                 col[GroupNameAttribute] = groupName;
-            }
         }
         else if (!string.IsNullOrEmpty(groupName))
-        {
             col.Add(GroupNameAttribute, groupName);
-        }
     }
 
     #endregion
 
-    public static IEnumerable<SvgVisualElement> NotOfType<TElement>(this IEnumerable<SvgVisualElement> source) 
+    public static IEnumerable<SvgVisualElement> NotOfType<TElement>(this IEnumerable<SvgVisualElement> source)
         where TElement : SvgVisualElement
-        => source.Where(element => element is not TElement);
+    {
+        ArgumentNullException.ThrowIfNull(source);
+
+        return source.Where(element => element is not TElement);
+    }
 
     public static bool IsDisplayable(this SvgVisualElement element)
-        => !element.Display.Trim().Equals("none", StringComparison.OrdinalIgnoreCase);
-
-    public static bool PreRender(this SvgVisualElement element, IReadOnlyCollection<SvgVisualElement> elements, bool hiddenElements, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(element);
+
+        return !element.Display.Trim().Equals("none", StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static bool PreRender(this SvgVisualElement element, IReadOnlyCollection<SvgVisualElement> elements, bool hiddenElements, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(element);
+        ArgumentNullException.ThrowIfNull(elements);
+
         // Turn off visibility of all other elements
         foreach (SvgVisualElement sibling in elements.Where(e => e != element))
         {
@@ -87,16 +100,12 @@ internal static class SvgVisualElementExtensions
             cancellationToken.ThrowIfCancellationRequested();
 
             if (parent is not SvgVisualElement visual)
-            {
                 continue;
-            }
 
             // Check, maybe parent element was initially hidden
             // Skip hidden layers.
             if (!hiddenElements && !visual.IsOriginallyVisible())
-            {
                 return false;
-            }
 
             visual.Visibility = "visible";
         }

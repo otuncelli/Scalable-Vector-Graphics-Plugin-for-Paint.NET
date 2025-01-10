@@ -1,7 +1,8 @@
-﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+﻿// Copyright 2025 Osman Tunçelli. All rights reserved.
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -17,7 +18,7 @@ namespace SvgFileTypePlugin.Export;
 
 internal static partial class SvgExport
 {
-    private static Lazy<string> ShapesDirectory => new(() =>
+    private static Lazy<string?> ShapesDirectory => new(() =>
     {
         try
         {
@@ -35,7 +36,7 @@ internal static partial class SvgExport
         }
     });
 
-    public static string ShowSaveShapeDialog()
+    public static string? ShowSaveShapeDialog()
     {
         if (!UIHelper.IsSaveConfigDialogVisible())
         {
@@ -51,13 +52,25 @@ internal static partial class SvgExport
         });
     }
 
+    private static T ThrowIfOverflow<T>(Func<T> action, string message)
+    {
+        try
+        {
+            return action();
+        }
+        catch (OverflowException ex)
+        {
+            throw new WarningException(message, ex);
+        }
+    }
+
     public static void Export(Surface input, Stream output, PropertyCollection props, ProgressEventHandler progressCallback, string shapePath)
     {
-        Ensure.IsNotNull(input, nameof(input));
-        Ensure.IsNotNull(output, nameof(output));
-        Ensure.IsNotNull(props, nameof(props));
-        Ensure.IsNotNull(progressCallback, nameof(progressCallback));
-        Ensure.Test(() => checked(input.Stride * input.Height), StringResources.CanvasIsTooBig);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(output);
+        ArgumentNullException.ThrowIfNull(props);
+        ArgumentNullException.ThrowIfNull(progressCallback);
+        ThrowIfOverflow(() => checked(input.Stride * input.Height), StringResources.CanvasIsTooBig);
 
 #pragma warning disable format // @formatter:off
         ScanMode scanMode                   = props.GetPropertyValue<ScanMode>(PropertyNames.ScanMode);
@@ -81,7 +94,7 @@ internal static partial class SvgExport
 #pragma warning restore format // @formatter:on
 
         PotraceBitmap bm;
-        TraceResult trace;
+        TraceResult? trace;
         ImageInfo imginfo;
         SvgBackEnd backend = new SvgBackEnd
         {
@@ -206,7 +219,7 @@ internal static partial class SvgExport
                 }
             }
 
-            if (dialogVisible && scanMode == ScanMode.Transparent && shapePath != null)
+            if (dialogVisible && scanMode == ScanMode.Transparent && shapePath.Length > 0)
             {
                 PdnShapeBackEnd pdnbackend = new PdnShapeBackEnd
                 {
@@ -221,7 +234,7 @@ internal static partial class SvgExport
                 StringBuilder msg = new StringBuilder();
                 msg.AppendFormat(StringResources.ShapeSaved, shapePath);
 
-                if (Path.GetDirectoryName(shapePath)?.StartsWith(ShapesDirectory.Value, StringComparison.OrdinalIgnoreCase) == true)
+                if (ShapesDirectory.Value != null && Path.GetDirectoryName(shapePath)?.StartsWith(ShapesDirectory.Value, StringComparison.OrdinalIgnoreCase) == true)
                 {
                     msg.AppendLine();
                     msg.AppendLine();
@@ -236,12 +249,12 @@ internal static partial class SvgExport
 
     public static void Export(Document input, Stream output, PropertyBasedSaveConfigToken token, Surface scratchSurface, ProgressEventHandler progressCallback, string shapePath)
     {
-        Ensure.IsNotNull(input, nameof(input));
-        Ensure.IsNotNull(output, nameof(output));
-        Ensure.IsNotNull(token, nameof(token));
-        Ensure.IsNotNull(scratchSurface, nameof(scratchSurface));
-        Ensure.IsNotNull(progressCallback, nameof(progressCallback));
-        Ensure.Test(() => checked(scratchSurface.Stride * scratchSurface.Height), StringResources.CanvasIsTooBig);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(output);
+        ArgumentNullException.ThrowIfNull(token);
+        ArgumentNullException.ThrowIfNull(scratchSurface);
+        ArgumentNullException.ThrowIfNull(progressCallback);
+        ThrowIfOverflow(() => checked(scratchSurface.Stride * scratchSurface.Height), StringResources.CanvasIsTooBig);
 
         input.Flatten(scratchSurface);
         Export(scratchSurface, output, token.Properties, progressCallback, shapePath);

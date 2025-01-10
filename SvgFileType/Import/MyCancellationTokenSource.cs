@@ -1,4 +1,4 @@
-﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+﻿// Copyright 2025 Osman Tunçelli. All rights reserved.
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
 using System;
@@ -18,8 +18,8 @@ internal sealed class MyCancellationTokenSource : CancellationTokenSource
 
     public MyCancellationTokenSource(Func<bool> cb, int period = 1000)
     {
-        Ensure.IsNotNull(cb, nameof(cb));
-        Ensure.IsGreaterThan(period, 0, nameof(period));
+        ArgumentNullException.ThrowIfNull(cb);
+        ArgumentOutOfRangeException.ThrowIfNegative(period);
 
         this.period = period;
         this.cb = cb;
@@ -29,6 +29,7 @@ internal sealed class MyCancellationTokenSource : CancellationTokenSource
     public MyCancellationTokenSource(Stream stream, int period = 1000) 
         : this(() => IsStreamCanceled(stream), period)
     {
+        ArgumentNullException.ThrowIfNull(stream);
     }
 
     public void Pause()
@@ -72,7 +73,7 @@ internal sealed class MyCancellationTokenSource : CancellationTokenSource
         }
     }
 
-    private void OnTimer(object state)
+    private void OnTimer(object? state)
     {
         if (Monitor.TryEnter(sync, 0))
         {
@@ -98,6 +99,8 @@ internal sealed class MyCancellationTokenSource : CancellationTokenSource
 
     private static bool IsStreamCanceled(Stream stream)
     {
+        ArgumentNullException.ThrowIfNull(stream);
+
         if (!stream.CanSeek) { return false; }
         try
         {

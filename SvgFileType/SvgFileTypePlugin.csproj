@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0-windows</TargetFrameworks>
+    <TargetFrameworks>net9.0-windows</TargetFrameworks>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <DefineConstants>TRACE;RESVG</DefineConstants> <!-- DONTCHECKUPDATES;SKIA -->
+    <DefineConstants>TRACE;RESVG</DefineConstants> <!-- RESVG,DIRECT2D -->
     <NoWarn>FodyPackageReference;MSB3277</NoWarn>
+    <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     <RootNamespace>SvgFileTypePlugin</RootNamespace>
@@ -14,20 +15,16 @@
   <PropertyGroup Label="AssemblyInfo" Condition="'$(GenerateAssemblyInfo)'=='true' Or '$(GenerateAssemblyInfo)'==''">
     <AssemblyName>SvgFileType</AssemblyName>
     <AssemblyTitle>SVG File Type Plugin for Paint.NET</AssemblyTitle>
-    <Copyright>Copyright © 2023 Osman Tunçelli</Copyright>
+    <Copyright>Copyright © 2025 Osman Tunçelli</Copyright>
     <Company>$(Copyright)</Company>
     <Product>$(AssemblyTitle)</Product>
-    <Version>1.0.6.0</Version>
+    <Version>1.0.7.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Label="Base Variables">
     <PluginType>FileType</PluginType>
     <PdnRoot>C:\Program Files\paint.net</PdnRoot>
     <PluginDir>$(USERPROFILE)\Documents\paint.net App Files\$(PluginType)s\$(RootNamespace)\</PluginDir>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$(DefineConstants.Contains('SKIA'))=='true'">
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -94,7 +91,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Svg" Version="3.4.4" />
+    <PackageReference Include="Svg" Version="3.4.7" />
     <Compile Update="Localization\StringResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -109,30 +106,13 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup Condition="$(DefineConstants.Contains('SKIA'))=='true'">
-    <PackageReference Include="Svg.Skia" Version="1.0.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="$(DefineConstants.Contains('SKIA'))=='false'">
+  <ItemGroup>
     <PackageReference Include="Fody" Version="6.8.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="ILMerge.Fody" Version="1.24.0" PrivateAssets="all" />
   </ItemGroup>
-
-  <Target Name="ChangeAliasesOfStrongNameAssemblies" Condition="$(DefineConstants.Contains('SKIA'))=='true'" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
-    <ItemGroup>
-      <ReferencePath Condition="'%(FileName)' == 'Svg.Custom'">
-        <Aliases>SvgCustom</Aliases>
-      </ReferencePath>
-    </ItemGroup>
-  </Target>
-
-  <Target Name="ILRepack" Condition="$(DefineConstants.Contains('SKIA'))=='true'" AfterTargets="PostBuildEvent">
-    <Exec Command="ilrepack /noRepackRes /internalize /union &quot;$(TargetPath)&quot; &quot;$(TargetDir)Svg.Skia.dll&quot; &quot;$(TargetDir)Svg.Model.dll&quot; &quot;$(TargetDir)Svg.dll&quot; &quot;$(TargetDir)ExCss.dll&quot;  &quot;$(TargetDir)Fizzler.dll&quot; &quot;$(TargetDir)BitmapVectorizer.dll&quot; &quot;$(TargetDir)PaintDotNet.IndirectUI.Fluent.dll&quot; &quot;$(TargetDir)SkiaSharp.dll&quot; &quot;$(TargetDir)SkiaSharp.HarfBuzz.dll&quot; &quot;$(TargetDir)HarfBuzzSharp.dll&quot; &quot;$(TargetDir)ShimSkiaSharp.dll&quot; &quot;$(TargetDir)Svg.Custom.dll&quot; /lib:&quot;$(PdnRoot)&quot; /lib:&quot;D:\workspace\Scalable-Vector-Graphics-Plugin-for-Paint.NET\System.Drawing.Common.dll&quot; /out:&quot;$(TargetDir)SvgFileType.dll&quot;" />
-    <Exec Command="copy &quot;$(TargetDir)runtimes\win-x64\native\*.dll&quot; &quot;$(PluginDir)&quot; /y" />
-  </Target>
 
   <Target Name="Copy to plugin directory" AfterTargets="PostBuildEvent">
     <Exec Command="if not exist &quot;$(PluginDir)&quot; mkdir &quot;$(PluginDir)&quot;" />

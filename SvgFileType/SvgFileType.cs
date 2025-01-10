@@ -1,4 +1,4 @@
-﻿// Copyright 2023 Osman Tunçelli. All rights reserved.
+﻿// Copyright 2025 Osman Tunçelli. All rights reserved.
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
 using System;
@@ -19,11 +19,11 @@ namespace SvgFileTypePlugin;
 [PluginSupportInfo(typeof(MyPluginSupportInfo))]
 public sealed class SvgFileType : PropertyBasedFileType
 {
-    private string shapePath;
+    private string shapePath = string.Empty;
 
     #region Constructor
 
-    public SvgFileType() : base(BaseName, BaseOptions)
+    public SvgFileType() : base("SVG Plugin", BaseOptions)
     {
     }
 
@@ -31,26 +31,31 @@ public sealed class SvgFileType : PropertyBasedFileType
 
     #region OnLoad
 
-    protected override Document OnLoad(Stream input) => SvgImport.Load(input);
+    protected override Document OnLoad(Stream input)
+    {
+        return SvgImport.Load(input);
+    }
 
     #endregion
 
     #region OnSave
 
     protected override void OnSaveT(Document input, Stream output, PropertyBasedSaveConfigToken token, Surface scratchSurface, ProgressEventHandler progressCallback)
-        => SvgExport.Export(input, output, token, scratchSurface, progressCallback, Interlocked.Exchange(ref shapePath, null));
+    {
+        SvgExport.Export(input, output, token, scratchSurface, progressCallback, Interlocked.Exchange(ref shapePath, string.Empty));
+    }
 
-    private void PdnShape_Click(object sender, ValueEventArgs<object> args)
+    private void PdnShape_Click(object? sender, ValueEventArgs<object> args)
     {
         if ((int)args.Value != int.MinValue)
         {
-            Interlocked.Exchange(ref shapePath, SvgExport.ShowSaveShapeDialog());
+            Interlocked.Exchange(ref shapePath, SvgExport.ShowSaveShapeDialog() ?? string.Empty);
         }
     }
 
     public override ControlInfo OnCreateSaveConfigUI(PropertyCollection props)
     {
-        Ensure.IsNotNull(props, nameof(props));
+        ArgumentNullException.ThrowIfNull(props);
 
         PropertyControlInfo CommonSettingsF(PropertyControlInfo p)
             => p.SliderSmallChange(.01).SliderLargeChange(.01).UpDownIncrement(.01).DecimalPlaces(2).ShowResetButton();
@@ -64,7 +69,7 @@ public sealed class SvgFileType : PropertyBasedFileType
             .Configure(PropertyNames.PreviewMode, SR.PreviewMode, p => p
                 .ValueDisplayNameCallback<PreviewMode>(Localize.GetDisplayName))
             .Configure(PropertyNames.PdnShapeName, SR.PdnShapeExportOptions, SR.PdnShapeExportOptionsDesc)
-            .Configure(PropertyNames.PdnShape, String.Empty, p => p
+            .Configure(PropertyNames.PdnShape, string.Empty, p => p
                 .ControlType(PropertyControlType.IncrementButton)
                 .ButtonText(SR.ExportAsPdnShape)
                 .OnValueChanged(PdnShape_Click))
@@ -84,32 +89,32 @@ public sealed class SvgFileType : PropertyBasedFileType
             .Configure(PropertyNames.FillColor, SR.FillColor, p => p
                 .ControlType(PropertyControlType.ColorWheel)
                 .ShowResetButton())
-            .Configure(PropertyNames.Invert, String.Empty, SR.Invert)
-            .Configure(PropertyNames.Tight, String.Empty, SR.Tight)
-            .Configure(PropertyNames.Enclose, String.Empty, SR.Enclose)
+            .Configure(PropertyNames.Invert, string.Empty, SR.Invert)
+            .Configure(PropertyNames.Tight, string.Empty, SR.Tight)
+            .Configure(PropertyNames.Enclose, string.Empty, SR.Enclose)
             .Configure(PropertyNames.Scale, SR.Scale, CommonSettingsF)
             .Configure(PropertyNames.Angle, SR.Angle, p => p
                 .ControlType(PropertyControlType.AngleChooser)
                 .ShowResetButton())
-            .Configure(PropertyNames.GitHubLink, String.Format(SR.PluginVersion, MyPluginSupportInfo.Instance.Version), SR.GitHubLink)
-            .Configure(PropertyNames.DiscussionLink, String.Empty, SR.DiscussionLink);
+            .Configure(PropertyNames.GitHubLink, string.Format(SR.PluginVersion, MyPluginSupportInfo.Instance.Version), SR.GitHubLink)
+            .Configure(PropertyNames.DiscussionLink, string.Empty, SR.DiscussionLink);
         PanelControlInfo panel = pcic.CreatePanel();
         return panel;
     }
 
     public override PropertyCollection OnCreateSavePropertyCollection()
     {
-        PropertyName[] targets1 = new PropertyName[] 
-        {
+        PropertyName[] targets1 =
+        [
             PropertyNames.PdnShape, 
             PropertyNames.PdnShapeName 
-        };
+        ];
 
-        PropertyName[] targets2 = new PropertyName[]
-        {
+        PropertyName[] targets2 =
+        [
             PropertyNames.LowpassFilter,
             PropertyNames.GreymapScale
-        };
+        ];
 
         FluentPropertyCollection properties = new FluentPropertyCollection()
             .AddStaticListChoice(PropertyNames.ScanMode, ScanMode.Transparent)
@@ -139,7 +144,10 @@ public sealed class SvgFileType : PropertyBasedFileType
         return properties;
     }
 
-    protected override bool ShouldSerializeTokenProperty(Property property) => IsSerializable(property);
+    protected override bool ShouldSerializeTokenProperty(Property property)
+    {
+        return IsSerializable(property);
+    }
 
     #endregion
 
@@ -147,13 +155,11 @@ public sealed class SvgFileType : PropertyBasedFileType
 
     private static readonly FileTypeOptions BaseOptions = new()
     {
-        LoadExtensions = new[] { ".svg", ".svgz" },
+        LoadExtensions = [".svg", ".svgz"],
         SupportsCancellation = true,
         SupportsLayers = false,
-        SaveExtensions = new[] { ".svg" }
+        SaveExtensions = [".svg"]
     };
-
-    private static readonly string BaseName = $"SVG - Scalable Vector Graphics Plugin v{MyPluginSupportInfo.Instance.Version}";
 
     private static bool IsSerializable(Property property)
     {
