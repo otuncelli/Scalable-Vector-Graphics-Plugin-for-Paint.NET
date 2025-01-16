@@ -7,21 +7,21 @@ using PaintDotNet;
 
 namespace SvgFileTypePlugin;
 
-public sealed class MyPluginSupportInfo : IPluginSupportInfo, IPluginSupportInfoProvider
+public sealed class SvgFileTypePluginSupportInfo : IPluginSupportInfo, IPluginSupportInfoProvider
 {
     #region Properties
 
-    internal static MyPluginSupportInfo Instance { get; } = new MyPluginSupportInfo();
+    internal static SvgFileTypePluginSupportInfo Instance { get; } = new SvgFileTypePluginSupportInfo();
 
     #region IPluginSupportInfo
 
     public string Author { get; } = "Osman Tunçelli";
 
-    public string Copyright { get; } = GetCustomAttribute<AssemblyCopyrightAttribute>().Copyright;
+    public string Copyright { get; } = GetCustomAttribute<AssemblyCopyrightAttribute>()?.Copyright ?? string.Empty;
 
-    public string DisplayName { get; } = GetCustomAttribute<AssemblyProductAttribute>().Product;
+    public string DisplayName { get; } = GetCustomAttribute<AssemblyProductAttribute>()?.Product ?? string.Empty;
 
-    public Version Version { get; } = GetAssembly().GetName().Version;
+    public Version Version { get; } = GetAssembly().GetName().Version ?? new Version(1, 0);
 
     public Uri WebsiteUri { get; } = new Uri("https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET");
 
@@ -35,21 +35,21 @@ public sealed class MyPluginSupportInfo : IPluginSupportInfo, IPluginSupportInfo
 
     public IPluginSupportInfo GetPluginSupportInfo()
     {
-        return new MyPluginSupportInfo();
+        return new SvgFileTypePluginSupportInfo();
     }
 
     #endregion
 
     #region Static Methods
 
-    private static T GetCustomAttribute<T>() where T : Attribute
+    private static T? GetCustomAttribute<T>() where T : Attribute
     {
         return GetAssembly().GetCustomAttribute<T>();
     }
 
     private static Assembly GetAssembly()
     {
-        return typeof(MyPluginSupportInfo).Assembly;
+        return typeof(SvgFileTypePluginSupportInfo).Assembly;
     }
 
     #endregion

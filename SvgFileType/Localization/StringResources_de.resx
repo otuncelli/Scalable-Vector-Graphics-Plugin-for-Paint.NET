@@ -190,11 +190,7 @@
     <comment>Export</comment>
   </data>
   <data name="GroupBoundaries" xml:space="preserve">
-    <value>Gruppengrenzen</value>
-    <comment>Import</comment>
-  </data>
-  <data name="GroupBoundariesToolTip" xml:space="preserve">
-    <value>Importiert Gruppengrenzen als leere Ebenen.</value>
+    <value>Gruppenbegrenzungen als leere Ebenen</value>
     <comment>Import</comment>
   </data>
   <data name="Groups" xml:space="preserve">

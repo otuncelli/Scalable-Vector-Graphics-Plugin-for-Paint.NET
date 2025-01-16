@@ -4,21 +4,32 @@
 using System;
 using System.Runtime.CompilerServices;
 using PaintDotNet;
+using PaintDotNet.Rendering;
 
 namespace SvgFileTypePlugin.Extensions;
 
 internal static class SurfaceExtensions
 {
-    public static Document CreateDocument(this Surface surface, bool takeOwnership = false)
+    /// <exception cref="ArgumentNullException"></exception>
+    public static Document CreateSingleLayerDocument(this Surface surface, bool takeOwnership = false)
     {
         ArgumentNullException.ThrowIfNull(surface);
 
         Document document = new Document(surface.Width, surface.Height);
-        document.Layers.Add(new BitmapLayer(surface, takeOwnership));
+        try
+        {
+            BitmapLayer layer = new BitmapLayer(surface, takeOwnership);
+            document.Layers.Add(layer);
+        }
+        catch
+        {
+            document.Dispose();
+            throw;
+        }
         return document;
     }
 
-    public static void ConvertFromRgba(this Surface surface)
+    public static void ConvertFromPrgba(this Surface surface)
     {
         ArgumentNullException.ThrowIfNull(surface);
 
@@ -31,6 +42,7 @@ internal static class SurfaceExtensions
                 pix = ref Unsafe.Add(ref pix, 1);
             }
         }
+        surface.ConvertFromPremultipliedAlpha();
     }
 
     public static bool IsEmpty(this Surface surface)

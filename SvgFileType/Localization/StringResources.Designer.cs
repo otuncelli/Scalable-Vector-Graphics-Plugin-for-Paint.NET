@@ -223,20 +223,11 @@ namespace SvgFileTypePlugin.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group boundaries.
+        ///   Looks up a localized string similar to Group boundaries as empty layers.
         /// </summary>
         internal static string GroupBoundaries {
             get {
                 return ResourceManager.GetString("GroupBoundaries", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Imports group boundaries as empty layers..
-        /// </summary>
-        internal static string GroupBoundariesToolTip {
-            get {
-                return ResourceManager.GetString("GroupBoundariesToolTip", resourceCulture);
             }
         }
         

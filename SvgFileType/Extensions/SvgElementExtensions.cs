@@ -3,8 +3,6 @@
 
 using System;
 using System.Reflection;
-using System.Runtime.Intrinsics.Arm;
-using System.Xml.Linq;
 using Svg;
 
 namespace SvgFileTypePlugin.Extensions;
@@ -30,7 +28,7 @@ internal static class SvgElementExtensions
         return (SvgAttributeCollection?)AttributesGetter?.Invoke(element, null);
     }
 
-    public static void Cleanup(this SvgElement element)
+    public static void RemoveInvisibleAndNonTextElements(this SvgElement element)
     {
         ArgumentNullException.ThrowIfNull(element);
 
@@ -40,7 +38,7 @@ internal static class SvgElementExtensions
             if (child.Visibility != "visible" && child is not SvgTextBase)
                 element.Children.RemoveAt(i);
             else
-                child.Cleanup();
+                child.RemoveInvisibleAndNonTextElements();
         }
     }
 

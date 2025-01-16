@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net9.0-windows</TargetFrameworks>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <DefineConstants>TRACE;RESVG</DefineConstants> <!-- RESVG,DIRECT2D -->
+    <DefineConstants>TRACE;</DefineConstants>
     <NoWarn>FodyPackageReference;MSB3277</NoWarn>
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
@@ -92,11 +92,17 @@
 
   <ItemGroup>
     <PackageReference Include="Svg" Version="3.4.7" />
+    <Compile Update="Import\SvgImportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Localization\StringResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>StringResources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Update="Import\SvgImportDialog.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Update="Localization\StringResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
@@ -107,7 +113,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fody" Version="6.8.0">
+    <PackageReference Include="Fody" Version="6.9.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -2,7 +2,6 @@
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -19,116 +18,66 @@ namespace SvgFileTypePlugin.Import;
 
 internal partial class SvgImportDialog : MyBaseForm
 {
-    #region Properties
-
-    private Document? document;
-    private Exception? reason;
     private const string NotAvailable = "-";
     private const int CanvasSizeWarningThreshold = 1280;
+    private const int DefaultFallbackSize = 512;
     private object? lastModifiedNud;
-    private readonly Size docSize;
     private bool dontUpdate;
-    private readonly SvgDocument svg;
-    private int layerCount;
-    private CancellationTokenSource? cts;
+    private readonly CancellationTokenSource? cts;
+    private readonly Size docSize;
+    private readonly int docPpi;
+    private readonly string svgdata;
+    private Size rasterSize;
+    private readonly Rectangle docViewbox;
+    private readonly string renderer;
 
-    #endregion
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public Document? Result { get; private set; }
 
-    #region Constructor
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public Exception? Error { get; private set; }
 
-    private SvgImportDialog(SvgDocument svg) : base(UIHelper.GetMainForm())
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+    public override bool ImmersiveDarkMode => true;
+
+    public SvgImportDialog(string svgdata, string renderer = "resvg", CancellationToken ctoken = default) : base(UIHelper.GetMainForm())
     {
-        ArgumentNullException.ThrowIfNull(svg);
+        ArgumentNullException.ThrowIfNull(svgdata);
+        ArgumentException.ThrowIfNullOrWhiteSpace(renderer);
 
-        this.svg = svg;
         InitializeComponent();
         SetUseAppThemeColors();
-        PopulateControls();
-        InitDocSize(out docSize);
+
+        this.renderer = renderer;
+        this.svgdata = svgdata;
+        cts = CancellationTokenSource.CreateLinkedTokenSource(ctoken);
+
+        SvgDocument svg = SvgDocument.FromSvg<SvgDocument>(svgdata);
+        docSize = svg.GetDimensions().ToSize();
+        docViewbox = Rectangle.Truncate(svg.ViewBox);
+        docPpi = svg.Ppi;
+
+        PopulateContols();
         HookEvents();
     }
 
-    #endregion
-
-    #region Private
-
-    #region Initialize UI
-
-    private void InitDocSize(out Size size)
+    protected override void OnLoad(EventArgs e)
     {
-        Rectangle viewbox = svg.ViewBox.ToRectangle();
-        size = Size.Round(svg.GetDimensions());
-
-        if (size.Width > 0 && size.Height > 0)
-        {
-            TbViewportW.Text = size.Width.ToString();
-            TbViewportH.Text = size.Height.ToString();
-        }
-        else
-        {
-            TbViewportW.Text = NotAvailable;
-            TbViewportH.Text = NotAvailable;
-        }
-
-        if (!viewbox.IsEmpty)
-        {
-            TbViewboxX.Text = viewbox.X.ToString();
-            TbViewboxY.Text = viewbox.Y.ToString();
-            TbViewboxW.Text = viewbox.Width.ToString();
-            TbViewboxH.Text = viewbox.Height.ToString();
-
-            if (size.Width == 0 || size.Height == 0)
-            {
-                size = new Size(viewbox.Width, viewbox.Height);
-            }
-        }
-        else
-        {
-            TbViewboxX.Text = NotAvailable;
-            TbViewboxY.Text = NotAvailable;
-            TbViewboxW.Text = NotAvailable;
-            TbViewboxH.Text = NotAvailable;
-        }
-
-        if (size.Width == 0 || size.Height == 0)
-        {
-            // Can't detect dimensions, fallback
-            NudCanvasW.Value = NudCanvasW.Value = 512;
-        }
-        else
-        {
-            double ratio = size.Width / (double)size.Height;
-            if (size.Width > CanvasSizeWarningThreshold)
-            {
-                if (size.Width > size.Height)
-                {
-                    NudCanvasW.Value = CanvasSizeWarningThreshold;
-                    NudCanvasH.Value = (int)Math.Round(CanvasSizeWarningThreshold / ratio);
-                }
-                else
-                {
-                    NudCanvasH.Value = CanvasSizeWarningThreshold;
-                    NudCanvasW.Value = (int)Math.Round(CanvasSizeWarningThreshold * ratio);
-                }
-            }
-            else if (size.Height > CanvasSizeWarningThreshold)
-            {
-                NudCanvasH.Value = CanvasSizeWarningThreshold;
-                NudCanvasW.Value = (int)Math.Round(CanvasSizeWarningThreshold * ratio);
-            }
-            else
-            {
-                NudCanvasW.Value = size.Width;
-                NudCanvasH.Value = size.Height;
-            }
-        }
-
-        UpdateLayerMode();
+        ClientSize = RootPanel.Size;
+        base.OnLoad(e);
     }
 
-    private void PopulateControls()
+    protected override void OnClosing(CancelEventArgs e)
     {
-        Text = string.Join(" v", MyPluginSupportInfo.Instance.DisplayName, MyPluginSupportInfo.Instance.Version);
+        base.OnClosing(e);
+        cts?.Dispose();
+    }
+
+    #region Private Methods
+
+    private void PopulateContols()
+    {
+        Text = $"{SvgFileTypePluginSupportInfo.Instance.DisplayName} v{SvgFileTypePluginSupportInfo.Instance.Version}";
         PbWarning.Image = SystemIcons.Warning.ToBitmap();
         GbInfo.Text = SR.SizeSettingsGivenInSvgFile;
         LnkUseSvgSettings.Text = SR.UseSizeSettingsGivenInSvg;
@@ -149,123 +98,52 @@ internal partial class SvgImportDialog : MyBaseForm
         BtnOk.Text = SR.OK;
         BtnCancel.Text = SR.Cancel;
         ProgressLabel.Text = SR.Ready;
-        ToolTip1.SetToolTip(CbGroupBoundaries, SR.GroupBoundariesToolTip);
         ToolTip1.SetToolTip(PbWarning, SR.MemoryWarningText);
-    }
 
-    #endregion
+        TbViewportW.Text = docSize.Width > 0 ? docSize.Width.ToString() : NotAvailable;
+        TbViewportH.Text = docSize.Height > 0 ? docSize.Height.ToString() : NotAvailable;
 
-    private void UpdateOtherInput()
-    {
-        lastModifiedNud ??= NudCanvasW.Value > NudCanvasH.Value ? NudCanvasW : NudCanvasH;
-
-        if (ReferenceEquals(lastModifiedNud, NudCanvasW))
+        if (!docViewbox.IsEmpty)
         {
-            decimal newHeight = CbKeepAR.Checked ? NudCanvasW.Value * docSize.Height / docSize.Width : NudCanvasH.Value;
-            newHeight = Math.Clamp(newHeight, 1, Math.Min(NudCanvasH.Maximum, int.MaxValue / (NudCanvasW.Value * 4)));
-            NudCanvasH.Value = newHeight;
-            PbWarning.Visible = !RbFlatten.Checked && (newHeight > CanvasSizeWarningThreshold || NudCanvasW.Value > CanvasSizeWarningThreshold);
+            TbViewboxX.Text = docViewbox.X.ToString();
+            TbViewboxY.Text = docViewbox.Y.ToString();
+            TbViewboxW.Text = docViewbox.Width.ToString();
+            TbViewboxH.Text = docViewbox.Height.ToString();
         }
         else
         {
-            decimal newWidth = CbKeepAR.Checked ? NudCanvasH.Value * docSize.Width / docSize.Height : NudCanvasW.Value;
-            newWidth = Math.Clamp(newWidth, 1, Math.Min(NudCanvasW.Maximum, int.MaxValue / (NudCanvasH.Value * 4)));
-            NudCanvasW.Value = newWidth;
-            PbWarning.Visible = !RbFlatten.Checked && (newWidth > CanvasSizeWarningThreshold || NudCanvasH.Value > CanvasSizeWarningThreshold);
-        }
-    }
-
-    private void UpdateLayerMode()
-    {
-        CbOpacity.Enabled = CbHiddenLayers.Enabled = CbGroupBoundaries.Enabled = !RbFlatten.Checked;
-        CbGroupBoundaries.Enabled = RbAllElements.Checked;
-        PbWarning.Visible = !RbFlatten.Checked && (NudCanvasH.Value > CanvasSizeWarningThreshold || NudCanvasW.Value > CanvasSizeWarningThreshold);
-    }
-
-    private Document DoImport(SvgImportConfig config, CancellationToken cancellationToken = default)
-    {
-        using IDisposable _ = svg.UseSetRasterDimensions(config);
-        ISvgConverter svg2doc = SvgConverterFactory.Get();
-        if (svg2doc.GetType() != typeof(DefaultSvgConverter) && config.LayersMode == LayersMode.Flat)
-        {
-            SetupProgress(1);
-            return svg2doc.GetFlatDocument(svg, config, cancellationToken);
+            TbViewboxX.Text = NotAvailable;
+            TbViewboxY.Text = NotAvailable;
+            TbViewboxW.Text = NotAvailable;
+            TbViewboxH.Text = NotAvailable;
         }
 
-        List<SvgVisualElement> prepared = svg2doc.Prepare(svg, config, cancellationToken).ToList();
-        layerCount = prepared.Count;
+        rasterSize = docSize.Width == 0 || docSize.Height == 0
+            ? new Size(DefaultFallbackSize, DefaultFallbackSize)
+            : docSize;
 
-        SetupProgress(layerCount);
-
-        if (config.LayersMode == LayersMode.Flat)
+        if (rasterSize.Width * rasterSize.Height > CanvasSizeWarningThreshold * CanvasSizeWarningThreshold)
         {
-            using IDisposable _1 = Utils.UseMemoryFailPoint(config.Width, config.Height);
-            return svg2doc.GetFlatDocument(prepared, config, SetProgress, cancellationToken);
-        }
-
-        Utils.EnsureMemoryAvailable(config.Width, config.Height, layerCount);
-        return svg2doc.GetLayeredDocument(prepared, config, SetProgress, cancellationToken);
-    }
-
-    private Document GetDocument()
-    {
-        if (document != null) { return document; }
-        if (reason != null) { throw reason; }
-        throw new OperationCanceledException(SR.CanceledUponYourRequest); // This should never happen
-    }
-
-    #region Progress
-
-    private void SetupProgress(int max)
-    {
-        StatusStrip.RunOnUIThread(() =>
-        {
-            ProgressBar.Visible = true;
-
-            if (max == 1)
+            double ratio = rasterSize.Width / (double)rasterSize.Height;
+            if (rasterSize.Width > rasterSize.Height)
             {
-                ProgressBar.Style = ProgressBarStyle.Marquee;
-                ProgressLabel.Text = SR.Working;
+                NudCanvasW.Value = CanvasSizeWarningThreshold;
+                NudCanvasH.Value = (int)Math.Round(CanvasSizeWarningThreshold / ratio);
             }
             else
             {
-                ProgressBar.Style = ProgressBarStyle.Blocks;
-                ProgressBar.Maximum = max;
+                NudCanvasH.Value = CanvasSizeWarningThreshold;
+                NudCanvasW.Value = (int)Math.Round(CanvasSizeWarningThreshold * ratio);
             }
-        });
-    }
-
-    private void SetProgress(int value)
-    {
-        if (Disposing || IsDisposed) { return; }
-        try
-        {
-            StatusStrip.RunOnUIThread(() =>
-            {
-                value = Math.Clamp(value, ProgressBar.Minimum, ProgressBar.Maximum);
-                if (value == ProgressBar.Maximum)
-                {
-                    // ProgressBar's animation is slow to catch up
-                    // This workaround prevents the animation
-                    ProgressBar.Maximum = value + 1;
-                    ProgressBar.Value = value + 1;
-                    ProgressBar.Maximum = value;
-                }
-                ProgressBar.Value = value;
-                ProgressLabel.Text = (value / (float)layerCount).ToString("P2");  // string.Join(" / ", ProgressBar.Value, ProgressBar.Maximum);
-            });
         }
-        catch (ObjectDisposedException)
+        else
         {
-            //
+            NudCanvasW.Value = rasterSize.Width;
+            NudCanvasH.Value = rasterSize.Height;
         }
+
+        UpdateLayersPanel();
     }
-
-    #endregion
-
-    #endregion
-
-    #region Events
 
     private void HookEvents()
     {
@@ -287,31 +165,91 @@ internal partial class SvgImportDialog : MyBaseForm
         CancelButton = BtnCancel;
     }
 
+    private void UpdateLayersPanel()
+    {
+        CbOpacity.Enabled = CbHiddenLayers.Enabled = CbGroupBoundaries.Enabled = !RbFlatten.Checked;
+        CbGroupBoundaries.Enabled = RbAllElements.Checked;
+        ShowCanvasSizeWarningIfNeeded();
+    }
+
+    private void ShowCanvasSizeWarningIfNeeded()
+    {
+        PbWarning.Visible = !RbFlatten.Checked && NudCanvasH.Value * NudCanvasW.Value > CanvasSizeWarningThreshold * CanvasSizeWarningThreshold;
+    }
+
+    private void UpdateTheOtherNud()
+    {
+        lastModifiedNud ??= NudCanvasW.Value > NudCanvasH.Value ? NudCanvasW : NudCanvasH;
+
+        if (ReferenceEquals(lastModifiedNud, NudCanvasW))
+        {
+            decimal newHeight = CbKeepAR.Checked ? NudCanvasW.Value * rasterSize.Height / rasterSize.Width : NudCanvasH.Value;
+            newHeight = Math.Clamp(newHeight, 1, Math.Min(NudCanvasH.Maximum, int.MaxValue / (NudCanvasW.Value * 4)));
+            NudCanvasH.Value = newHeight;
+        }
+        else
+        {
+            decimal newWidth = CbKeepAR.Checked ? NudCanvasH.Value * rasterSize.Width / rasterSize.Height : NudCanvasW.Value;
+            newWidth = Math.Clamp(newWidth, 1, Math.Min(NudCanvasW.Maximum, int.MaxValue / (NudCanvasH.Value * 4)));
+            NudCanvasW.Value = newWidth;
+        }
+        ShowCanvasSizeWarningIfNeeded();
+    }
+
+    private SvgImportConfig GetSvgImportConfig()
+    {
+        SvgImportConfig config = new SvgImportConfig
+        {
+            RasterWidth = (int)NudCanvasW.Value,
+            RasterHeight = (int)NudCanvasH.Value,
+            PreserveAspectRatio = CbKeepAR.Checked,
+            Ppi = (int)NudDpi.Value,
+            GroupBoundariesAsLayers = CbGroupBoundaries.Checked,
+            ImportHiddenElements = CbHiddenLayers.Checked,
+            RespectElementOpacity = CbOpacity.Checked,
+            LayersMode = RbAllElements.Checked
+                ? LayersMode.All
+                : RbFlatten.Checked
+                ? LayersMode.Flat
+                : LayersMode.Groups
+        };
+        return config;
+    }
+
+    #endregion
+
+    #region Events
+
     private void NudCanvas_ValueChanged(object? sender, EventArgs e)
     {
-        if (dontUpdate) { return; }
+        if (dontUpdate)
+            return;
         lastModifiedNud = sender;
-        UpdateOtherInput();
+        UpdateTheOtherNud();
     }
 
     private void CbKeepAR_CheckedChanged(object? sender, EventArgs e)
     {
-        if (dontUpdate) { return; }
-        UpdateOtherInput();
+        if (dontUpdate)
+            return;
+        lastModifiedNud = null;
+        UpdateTheOtherNud();
     }
 
     private void NudCanvas_KeyUp(object? sender, KeyEventArgs e)
     {
-        if (dontUpdate) { return; }
+        if (dontUpdate)
+            return;
+
         lastModifiedNud = sender;
         if (e.KeyValue >= '0' || e.KeyValue <= '9' || e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
         {
-            // handle digit, delete and backspace
-            UpdateOtherInput();
+            // Handle key events like digits, delete and backspace
+            UpdateTheOtherNud();
         }
         else
         {
-            // ignore any other key
+            // We ignore any other key event on these controls
             e.SuppressKeyPress = true;
             e.Handled = true;
         }
@@ -320,130 +258,151 @@ internal partial class SvgImportDialog : MyBaseForm
     private void NudCanvas_LostFocus(object? sender, EventArgs e)
     {
         if (sender is not NumericUpDown nud)
-        {
             return;
-        }
 
         TextBox? textbox = nud.Controls.OfType<TextBox>().FirstOrDefault();
         if (textbox is not null)
-        {
             textbox.Text = Math.Round(nud.Value, nud.DecimalPlaces).ToString();
-        }
     }
 
     private void Rb_CheckedChanged(object? sender, EventArgs e)
     {
-        UpdateLayerMode();
+        UpdateLayersPanel();
     }
 
     private void LnkUseSvgSettings_Click(object? sender, EventArgs e)
     {
-        // Keep original image size and show warning
+        // Restore the original sizes and show the size warning if needed
+        int w = rasterSize.Width;
+        int h = rasterSize.Height;
         dontUpdate = true;
-        NudCanvasW.Value = docSize.Width;
-        NudCanvasH.Value = docSize.Height;
+        NudCanvasW.Value = w;
+        NudCanvasH.Value = h;
         dontUpdate = false;
-        NudDpi.Value = svg.Ppi;
-        PbWarning.Visible = !RbFlatten.Checked && (docSize.Width > CanvasSizeWarningThreshold || docSize.Height > CanvasSizeWarningThreshold);
-    }
-
-    private static void LaunchUrl(Uri uri)
-    {
-        Process.Start("explorer", $@"""{uri}""");
+        NudDpi.Value = docPpi;
+        ShowCanvasSizeWarningIfNeeded();
     }
 
     private void LnkGitHub_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
     {
-        if (e.Button != MouseButtons.Left) { return; }
-        LaunchUrl(MyPluginSupportInfo.Instance.WebsiteUri);
+        if (e.Button != MouseButtons.Left)
+            return;
+        LaunchUrl(SvgFileTypePluginSupportInfo.Instance.WebsiteUri);
     }
 
     private void LnkForum_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
     {
-        if (e.Button != MouseButtons.Left) { return; }
-        LaunchUrl(MyPluginSupportInfo.Instance.ForumUri);
+        if (e.Button != MouseButtons.Left)
+            return;
+        LaunchUrl(SvgFileTypePluginSupportInfo.Instance.ForumUri);
     }
 
     private async void BtnOk_Click(object? sender, EventArgs e)
     {
+        Debug.Assert(cts is not null);
+
         this.Descendants().OfType<GroupBox>().ToList().ForEach(gb => gb.Enabled = false);
         BtnOk.Enabled = false;
-
-        SvgImportConfig config = new SvgImportConfig
-        {
-            Width = (int)NudCanvasW.Value,
-            Height = (int)NudCanvasH.Value,
-            PreserveAspectRatio = CbKeepAR.Checked,
-            Ppi = (int)NudDpi.Value,
-            GroupBoundariesAsLayers = CbGroupBoundaries.Checked,
-            ImportHiddenElements = CbHiddenLayers.Checked,
-            RespectElementOpacity = CbOpacity.Checked,
-            LayersMode = RbAllElements.Checked ? LayersMode.All : RbFlatten.Checked ? LayersMode.Flat : LayersMode.Groups
-        };
+        ProgressBar.Visible = true;
+        SvgImportConfig config = GetSvgImportConfig();
+        using var _ = cts;
+        CancellationToken ctoken = cts.Token;
+        SvgRenderer2 svgRenderer = SvgRenderer2.Create(renderer);
+        svgRenderer.ProgressChanged += OnProgressChanged;
 
         try
         {
-            using (cts = new CancellationTokenSource())
-            {
-                CancellationToken ctoken = cts.Token;
-                await Task.Run(() => document = DoImport(config, ctoken)).ContinueWith(task =>
+            Result = await Task.Run<Document?>(() => svgRenderer.Rasterize(svgdata, config, ctoken), ctoken)
+                .ContinueWith(task =>
                 {
-                    reason = task.Exception;
-                    if (reason is OperationCanceledException ex)
-                    {
-                        reason = new WarningException(null, ex);
-                    }
-                }, TaskContinuationOptions.OnlyOnFaulted)
-                    .ConfigureAwait(false);
-            }
+                    if (task.IsCompletedSuccessfully)
+                        return task.Result;
+                    Error = task.IsCanceled 
+                        ? new WarningException(SR.CanceledUponYourRequest, task.Exception)
+                        : task.Exception;
+                    return null;
+                }, ctoken).ConfigureAwait(false);
+            DialogResult = Result is not null
+                ? DialogResult.OK
+                : DialogResult.Cancel;
         }
-        //catch (TaskCanceledException)
-        //{
-        //}
+        catch (Exception ex) when (ex is OperationCanceledException or TaskCanceledException)
+        {
+            Error = new WarningException(SR.CanceledUponYourRequest, ex);
+            DialogResult = DialogResult.Cancel;
+        }
         catch (Exception ex)
         {
-            reason = ex;
+            Error = ex;
+            DialogResult = DialogResult.Cancel;
         }
-        finally
+    }
+
+    private void OnProgressChanged(object? sender, ProgressChangedEventArgs e)
+    {
+        if (IsDisposed)
+            return;
+
+        try
         {
-            Invoke(Close);
+            if (InvokeRequired)
+            {
+                Invoke(OnProgressChanged, sender, e);
+                return;
+            }
+
+            int total = (int)e.UserState!;
+            if (e.ProgressPercentage == 0)
+            {
+                if (total == 1)
+                {
+                    ProgressBar.Style = ProgressBarStyle.Marquee;
+                    ProgressLabel.Text = SR.Working;
+                }
+                else
+                {
+                    ProgressBar.Style = ProgressBarStyle.Blocks;
+                    ProgressBar.Maximum = total;
+                    ProgressLabel.Text = SR.Ready;
+                }
+            }
+            if (total > 1)
+            {
+                ProgressBar.Value = e.ProgressPercentage;
+                float percentage = e.ProgressPercentage / (float)total;
+                ProgressLabel.Text = percentage.ToString("P2");
+            }
+        }
+        catch (ObjectDisposedException)
+        {
+            // ignore
         }
     }
 
     private void BtnCancel_Click(object? sender, EventArgs e)
     {
         BtnCancel.Enabled = false;
-        if (cts != null)
+        try
         {
-            try
-            {
-                cts.Cancel();
-            }
-            catch (ObjectDisposedException)
-            {
-                // this should never happen
-            }
+            cts?.Cancel();
+        }
+        catch (ObjectDisposedException)
+        {
+            // This should never happen
+        }
+        finally
+        {
+            Error = new WarningException(SR.CanceledUponYourRequest);
         }
     }
 
     #endregion
 
-    protected override void OnLoad(EventArgs e)
-    {
-        ClientSize = RootPanel.Size;
-        base.OnLoad(e);
-    }
+    #region Static
 
-    #region Public Static
-
-    public static Document ShowAndGetResult(SvgDocument svg)
+    private static void LaunchUrl(Uri uri)
     {
-        return UIHelper.RunOnUIThread(() =>
-        {
-            using SvgImportDialog dialog = new SvgImportDialog(svg);
-            _ = dialog.ShowDialog();
-            return dialog.GetDocument();
-        });
+        Process.Start("explorer", $@"""{uri}""");
     }
 
     #endregion

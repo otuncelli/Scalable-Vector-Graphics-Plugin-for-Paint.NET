@@ -5,15 +5,15 @@ namespace SvgFileTypePlugin.Import;
 
 internal sealed class SvgImportConfig
 {
-    public int Width { get; set; }
+    public required int RasterWidth { get; set; }
 
-    public int Height { get; set; }
+    public required int RasterHeight { get; set; }
 
-    public bool PreserveAspectRatio { get; set; }
+    public bool PreserveAspectRatio { get; set; } = true;
 
-    public int Ppi { get; set; }
+    public int Ppi { get; set; } = 96;
 
-    public LayersMode LayersMode { get; set; }
+    public LayersMode LayersMode { get; set; } = LayersMode.Flat;
 
     public bool GroupBoundariesAsLayers { get; set; }
 

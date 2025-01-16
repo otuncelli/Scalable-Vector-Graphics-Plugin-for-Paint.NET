@@ -12,7 +12,7 @@ using SvgFileTypePlugin.Extensions;
 
 namespace SvgFileTypePlugin.Import;
 
-internal class MyBaseForm : Form
+internal abstract class MyBaseForm : Form
 {
     #region Properties
 
@@ -20,7 +20,7 @@ internal class MyBaseForm : Form
     public bool UseAppThemeColors { get; private set; }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public bool ImmersiveDarkMode { get; set; }
+    public virtual bool ImmersiveDarkMode => false;
 
     #endregion
 

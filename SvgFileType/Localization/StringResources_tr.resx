@@ -190,11 +190,7 @@
     <comment>Export</comment>
   </data>
   <data name="GroupBoundaries" xml:space="preserve">
-    <value>Grup sınırları</value>
-    <comment>Import</comment>
-  </data>
-  <data name="GroupBoundariesToolTip" xml:space="preserve">
-    <value>Grup sınırlarını boş katman olarak içe aktarır.</value>
+    <value>Grup sınırlarını boş katman olarak içe aktar</value>
     <comment>Import</comment>
   </data>
   <data name="Groups" xml:space="preserve">

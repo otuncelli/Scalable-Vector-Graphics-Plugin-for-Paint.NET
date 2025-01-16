@@ -33,58 +33,52 @@ internal static partial class UIHelper
             .Any();
     }
 
-    public static TResult? RunOnUIThread<TResult>(Func<TResult> d)
+    public static TResult? RunOnUIThread<TResult>(Func<TResult> action)
     {
         IUISynchronizationContext ctx = Services.Get<IUISynchronizationContext>();
         if (ctx.IsOnUIThread)
-        {
-            return d();
-        }
+            return action();
         TResult? result = default;
         Exception? error = null;
-        ctx.Send(new SendOrPostCallback(_ =>
+        ctx.Send(new SendOrPostCallback(state =>
         {
             try
             {
+                var d = (Func<TResult>)state!;
                 result = d();
             }
             catch (Exception ex)
             {
                 error = ex;
             }
-        }), null);
-
-        if (error != null)
-        {
+        }), state: action);
+        if (error is not null)
             throw error;
-        }
         return result;
     }
 
-    public static void RunOnUIThread(Action d)
+    public static void RunOnUIThread(Action action)
     {
         IUISynchronizationContext ctx = Services.Get<IUISynchronizationContext>();
         if (ctx.IsOnUIThread)
         {
-            d();
+            action();
             return;
         }
         Exception? error = null;
-        ctx.Send(new SendOrPostCallback(_ =>
+        ctx.Send(new SendOrPostCallback(state =>
         {
             try
             {
+                var d = (Action)state!;
                 d();
             }
             catch (Exception ex)
             {
                 error = ex;
             }
-        }), null);
-
-        if (error != null)
-        {
+        }), state: action);
+        if (error is not null)
             throw error;
-        }
     }
 }

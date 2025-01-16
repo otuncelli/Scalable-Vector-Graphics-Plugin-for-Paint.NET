@@ -7,38 +7,20 @@ using System.IO;
 using System.Text;
 using Svg;
 using SvgFileTypePlugin.Import;
-using Disposable = SvgFileTypePlugin.Import.Disposable;
 
 namespace SvgFileTypePlugin.Extensions;
 
 internal static class SvgDocumentExtensions
 {
-    public static Stream AsStream(this SvgDocument svg)
+    public static SvgDocument RemoveInvisibleAndNonTextElements(this SvgDocument svg)
     {
         ArgumentNullException.ThrowIfNull(svg);
 
-        byte[] bytes = Encoding.UTF8.GetBytes(svg.GetXML2());
-        return new MemoryStream(bytes);
-    }
-
-    public static string GetXML2(this SvgDocument svg)
-    {
-        ArgumentNullException.ThrowIfNull(svg);
-
-        // A workaround until this gets resolved
-        // https://github.com/RazrFalcon/resvg/issues/235
-        return svg.GetXML().Replace("&quot;", string.Empty);
-    }
-
-    public static SvgDocument Cleanup(this SvgDocument svg)
-    {
-        ArgumentNullException.ThrowIfNull(svg);
-
-        SvgFragment fragment = (SvgFragment)svg.Clone();
-        fragment.Cleanup();
-        SvgDocument clone = new SvgDocument();
-        clone.Children.Add(fragment);
-        return clone;
+        SvgFragment clonedFragment = (SvgFragment)svg.Clone();
+        clonedFragment.RemoveInvisibleAndNonTextElements();
+        SvgDocument clonedDocument = new SvgDocument();
+        clonedDocument.Children.Add(clonedFragment);
+        return clonedDocument;
     }
 
     public static IDisposable UseSetRasterDimensions(this SvgDocument svg, SvgImportConfig config)
@@ -46,24 +28,46 @@ internal static class SvgDocumentExtensions
         ArgumentNullException.ThrowIfNull(svg);
         ArgumentNullException.ThrowIfNull(config);
 
-        int width = config.Width;
-        int height = config.Height;
-        bool preserveAR = config.PreserveAspectRatio;
-        SvgAspectRatio origAR = svg.AspectRatio;
-        SizeF origSize = svg.GetDimensions();
-        SizeF tmp = origSize;
-        svg.RasterizeDimensions(ref tmp, width, height);
-        svg.Width = tmp.Width;
-        svg.Height = tmp.Height;
-        SvgPreserveAspectRatio aspectRatio = preserveAR ? SvgPreserveAspectRatio.xMinYMin : SvgPreserveAspectRatio.none;
+        int width = config.RasterWidth;
+        int height = config.RasterHeight;
+        SvgAspectRatio originalAspectRatio = svg.AspectRatio;
+        SizeF originalSize = svg.GetDimensions();
+        SvgViewBox originalViewbox = svg.ViewBox;
+        SizeF rasterSize = originalSize;
+        svg.RasterizeDimensions(ref rasterSize, width, height);
+        svg.Width = rasterSize.Width;
+        svg.Height = rasterSize.Height;
+        svg.ViewBox = new SvgViewBox(0, 0, originalSize.Width, originalSize.Height);
+        SvgPreserveAspectRatio aspectRatio = config.PreserveAspectRatio 
+            ? SvgPreserveAspectRatio.xMinYMin
+            : SvgPreserveAspectRatio.none;
         svg.AspectRatio = new SvgAspectRatio(aspectRatio);
-        return Disposable.FromAction(() =>
+        return Utils.DisposableFromAction(() =>
         {
-            SizeF tmp = origSize;
-            svg.AspectRatio = origAR;
-            svg.RasterizeDimensions(ref tmp, 0, 0);
-            svg.Width = tmp.Width;
-            svg.Height = tmp.Height;
+            // Restore the original values back
+            svg.AspectRatio = originalAspectRatio;
+            svg.Width = originalSize.Width;
+            svg.Height = originalSize.Height;
+            svg.ViewBox = originalViewbox;
         });
+    }
+
+    public static string GetXML2(this SvgDocument svg)
+    {
+        ArgumentNullException.ThrowIfNull(svg);
+
+        // This issue has been resolved for resvg but,
+        // apparently, Direct2D renderer is also affected.
+        // https://github.com/RazrFalcon/resvg/issues/235
+        return svg.GetXML().Replace("&quot;", string.Empty);
+    }
+
+    public static Stream AsStream(this SvgDocument svg, bool removeQuotes = false)
+    {
+        ArgumentNullException.ThrowIfNull(svg);
+
+        string xml = removeQuotes ? svg.GetXML2() : svg.GetXML();
+        byte[] bytes = Encoding.UTF8.GetBytes(xml);
+        return new MemoryStream(bytes);
     }
 }

@@ -2,38 +2,71 @@
 // Use of this source code is governed by GNU General Public License (GPL-2.0) that can be found in the COPYING file.
 
 using System;
-using System.Runtime;
 
 namespace SvgFileTypePlugin.Import;
 
-internal static class Utils
+internal class Utils
 {
-    public static IDisposable UseMemoryFailPoint(int width, int height, int count)
-    {
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(width, 0);
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(height, 0);
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(count, 0);
+    #region DisposableFromAction
 
-        return UseMemoryFailPoint(height * 4L * width * count);
+    public static IDisposable DisposableFromAction(Action action)
+    {
+        return new DisposableAction(action);
     }
 
-    public static IDisposable UseMemoryFailPoint(int width, int height)
+    /// <summary>    
+    /// The disposable action.    
+    /// </summary>    
+    private sealed class DisposableAction : IDisposable
     {
-        return UseMemoryFailPoint(width, height, 1);
-    }
+        private Action? _dispose;
 
-    public static void EnsureMemoryAvailable(int width, int height, int count)
-    {
-        using (UseMemoryFailPoint(width, height, count))
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DisposableAction"/> class.    
+        /// </summary>
+        /// <param name="dispose">    
+        /// The dispose.   
+        /// </param>    
+        public DisposableAction(Action dispose)
         {
+            _dispose = dispose ?? throw new ArgumentNullException(nameof(dispose));
+        }
+
+        /// <summary>    
+        /// Initializes a new instance of the <see cref="DisposableAction"/> class.    
+        /// </summary>    
+        /// <param name="construct">    
+        /// The construct.    
+        /// </param>    
+        /// <param name="dispose">    
+        /// The dispose.    
+        /// </param>    
+        public DisposableAction(Action construct, Action dispose)
+        {
+            ArgumentNullException.ThrowIfNull(construct);
+            ArgumentNullException.ThrowIfNull(dispose);
+
+            construct();
+
+            _dispose = dispose;
+        }
+
+        /// <summary>    
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.    
+        /// </summary>    
+        /// <filterpriority>2</filterpriority>    
+        public void Dispose()
+        {
+            try
+            {
+                _dispose?.Invoke();
+            }
+            finally
+            {
+                _dispose = null;
+            }
         }
     }
 
-    public static IDisposable UseMemoryFailPoint(long bytes)
-    {
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(bytes, 0);
-
-        int mb = checked((int)Math.Max(bytes / (1024 * 1024), 1));
-        return new MemoryFailPoint(mb);
-    }
+    #endregion
 }

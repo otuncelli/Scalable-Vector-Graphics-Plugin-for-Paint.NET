@@ -16,18 +16,10 @@ using SR = SvgFileTypePlugin.Localization.StringResources;
 
 namespace SvgFileTypePlugin;
 
-[PluginSupportInfo(typeof(MyPluginSupportInfo))]
-public sealed class SvgFileType : PropertyBasedFileType
+[PluginSupportInfo(typeof(SvgFileTypePluginSupportInfo))]
+public sealed class SvgFileType() : PropertyBasedFileType("SVG Plugin", BaseOptions)
 {
     private string shapePath = string.Empty;
-
-    #region Constructor
-
-    public SvgFileType() : base("SVG Plugin", BaseOptions)
-    {
-    }
-
-    #endregion
 
     #region OnLoad
 
@@ -96,7 +88,7 @@ public sealed class SvgFileType : PropertyBasedFileType
             .Configure(PropertyNames.Angle, SR.Angle, p => p
                 .ControlType(PropertyControlType.AngleChooser)
                 .ShowResetButton())
-            .Configure(PropertyNames.GitHubLink, string.Format(SR.PluginVersion, MyPluginSupportInfo.Instance.Version), SR.GitHubLink)
+            .Configure(PropertyNames.GitHubLink, string.Format(SR.PluginVersion, SvgFileTypePluginSupportInfo.Instance.Version), SR.GitHubLink)
             .Configure(PropertyNames.DiscussionLink, string.Empty, SR.DiscussionLink);
         PanelControlInfo panel = pcic.CreatePanel();
         return panel;
@@ -136,8 +128,8 @@ public sealed class SvgFileType : PropertyBasedFileType
             .AddBoolean(PropertyNames.Enclose)
             .AddDouble(PropertyNames.Scale, 1, 0.01, 4)
             .AddDouble(PropertyNames.Angle, 0, 0, 360)
-            .AddUri(PropertyNames.GitHubLink, MyPluginSupportInfo.Instance.WebsiteUri)
-            .AddUri(PropertyNames.DiscussionLink, MyPluginSupportInfo.Instance.ForumUri)
+            .AddUri(PropertyNames.GitHubLink, SvgFileTypePluginSupportInfo.Instance.WebsiteUri)
+            .AddUri(PropertyNames.DiscussionLink, SvgFileTypePluginSupportInfo.Instance.ForumUri)
             .WithReadOnlyRule(targets1, PropertyNames.ScanMode, ScanMode.Transparent, inverse: true)
             .WithReadOnlyRule(targets2, PropertyNames.HighpassFilter, 0)
             .WithReadOnlyRule(PropertyNames.FillColor, PropertyNames.ScanMode, ScanMode.Opaque, inverse: true);
