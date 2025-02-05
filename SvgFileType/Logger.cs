@@ -7,7 +7,7 @@ namespace SvgFileTypePlugin;
 
 internal static class Logger
 {
-    private const string Category = "[SvgFileTypePlugin]";
+    private const string Category = $"[{nameof(SvgFileTypePlugin)}]";
 
     public static void WriteLine(string message)
     {

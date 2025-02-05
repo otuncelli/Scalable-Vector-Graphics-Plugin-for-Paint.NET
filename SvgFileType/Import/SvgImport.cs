@@ -65,10 +65,12 @@ internal static class SvgImport
         ms.Write(buf);
         input.CopyTo(ms);
 
-        // We are not closing the original input stream.
+        // Do not close the source stream.
+        // It also can be used to track cancellation.
 
         ms.Position = 0;
-        ReadOnlySpan<byte> gzipMagicBytes = [0x1f, 0x8b, 0x8];
+
+        ReadOnlySpan<byte> gzipMagicBytes = [0x1F, 0x8B, 0x8];
         input = buf.SequenceEqual(gzipMagicBytes)
             ? new GZipStream(ms, CompressionMode.Decompress, leaveOpen: false)
             : ms;

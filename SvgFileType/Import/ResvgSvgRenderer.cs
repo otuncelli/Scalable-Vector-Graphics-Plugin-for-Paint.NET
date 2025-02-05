@@ -145,7 +145,7 @@ internal sealed class ResvgSvgRenderer() : SvgRenderer2("resvg")
         }
     }
 
-    private static ResvgTransform CalculateTransform(SizeF svgsize, SvgImportConfig config, float tolerance = .99f)
+    private static ResvgTransform CalculateTransform(SizeF svgsize, SvgImportConfig config, float tolerance = 1f)
     {
         float ratioX, ratioY;
         ratioX = config.RasterWidth / svgsize.Width * tolerance;

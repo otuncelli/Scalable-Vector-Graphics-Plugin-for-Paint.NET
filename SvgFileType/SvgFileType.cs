@@ -114,7 +114,7 @@ public sealed class SvgFileType() : PropertyBasedFileType("SVG Plugin", BaseOpti
             .AddString(PropertyNames.PdnShapeName, SR.Untitled)
             .AddInt32(PropertyNames.PdnShape, int.MinValue)
             .AddDouble(PropertyNames.BrightnessCutoff, 0.45, 0.01, 1)
-            .AddInt32(PropertyNames.HighpassFilter, 0, 0, 10)
+            .AddInt32(PropertyNames.HighpassFilter, 0, 0, 5)
             .AddInt32(PropertyNames.GreymapScale, 1, 1, 4)
             .AddInt32(PropertyNames.LowpassFilter, 0, 0, 5)
             .AddInt32(PropertyNames.SuppressSpeckles, PotraceBitmap.TurdSizeDef, PotraceBitmap.TurdSizeMin, PotraceBitmap.TurdSizeMax)

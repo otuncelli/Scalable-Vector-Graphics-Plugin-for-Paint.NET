@@ -44,14 +44,13 @@ internal static partial class UIHelper
         {
             try
             {
-                var d = (Func<TResult>)state!;
-                result = d();
+                result = action();
             }
             catch (Exception ex)
             {
                 error = ex;
             }
-        }), state: action);
+        }), state: null);
         if (error is not null)
             throw error;
         return result;
@@ -70,14 +69,13 @@ internal static partial class UIHelper
         {
             try
             {
-                var d = (Action)state!;
-                d();
+                action();
             }
             catch (Exception ex)
             {
                 error = ex;
             }
-        }), state: action);
+        }), state: null);
         if (error is not null)
             throw error;
     }

@@ -104,7 +104,7 @@ partial class SvgImportDialog
         // PbWarning
         // 
         PbWarning.Dock = System.Windows.Forms.DockStyle.Fill;
-        PbWarning.Location = new System.Drawing.Point(42, 0);
+        PbWarning.Location = new System.Drawing.Point(52, 0);
         PbWarning.Margin = new System.Windows.Forms.Padding(0);
         PbWarning.MinimumSize = new System.Drawing.Size(23, 23);
         PbWarning.Name = "PbWarning";
@@ -123,7 +123,7 @@ partial class SvgImportDialog
         CbGroupBoundaries.Location = new System.Drawing.Point(99, 53);
         CbGroupBoundaries.Name = "CbGroupBoundaries";
         CbGroupBoundaries.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-        CbGroupBoundaries.Size = new System.Drawing.Size(236, 19);
+        CbGroupBoundaries.Size = new System.Drawing.Size(256, 19);
         CbGroupBoundaries.TabIndex = 2;
         CbGroupBoundaries.Text = "Group boundaries";
         ToolTip1.SetToolTip(CbGroupBoundaries, "Imports group boundaries as empty layers.");
@@ -141,7 +141,7 @@ partial class SvgImportDialog
         RootPanel.Location = new System.Drawing.Point(0, 0);
         RootPanel.Name = "RootPanel";
         RootPanel.Padding = new System.Windows.Forms.Padding(10, 10, 10, 0);
-        RootPanel.Size = new System.Drawing.Size(364, 421);
+        RootPanel.Size = new System.Drawing.Size(384, 421);
         RootPanel.TabIndex = 0;
         // 
         // StatusStrip
@@ -149,7 +149,7 @@ partial class SvgImportDialog
         StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { ProgressBar, ProgressLabel, PlaceHolderLabel, UpdateAvailLabel });
         StatusStrip.Location = new System.Drawing.Point(10, 399);
         StatusStrip.Name = "StatusStrip";
-        StatusStrip.Size = new System.Drawing.Size(344, 22);
+        StatusStrip.Size = new System.Drawing.Size(364, 22);
         StatusStrip.SizingGrip = false;
         StatusStrip.TabIndex = 0;
         StatusStrip.Text = "statusStrip1";
@@ -171,7 +171,7 @@ partial class SvgImportDialog
         // 
         PlaceHolderLabel.BackColor = System.Drawing.Color.Transparent;
         PlaceHolderLabel.Name = "PlaceHolderLabel";
-        PlaceHolderLabel.Size = new System.Drawing.Size(287, 17);
+        PlaceHolderLabel.Size = new System.Drawing.Size(307, 17);
         PlaceHolderLabel.Spring = true;
         // 
         // UpdateAvailLabel
@@ -200,7 +200,7 @@ partial class SvgImportDialog
         tableLayoutPanel3.Padding = new System.Windows.Forms.Padding(10);
         tableLayoutPanel3.RowCount = 1;
         tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
-        tableLayoutPanel3.Size = new System.Drawing.Size(344, 49);
+        tableLayoutPanel3.Size = new System.Drawing.Size(364, 49);
         tableLayoutPanel3.TabIndex = 1;
         // 
         // LnkGitHub
@@ -229,7 +229,7 @@ partial class SvgImportDialog
         // BtnOk
         // 
         BtnOk.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-        BtnOk.Location = new System.Drawing.Point(175, 13);
+        BtnOk.Location = new System.Drawing.Point(195, 13);
         BtnOk.Name = "BtnOk";
         BtnOk.Size = new System.Drawing.Size(75, 23);
         BtnOk.TabIndex = 0;
@@ -239,7 +239,7 @@ partial class SvgImportDialog
         // BtnCancel
         // 
         BtnCancel.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-        BtnCancel.Location = new System.Drawing.Point(256, 13);
+        BtnCancel.Location = new System.Drawing.Point(276, 13);
         BtnCancel.Name = "BtnCancel";
         BtnCancel.Size = new System.Drawing.Size(75, 23);
         BtnCancel.TabIndex = 1;
@@ -253,7 +253,7 @@ partial class SvgImportDialog
         GbLayers.Dock = System.Windows.Forms.DockStyle.Top;
         GbLayers.Location = new System.Drawing.Point(10, 253);
         GbLayers.Name = "GbLayers";
-        GbLayers.Size = new System.Drawing.Size(344, 97);
+        GbLayers.Size = new System.Drawing.Size(364, 97);
         GbLayers.TabIndex = 2;
         GbLayers.TabStop = false;
         GbLayers.Text = "Layers";
@@ -277,7 +277,7 @@ partial class SvgImportDialog
         tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
         tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
         tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-        tableLayoutPanel1.Size = new System.Drawing.Size(338, 75);
+        tableLayoutPanel1.Size = new System.Drawing.Size(358, 75);
         tableLayoutPanel1.TabIndex = 0;
         // 
         // RbFlatten
@@ -314,7 +314,7 @@ partial class SvgImportDialog
         CbHiddenLayers.Location = new System.Drawing.Point(99, 28);
         CbHiddenLayers.Name = "CbHiddenLayers";
         CbHiddenLayers.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-        CbHiddenLayers.Size = new System.Drawing.Size(236, 19);
+        CbHiddenLayers.Size = new System.Drawing.Size(256, 19);
         CbHiddenLayers.TabIndex = 1;
         CbHiddenLayers.Text = "Hidden layers";
         CbHiddenLayers.UseVisualStyleBackColor = true;
@@ -340,7 +340,7 @@ partial class SvgImportDialog
         CbOpacity.Location = new System.Drawing.Point(99, 3);
         CbOpacity.Name = "CbOpacity";
         CbOpacity.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-        CbOpacity.Size = new System.Drawing.Size(236, 19);
+        CbOpacity.Size = new System.Drawing.Size(256, 19);
         CbOpacity.TabIndex = 0;
         CbOpacity.Text = "Opacity as layer property";
         CbOpacity.UseVisualStyleBackColor = true;
@@ -353,7 +353,7 @@ partial class SvgImportDialog
         GbSizeSelection.Dock = System.Windows.Forms.DockStyle.Top;
         GbSizeSelection.Location = new System.Drawing.Point(10, 154);
         GbSizeSelection.Name = "GbSizeSelection";
-        GbSizeSelection.Size = new System.Drawing.Size(344, 99);
+        GbSizeSelection.Size = new System.Drawing.Size(364, 99);
         GbSizeSelection.TabIndex = 3;
         GbSizeSelection.TabStop = false;
         GbSizeSelection.Text = "Size selection by user";
@@ -368,7 +368,7 @@ partial class SvgImportDialog
         CbKeepAR.Location = new System.Drawing.Point(3, 77);
         CbKeepAR.Name = "CbKeepAR";
         CbKeepAR.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-        CbKeepAR.Size = new System.Drawing.Size(338, 19);
+        CbKeepAR.Size = new System.Drawing.Size(358, 19);
         CbKeepAR.TabIndex = 0;
         CbKeepAR.Text = "Keep aspect ratio";
         CbKeepAR.UseVisualStyleBackColor = true;
@@ -397,14 +397,14 @@ partial class SvgImportDialog
         tableLayoutPanel4.RowCount = 2;
         tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
         tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
-        tableLayoutPanel4.Size = new System.Drawing.Size(338, 58);
+        tableLayoutPanel4.Size = new System.Drawing.Size(358, 58);
         tableLayoutPanel4.TabIndex = 1;
         // 
         // LblResolution
         // 
         LblResolution.AutoSize = true;
         LblResolution.Dock = System.Windows.Forms.DockStyle.Fill;
-        LblResolution.Location = new System.Drawing.Point(68, 29);
+        LblResolution.Location = new System.Drawing.Point(78, 29);
         LblResolution.Name = "LblResolution";
         LblResolution.Size = new System.Drawing.Size(92, 29);
         LblResolution.TabIndex = 0;
@@ -415,7 +415,7 @@ partial class SvgImportDialog
         // 
         LblCanvasWH.AutoSize = true;
         LblCanvasWH.Dock = System.Windows.Forms.DockStyle.Fill;
-        LblCanvasWH.Location = new System.Drawing.Point(68, 0);
+        LblCanvasWH.Location = new System.Drawing.Point(78, 0);
         LblCanvasWH.Name = "LblCanvasWH";
         LblCanvasWH.Size = new System.Drawing.Size(92, 29);
         LblCanvasWH.TabIndex = 1;
@@ -425,7 +425,7 @@ partial class SvgImportDialog
         // NudCanvasW
         // 
         NudCanvasW.Dock = System.Windows.Forms.DockStyle.Fill;
-        NudCanvasW.Location = new System.Drawing.Point(166, 3);
+        NudCanvasW.Location = new System.Drawing.Point(176, 3);
         NudCanvasW.Maximum = new decimal(new int[] { 100000, 0, 0, 0 });
         NudCanvasW.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
         NudCanvasW.MinimumSize = new System.Drawing.Size(50, 0);
@@ -438,7 +438,7 @@ partial class SvgImportDialog
         // NudCanvasH
         // 
         NudCanvasH.Dock = System.Windows.Forms.DockStyle.Fill;
-        NudCanvasH.Location = new System.Drawing.Point(243, 3);
+        NudCanvasH.Location = new System.Drawing.Point(253, 3);
         NudCanvasH.Maximum = new decimal(new int[] { 100000, 0, 0, 0 });
         NudCanvasH.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
         NudCanvasH.MinimumSize = new System.Drawing.Size(50, 0);
@@ -452,7 +452,7 @@ partial class SvgImportDialog
         // 
         label9.AutoSize = true;
         label9.Dock = System.Windows.Forms.DockStyle.Fill;
-        label9.Location = new System.Drawing.Point(222, 0);
+        label9.Location = new System.Drawing.Point(232, 0);
         label9.Name = "label9";
         label9.Size = new System.Drawing.Size(15, 29);
         label9.TabIndex = 5;
@@ -462,7 +462,7 @@ partial class SvgImportDialog
         // NudDpi
         // 
         NudDpi.Dock = System.Windows.Forms.DockStyle.Fill;
-        NudDpi.Location = new System.Drawing.Point(166, 32);
+        NudDpi.Location = new System.Drawing.Point(176, 32);
         NudDpi.Maximum = new decimal(new int[] { 32767, 0, 0, 0 });
         NudDpi.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
         NudDpi.MinimumSize = new System.Drawing.Size(50, 0);
@@ -480,7 +480,7 @@ partial class SvgImportDialog
         GbInfo.Dock = System.Windows.Forms.DockStyle.Top;
         GbInfo.Location = new System.Drawing.Point(10, 10);
         GbInfo.Name = "GbInfo";
-        GbInfo.Size = new System.Drawing.Size(344, 144);
+        GbInfo.Size = new System.Drawing.Size(364, 144);
         GbInfo.TabIndex = 4;
         GbInfo.TabStop = false;
         GbInfo.Text = "Size settings given in SVG file";
@@ -498,14 +498,14 @@ partial class SvgImportDialog
         tableLayoutPanel9.Name = "tableLayoutPanel9";
         tableLayoutPanel9.RowCount = 1;
         tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle());
-        tableLayoutPanel9.Size = new System.Drawing.Size(338, 35);
+        tableLayoutPanel9.Size = new System.Drawing.Size(358, 35);
         tableLayoutPanel9.TabIndex = 0;
         // 
         // LnkUseSvgSettings
         // 
         LnkUseSvgSettings.AutoSize = true;
         LnkUseSvgSettings.Dock = System.Windows.Forms.DockStyle.Top;
-        LnkUseSvgSettings.Location = new System.Drawing.Point(70, 5);
+        LnkUseSvgSettings.Location = new System.Drawing.Point(80, 5);
         LnkUseSvgSettings.Margin = new System.Windows.Forms.Padding(5);
         LnkUseSvgSettings.Name = "LnkUseSvgSettings";
         LnkUseSvgSettings.Size = new System.Drawing.Size(197, 25);
@@ -541,14 +541,14 @@ partial class SvgImportDialog
         tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
         tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
         tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-        tableLayoutPanel2.Size = new System.Drawing.Size(338, 87);
+        tableLayoutPanel2.Size = new System.Drawing.Size(358, 87);
         tableLayoutPanel2.TabIndex = 1;
         // 
         // LblViewport
         // 
         LblViewport.AutoSize = true;
         LblViewport.Dock = System.Windows.Forms.DockStyle.Fill;
-        LblViewport.Location = new System.Drawing.Point(50, 0);
+        LblViewport.Location = new System.Drawing.Point(60, 0);
         LblViewport.Name = "LblViewport";
         LblViewport.Size = new System.Drawing.Size(93, 29);
         LblViewport.TabIndex = 0;
@@ -559,7 +559,7 @@ partial class SvgImportDialog
         // 
         TbViewboxH.Dock = System.Windows.Forms.DockStyle.Fill;
         TbViewboxH.Enabled = false;
-        TbViewboxH.Location = new System.Drawing.Point(232, 61);
+        TbViewboxH.Location = new System.Drawing.Point(242, 61);
         TbViewboxH.MinimumSize = new System.Drawing.Size(50, 4);
         TbViewboxH.Name = "TbViewboxH";
         TbViewboxH.Size = new System.Drawing.Size(56, 23);
@@ -572,7 +572,7 @@ partial class SvgImportDialog
         // 
         label6.AutoSize = true;
         label6.Dock = System.Windows.Forms.DockStyle.Fill;
-        label6.Location = new System.Drawing.Point(211, 58);
+        label6.Location = new System.Drawing.Point(221, 58);
         label6.Name = "label6";
         label6.Size = new System.Drawing.Size(15, 29);
         label6.TabIndex = 2;
@@ -583,7 +583,7 @@ partial class SvgImportDialog
         // 
         TbViewportW.Dock = System.Windows.Forms.DockStyle.Fill;
         TbViewportW.Enabled = false;
-        TbViewportW.Location = new System.Drawing.Point(149, 3);
+        TbViewportW.Location = new System.Drawing.Point(159, 3);
         TbViewportW.MinimumSize = new System.Drawing.Size(50, 4);
         TbViewportW.Name = "TbViewportW";
         TbViewportW.Size = new System.Drawing.Size(56, 23);
@@ -596,7 +596,7 @@ partial class SvgImportDialog
         // 
         label3.AutoSize = true;
         label3.Dock = System.Windows.Forms.DockStyle.Fill;
-        label3.Location = new System.Drawing.Point(211, 0);
+        label3.Location = new System.Drawing.Point(221, 0);
         label3.Name = "label3";
         label3.Size = new System.Drawing.Size(15, 29);
         label3.TabIndex = 4;
@@ -607,7 +607,7 @@ partial class SvgImportDialog
         // 
         TbViewboxW.Dock = System.Windows.Forms.DockStyle.Fill;
         TbViewboxW.Enabled = false;
-        TbViewboxW.Location = new System.Drawing.Point(149, 61);
+        TbViewboxW.Location = new System.Drawing.Point(159, 61);
         TbViewboxW.MinimumSize = new System.Drawing.Size(50, 4);
         TbViewboxW.Name = "TbViewboxW";
         TbViewboxW.Size = new System.Drawing.Size(56, 23);
@@ -620,7 +620,7 @@ partial class SvgImportDialog
         // 
         TbViewportH.Dock = System.Windows.Forms.DockStyle.Fill;
         TbViewportH.Enabled = false;
-        TbViewportH.Location = new System.Drawing.Point(232, 3);
+        TbViewportH.Location = new System.Drawing.Point(242, 3);
         TbViewportH.MinimumSize = new System.Drawing.Size(50, 4);
         TbViewportH.Name = "TbViewportH";
         TbViewportH.Size = new System.Drawing.Size(56, 23);
@@ -633,7 +633,7 @@ partial class SvgImportDialog
         // 
         LblViewboxWH.AutoSize = true;
         LblViewboxWH.Dock = System.Windows.Forms.DockStyle.Fill;
-        LblViewboxWH.Location = new System.Drawing.Point(50, 58);
+        LblViewboxWH.Location = new System.Drawing.Point(60, 58);
         LblViewboxWH.Name = "LblViewboxWH";
         LblViewboxWH.Size = new System.Drawing.Size(93, 29);
         LblViewboxWH.TabIndex = 7;
@@ -644,7 +644,7 @@ partial class SvgImportDialog
         // 
         LblViewboxXY.AutoSize = true;
         LblViewboxXY.Dock = System.Windows.Forms.DockStyle.Fill;
-        LblViewboxXY.Location = new System.Drawing.Point(50, 29);
+        LblViewboxXY.Location = new System.Drawing.Point(60, 29);
         LblViewboxXY.Name = "LblViewboxXY";
         LblViewboxXY.Size = new System.Drawing.Size(93, 29);
         LblViewboxXY.TabIndex = 8;
@@ -655,7 +655,7 @@ partial class SvgImportDialog
         // 
         TbViewboxY.Dock = System.Windows.Forms.DockStyle.Fill;
         TbViewboxY.Enabled = false;
-        TbViewboxY.Location = new System.Drawing.Point(232, 32);
+        TbViewboxY.Location = new System.Drawing.Point(242, 32);
         TbViewboxY.MinimumSize = new System.Drawing.Size(50, 4);
         TbViewboxY.Name = "TbViewboxY";
         TbViewboxY.Size = new System.Drawing.Size(56, 23);
@@ -668,7 +668,7 @@ partial class SvgImportDialog
         // 
         label4.AutoSize = true;
         label4.Dock = System.Windows.Forms.DockStyle.Fill;
-        label4.Location = new System.Drawing.Point(211, 29);
+        label4.Location = new System.Drawing.Point(221, 29);
         label4.Name = "label4";
         label4.Size = new System.Drawing.Size(15, 29);
         label4.TabIndex = 10;
@@ -679,7 +679,7 @@ partial class SvgImportDialog
         // 
         TbViewboxX.Dock = System.Windows.Forms.DockStyle.Fill;
         TbViewboxX.Enabled = false;
-        TbViewboxX.Location = new System.Drawing.Point(149, 32);
+        TbViewboxX.Location = new System.Drawing.Point(159, 32);
         TbViewboxX.MinimumSize = new System.Drawing.Size(50, 4);
         TbViewboxX.Name = "TbViewboxX";
         TbViewboxX.Size = new System.Drawing.Size(56, 23);
@@ -693,7 +693,7 @@ partial class SvgImportDialog
         AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
         AutoSize = true;
-        ClientSize = new System.Drawing.Size(364, 341);
+        ClientSize = new System.Drawing.Size(384, 341);
         Controls.Add(RootPanel);
         Name = "SvgImportDialog";
         ((System.ComponentModel.ISupportInitialize)PbWarning).EndInit();

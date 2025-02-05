@@ -12,7 +12,7 @@ using SvgFileTypePlugin.Extensions;
 
 namespace SvgFileTypePlugin.Import;
 
-internal abstract class MyBaseForm : Form
+internal class MyBaseForm : Form
 {
     #region Properties
 

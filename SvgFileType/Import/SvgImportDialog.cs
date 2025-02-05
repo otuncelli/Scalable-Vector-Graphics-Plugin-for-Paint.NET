@@ -150,7 +150,9 @@ internal partial class SvgImportDialog : MyBaseForm
         RbAllElements.CheckedChanged += Rb_CheckedChanged;
         RbFlatten.CheckedChanged += Rb_CheckedChanged;
         RbGroups.CheckedChanged += Rb_CheckedChanged;
+        NudCanvasW.Accelerations.Add(new NumericUpDownAcceleration(3, 10));
         NudCanvasW.KeyUp += NudCanvas_KeyUp;
+        NudCanvasH.Accelerations.Add(new NumericUpDownAcceleration(3, 10));
         NudCanvasH.KeyUp += NudCanvas_KeyUp;
         NudCanvasW.LostFocus += NudCanvas_LostFocus;
         NudCanvasH.LostFocus += NudCanvas_LostFocus;

@@ -61,4 +61,19 @@ internal static class SurfaceExtensions
         }
         return true;
     }
+
+    public static void BlendOnto<T>(this Surface surface, ColorBgra backgroundColor) where T : UserBlendOp, new()
+    {
+        ArgumentNullException.ThrowIfNull(surface);
+
+        using Surface tmp = surface.Clone();
+        int w = tmp.Width;
+        int h = tmp.Height;
+        int stride = tmp.Stride;
+        surface.Fill(backgroundColor);
+        unsafe
+        {
+            new T().UnsafeApply(w, h, (ColorBgra*)surface.Scan0.Pointer, stride, (ColorBgra*)tmp.Scan0.Pointer, stride);
+        }
+    }
 }

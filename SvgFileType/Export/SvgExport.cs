@@ -12,7 +12,9 @@ using PaintDotNet;
 using PaintDotNet.AppModel;
 using PaintDotNet.PropertySystem;
 using PaintDotNet.PropertySystem.Extensions;
+using SvgFileTypePlugin.Extensions;
 using SvgFileTypePlugin.Localization;
+using static PaintDotNet.UserBlendOps;
 
 namespace SvgFileTypePlugin.Export;
 
@@ -101,11 +103,11 @@ internal static partial class SvgExport
         backend.Rx /= scale;
         backend.Ry /= scale;
 
-        bool dialogVisible = UIHelper.IsSaveConfigDialogVisible();
+        bool isSaveConfigDialogVisible = UIHelper.IsSaveConfigDialogVisible();
         Surface surface;
         const int maxDimForPreview = 1280;
 
-        if (dialogVisible && previewMode == PreviewMode.Fast && input.Width * input.Height > maxDimForPreview * maxDimForPreview)
+        if (isSaveConfigDialogVisible && previewMode == PreviewMode.Fast && input.Width * input.Height > maxDimForPreview * maxDimForPreview)
         {
             // Preview Only
             // Image downscaled to speed up preview generation.
@@ -121,109 +123,111 @@ internal static partial class SvgExport
             surface.FitSurface(ResamplingAlgorithm.Cubic, input);
         }
         else
-            surface = input.Clone();
-
-        using (surface)
-        using (CancellationTokenSource cts = new CancellationTokenSource())
         {
-            float full = dialogVisible ? 90f : 100f;
+            surface = input.Clone();
+        }
 
-            void OnProgress(float prog)
+        using var _ = surface;
+        surface.BlendOnto<NormalBlendOp>(ColorBgra.White);
+
+        using CancellationTokenSource cts = new CancellationTokenSource();
+        float full = isSaveConfigDialogVisible ? 90f : 100f;
+
+        CancellationToken cancellationToken = cts.Token;
+        if (scanMode == ScanMode.Opaque)
+        {
+            backend.Opaque = true;
+            backend.FillColor = fillcolor;
+        }
+
+        if (highpass == 0)
+        {
+            bm = PotraceBitmap.FromRgbx(surface.Scan0.Pointer, surface.Width, surface.Height, c: brightnessCutoff);
+        }
+        else
+        {
+            using Greymap gm = Greymap.FromRgbx(surface.Scan0.Pointer, surface.Width, surface.Height);
+            gm.HighPassFilter(lambda: highpass);
+
+            if (lowpass > 0)
+                gm.LowPassFilter(lambda: lowpass);
+
+            if (gmScale > 1)
+            {
+                bm = gm.InterpolateCubicBilevel(gmScale, c: brightnessCutoff);
+                backend.Rx *= gmScale;
+                backend.Ry *= gmScale;
+            }
+            else
+                bm = gm.Threshold(c: brightnessCutoff);
+        }
+
+        using (bm)
+        {
+            if (invert)
+                bm.Invert();
+
+            if (enclose)
+                bm.Enclose();
+
+            Progress<ProgressArgs> progress = new Progress<ProgressArgs>((prog) => OnProgress(ConvertProgressValue(prog)));
+            trace = bm.Trace(turdsize, turnpolicy, alphamax, opttolerance, progress, cancellationToken);
+            imginfo = bm.Info;
+            imginfo.Tight = tight;
+        }
+        imginfo.Angle = angle;
+        if (trace == null)
+        {
+            if (UIHelper.IsSaveConfigDialogVisible())
+                return;
+            else
+                throw new InvalidOperationException(StringResources.NoPath);
+        }
+
+        if (isSaveConfigDialogVisible && scanMode == ScanMode.Transparent && shapePath.Length > 0)
+        {
+            PdnShapeBackEnd pdnbackend = new PdnShapeBackEnd
+            {
+                ColumnWidth = int.MaxValue,
+                DisplayName = shapeName
+            };
+            using (FileStream shapeStream = File.Open(shapePath, FileMode.Create, FileAccess.Write))
+                pdnbackend.Save(shapeStream, trace, imginfo, cancellationToken);
+
+            StringBuilder msg = new StringBuilder();
+            msg.AppendFormat(StringResources.ShapeSaved, shapePath);
+
+            if (ShapesDirectory.Value != null && Path.GetDirectoryName(shapePath)?.StartsWith(ShapesDirectory.Value, StringComparison.OrdinalIgnoreCase) == true)
+            {
+                msg.AppendLine();
+                msg.AppendLine();
+                msg.AppendLine(StringResources.ShapeSavedRestart);
+            }
+
+            UIHelper.RunOnUIThread(() =>
+            {
+                MessageBox.Show(msg.ToString(), StringResources.ShapeSavedCaption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            });
+        }
+        backend.Save(output, trace, imginfo, cancellationToken);
+
+        void OnProgress(float prog)
+        {
+            try
+            {
+                progressCallback.Invoke(null, new ProgressEventArgs(prog * full));
+            }
+            catch (OperationCanceledException)
             {
                 try
                 {
-                    progressCallback.Invoke(null, new ProgressEventArgs(prog * full));
+                    cts.Cancel();
                 }
-                catch (OperationCanceledException)
+                catch (ObjectDisposedException)
                 {
-                    try
-                    {
-                        cts.Cancel();
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        // ignore
-                    }
+                    // ignore
                 }
             }
-
-            CancellationToken cancellationToken = cts.Token;
-            if (scanMode == ScanMode.Opaque)
-            {
-                backend.Opaque = true;
-                backend.FillColor = fillcolor;
-            }
-
-            if (highpass == 0)
-            {
-                bm = PotraceBitmap.FromRgbx(surface.Scan0.Pointer, surface.Width, surface.Height, c: brightnessCutoff);
-            }
-            else
-            {
-                using Greymap gm = Greymap.FromRgbx(surface.Scan0.Pointer, surface.Width, surface.Height);
-                gm.HighPassFilter(lambda: highpass);
-
-                if (lowpass > 0)
-                    gm.LowPassFilter(lambda: lowpass);
-
-                if (gmScale > 1)
-                {
-                    bm = gm.InterpolateCubicBilevel(gmScale, c: brightnessCutoff);
-                    backend.Rx *= gmScale;
-                    backend.Ry *= gmScale;
-                }
-                else
-                    bm = gm.Threshold(c: brightnessCutoff);
-            }
-
-            using (bm)
-            {
-                if (invert)
-                    bm.Invert();
-
-                if (enclose)
-                    bm.Enclose();
-
-                Progress<ProgressArgs> progress = new Progress<ProgressArgs>((prog) => OnProgress(ConvertProgressValue(prog)));
-                trace = bm.Trace(turdsize, turnpolicy, alphamax, opttolerance, progress, cancellationToken);
-                imginfo = bm.Info;
-                imginfo.Tight = tight;
-            }
-            imginfo.Angle = angle;
-            if (trace == null)
-            {
-                if (UIHelper.IsSaveConfigDialogVisible())
-                    return;
-                else
-                    throw new InvalidOperationException(StringResources.NoPath);
-            }
-
-            if (dialogVisible && scanMode == ScanMode.Transparent && shapePath.Length > 0)
-            {
-                PdnShapeBackEnd pdnbackend = new PdnShapeBackEnd
-                {
-                    ColumnWidth = int.MaxValue,
-                    DisplayName = shapeName
-                };
-                using (FileStream shapeStream = File.Open(shapePath, FileMode.Create, FileAccess.Write))
-                    pdnbackend.Save(shapeStream, trace, imginfo, cancellationToken);
-
-                StringBuilder msg = new StringBuilder();
-                msg.AppendFormat(StringResources.ShapeSaved, shapePath);
-
-                if (ShapesDirectory.Value != null && Path.GetDirectoryName(shapePath)?.StartsWith(ShapesDirectory.Value, StringComparison.OrdinalIgnoreCase) == true)
-                {
-                    msg.AppendLine();
-                    msg.AppendLine();
-                    msg.AppendLine(StringResources.ShapeSavedRestart);
-                }
-
-                UIHelper.RunOnUIThread(() => 
-                { 
-                    MessageBox.Show(msg.ToString(), StringResources.ShapeSavedCaption, MessageBoxButtons.OK, MessageBoxIcon.Information); 
-                });
-            }
-            backend.Save(output, trace, imginfo, cancellationToken);
         }
     }
 
