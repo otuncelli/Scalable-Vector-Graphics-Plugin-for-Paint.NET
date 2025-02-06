@@ -3,8 +3,6 @@
 
 using System;
 using System.Drawing;
-using System.IO;
-using System.Text;
 using Svg;
 using SvgFileTypePlugin.Import;
 
@@ -38,7 +36,7 @@ internal static class SvgDocumentExtensions
         svg.Width = rasterSize.Width;
         svg.Height = rasterSize.Height;
         svg.ViewBox = new SvgViewBox(0, 0, originalSize.Width, originalSize.Height);
-        SvgPreserveAspectRatio aspectRatio = config.PreserveAspectRatio 
+        SvgPreserveAspectRatio aspectRatio = config.PreserveAspectRatio
             ? SvgPreserveAspectRatio.xMinYMin
             : SvgPreserveAspectRatio.none;
         svg.AspectRatio = new SvgAspectRatio(aspectRatio);
@@ -50,24 +48,5 @@ internal static class SvgDocumentExtensions
             svg.Height = originalSize.Height;
             svg.ViewBox = originalViewbox;
         });
-    }
-
-    public static string GetXML2(this SvgDocument svg)
-    {
-        ArgumentNullException.ThrowIfNull(svg);
-
-        // This issue has been resolved for resvg but,
-        // apparently, Direct2D renderer is also affected.
-        // https://github.com/RazrFalcon/resvg/issues/235
-        return svg.GetXML().Replace("&quot;", string.Empty);
-    }
-
-    public static Stream AsStream(this SvgDocument svg, bool removeQuotes = false)
-    {
-        ArgumentNullException.ThrowIfNull(svg);
-
-        string xml = removeQuotes ? svg.GetXML2() : svg.GetXML();
-        byte[] bytes = Encoding.UTF8.GetBytes(xml);
-        return new MemoryStream(bytes);
     }
 }

@@ -139,7 +139,7 @@ internal sealed class ResvgSvgRenderer() : SvgRenderer2("resvg")
         else
         {
             SvgDocument clone = element.OwnerDocument.RemoveInvisibleAndNonTextElements();
-            using (Resvg resvg = Resvg.FromData(clone.GetXML(), options))
+            using (Resvg resvg = Resvg.FromData(clone.GetXML_QuotedFuncIRIHack(), options))
                 resvg.Render(surface.Scan0.Pointer, surface.Width, surface.Height);
             surface.ConvertFromPrgba();
         }

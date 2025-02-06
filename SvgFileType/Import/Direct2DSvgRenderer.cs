@@ -42,7 +42,7 @@ internal sealed class Direct2DSvgRenderer() : SvgRenderer2(name: "Direct2D")
             using IBitmap<ColorBgra32> sbitmap = surface.CreateSharedBitmap();
             using IBitmap<ColorPbgra32> pbitmap = sbitmap.CreatePremultipliedAdapter(PremultipliedAdapterOptions.UnPremultiplyOnDispose);
             using IDeviceContext dc = d2d.CreateBitmapDeviceContext(pbitmap);
-            using Stream stream = svgdoc.AsStream(removeQuotes: true);
+            using Stream stream = svgdoc.GetXMLAsStream();
             using ISvgDocument svg = dc.CreateSvgDocument(stream, viewport);
             using DrawingScope _1 = dc.UseBeginDraw();
             dc.Clear();
@@ -190,7 +190,7 @@ internal sealed class Direct2DSvgRenderer() : SvgRenderer2(name: "Direct2D")
         else
         {
             SvgDocument clone = element.OwnerDocument.RemoveInvisibleAndNonTextElements();
-            using Stream stream = clone.AsStream(removeQuotes: true);
+            using Stream stream = clone.GetXMLAsStream();
             using ISvgDocument partial = dc.CreateSvgDocument(stream, dc.Size);
             using DrawingScope _ = dc.UseBeginDraw();
             dc.Clear();
