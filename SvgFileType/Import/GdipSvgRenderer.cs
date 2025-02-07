@@ -27,7 +27,6 @@ internal sealed class GdipSvgRenderer() : SvgRenderer2(name: "GDI+")
         using MemoryFailPoint _1 = GetMemoryFailPoint(config.RasterWidth, config.RasterHeight, 2);
 
         ResetProgress(elements.Count);
-        //ResetProgress(1);
         using Bitmap bmp = new Bitmap(config.RasterWidth, config.RasterHeight);
         using (Graphics g = Graphics.FromImage(bmp))
         {
@@ -43,8 +42,6 @@ internal sealed class GdipSvgRenderer() : SvgRenderer2(name: "GDI+")
                 RenderSvgDocument(element, g, config);
                 IncrementProgress();
             }
-            //RenderSvgDocument(svg, g, config);
-            //IncrementProgress();
         }
         Document document = Document.FromImage(bmp);
         document.SetDpi(config.Ppi);
@@ -145,7 +142,6 @@ internal sealed class GdipSvgRenderer() : SvgRenderer2(name: "GDI+")
         else
         {
             SvgDocument clone = element.OwnerDocument.RemoveInvisibleAndNonTextElements();
-            using IDisposable _ = clone.UseSetRasterDimensions(config);
             clone.Draw(graphics);
         }
     }

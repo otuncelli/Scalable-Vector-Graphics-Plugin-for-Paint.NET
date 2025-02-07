@@ -25,6 +25,7 @@ internal static class SvgImport
 
         // We are using resvg which gives the best result in my tests.
         // For testing purposes, I also have implemented GDI+ and Direct2D based SVG renderers as well.
+        // Renderers: resvg, gdip or gdiplus or gdi+, direct2d or d2d
         const string rendererName = "resvg";
 
         string svgdata = Open(stream);

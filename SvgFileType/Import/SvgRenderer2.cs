@@ -74,20 +74,19 @@ internal abstract class SvgRenderer2(string name)
         ArgumentNullException.ThrowIfNull(use);
         ArgumentNullException.ThrowIfNull(renderAction);
 
-        SvgElement? referencedRoot = use.CopyReferencedRootElement();
-        if (referencedRoot is null)
+        if (use.GetCopyOfReferencedElement() is not SvgElement referencedElement)
             return;
-        referencedRoot.Visibility = "visible";
+        referencedElement.Visibility = "visible";
         use.Visibility = "hidden";
         SvgElementCollection children = use.Parent.Children;
-        children.AddAndForceUniqueID(referencedRoot);
+        children.AddAndForceUniqueID(referencedElement);
         try
         {
-            renderAction(referencedRoot);
+            renderAction(referencedElement);
         }
         finally
         {
-            children.Remove(referencedRoot);
+            children.Remove(referencedElement);
         }
     }
 

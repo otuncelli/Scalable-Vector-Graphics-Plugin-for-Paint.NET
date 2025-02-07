@@ -35,16 +35,15 @@ internal sealed class Direct2DSvgRenderer() : SvgRenderer2(name: "Direct2D")
         try
         {
             SvgDocument svgdoc = SvgDocument.FromSvg<SvgDocument>(svgdata);
-            using IDisposable _ = svgdoc.UseSetRasterDimensions(config);
-
-            SizeFloat viewport = new SizeFloat(width, height);
             IDirect2DFactory d2d = Services.Get<IDirect2DFactory>(); // Don't dispose this! It's singleton.
             using IBitmap<ColorBgra32> sbitmap = surface.CreateSharedBitmap();
             using IBitmap<ColorPbgra32> pbitmap = sbitmap.CreatePremultipliedAdapter(PremultipliedAdapterOptions.UnPremultiplyOnDispose);
             using IDeviceContext dc = d2d.CreateBitmapDeviceContext(pbitmap);
-            using Stream stream = svgdoc.GetXMLAsStream();
-            using ISvgDocument svg = dc.CreateSvgDocument(stream, viewport);
+            using MemoryStream stream = new MemoryStream();
+            svgdoc.WriteXML_QuotedFuncIRIHack(stream);
+            using ISvgDocument svg = dc.CreateSvgDocument(stream, viewportSize: new SizeFloat(width, height));
             using DrawingScope _1 = dc.UseBeginDraw();
+            dc.Transform = CalculateTransform(svgsize: new SizeF(svgdoc.Width, svgdoc.Height), config);
             dc.Clear();
             dc.DrawSvgDocument(svg);
         }
@@ -190,11 +189,26 @@ internal sealed class Direct2DSvgRenderer() : SvgRenderer2(name: "Direct2D")
         else
         {
             SvgDocument clone = element.OwnerDocument.RemoveInvisibleAndNonTextElements();
-            using Stream stream = clone.GetXMLAsStream();
+            using MemoryStream stream = new MemoryStream();
+            clone.WriteXML_QuotedFuncIRIHack(stream);
             using ISvgDocument partial = dc.CreateSvgDocument(stream, dc.Size);
             using DrawingScope _ = dc.UseBeginDraw();
             dc.Clear();
             dc.DrawSvgDocument(partial);
         }
+    }
+
+    private static Matrix3x2Float CalculateTransform(SizeF svgsize, SvgImportConfig config, float tolerance = 1f)
+    {
+        float ratioX, ratioY;
+        ratioX = config.RasterWidth / svgsize.Width * tolerance;
+        ratioY = config.PreserveAspectRatio
+            ? ratioX
+            : config.RasterHeight / svgsize.Height * tolerance;
+        return new Matrix3x2Float()
+        {
+            M11 = ratioX,
+            M22 = ratioY
+        };
     }
 }
