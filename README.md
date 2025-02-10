@@ -6,7 +6,7 @@
 This is a [paint.net](https://getpaint.net) filetype plugin for loading SVG (Scalable Vector Graphics) and its compressed variant SVGZ files. SVG files can be rendered as a flat image or each element/group on a separate layer. This plugin also provides basic image tracing (raster to vector conversion) functionality which works best with black and white drawings. You may export the tracing result as SVG or Paint.NET Shape.
 
 ### Prerequisites
-paint.net 5.0.9 or later
+paint.net 5.1 or later
 
 ### Download links
 
