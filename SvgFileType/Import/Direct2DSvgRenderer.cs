@@ -29,6 +29,7 @@ internal sealed class Direct2DSvgRenderer() : SvgRenderer2(name: "Direct2D")
 
         ctoken.ThrowIfCancellationRequested();
         (int width, int height) = (config.RasterWidth, config.RasterHeight);
+        using BenchmarkScope _ = new BenchmarkScope();
         using MemoryFailPoint mfp = GetMemoryFailPoint(width, height, 1);
         ResetProgress(1);
         Surface surface = new Surface(width, height, SurfaceCreationFlags.DoNotZeroFillHint);
@@ -64,13 +65,14 @@ internal sealed class Direct2DSvgRenderer() : SvgRenderer2(name: "Direct2D")
         ArgumentException.ThrowIfNullOrWhiteSpace(svgdata);
         ArgumentNullException.ThrowIfNull(config);
 
+        using BenchmarkScope _ = new BenchmarkScope();
         SvgDocument svg = SvgDocument.FromSvg<SvgDocument>(svgdata);
-        using IDisposable _ = svg.UseSetRasterDimensions(config);
+        using IDisposable _1 = svg.UseSetRasterDimensions(config);
 
         List<SvgVisualElement> elements = GetSvgVisualElements(svg, config, ctoken);
         ctoken.ThrowIfCancellationRequested();
 
-        using MemoryFailPoint _1 = GetMemoryFailPoint(config.RasterWidth, config.RasterHeight, elements.Count); // We will probably need a bit more that this but that's okay.
+        using MemoryFailPoint _2 = GetMemoryFailPoint(config.RasterWidth, config.RasterHeight, elements.Count);
 
         ResetProgress(elements.Count);
         List<BitmapLayer> layers = [];
@@ -146,27 +148,26 @@ internal sealed class Direct2DSvgRenderer() : SvgRenderer2(name: "Direct2D")
 
     public override Document GetNoPathDocument()
     {
-        string text = SR.NoPath;
         IDirectWriteFactory dw = Services.Get<IDirectWriteFactory>();
         IDirect2DFactory d2d = Services.Get<IDirect2DFactory>();
         using ITextFormat textFormat = dw.CreateTextFormat("Arial", null, FontWeight.Bold, FontStyle.Normal, FontStretch.Normal, UIScaleFactor.ConvertFontPointsToDips(24));
-        using ITextLayout textLayout = dw.CreateTextLayout(text, textFormat);
+        using ITextLayout textLayout = dw.CreateTextLayout(SR.NoPath, textFormat);
         textLayout.WordWrapping = WordWrapping.NoWrap;
-        TextMeasurement tm = textLayout.Measure();
-        int width = (int)tm.Width;
-        int height = (int)tm.Height;
-        // StrokeStyleProperties ssprops = StrokeStyleProperties.Default;
-        // ssprops.LineJoin = LineJoin.Bevel;
-        // ssprops.MiterLimit = 0;
+        TextMeasurement textMeasurement = textLayout.Measure();
+        int width = (int)textMeasurement.Width;
+        int height = (int)textMeasurement.Height;
+        //StrokeStyleProperties strokeStyleProperties = StrokeStyleProperties.Default;
+        //strokeStyleProperties.LineJoin = LineJoin.Bevel;
+        //strokeStyleProperties.MiterLimit = 0;
         Surface surface = new Surface(width, height, SurfaceCreationFlags.DoNotZeroFillHint);
         using (IBitmap<ColorBgra32> shared = surface.CreateSharedBitmap())
         using (IBitmap<ColorPbgra32> premltd = shared.CreatePremultipliedAdapter(PremultipliedAdapterOptions.UnPremultiplyOnDispose))
         using (IDeviceContext dc = d2d.CreateBitmapDeviceContext(premltd))
         using (ISolidColorBrush textBrush = dc.CreateSolidColorBrush(Color.Black))
         //using (ISolidColorBrush strokeBrush = dc.CreateSolidColorBrush(Color.Red))
-        //using (IGeometry textGeometry = d2d.CreateGeometryFromTextLayout(layout))
-        //using (IStrokeStyle strokeStyle = d2d.CreateStrokeStyle(ssprops))
-        //using (IGeometry widenedGeometry = textGeometry.Widen(10, strokeStyle))
+        //using (IGeometry textGeometry = d2d.CreateGeometryFromTextLayout(textLayout))
+        //using (IStrokeStyle strokeStyle = d2d.CreateStrokeStyle(strokeStyleProperties))
+        //using (IGeometry widenedGeometry = textGeometry.Widen(1, strokeStyle))
         //using (IGeometry outerStrokeGeometry = widenedGeometry.CombineWithGeometry(textGeometry, GeometryCombineMode.Exclude))
         using (dc.UseTextRenderingMode(TextRenderingMode.Default))
         using (dc.UseTextAntialiasMode(TextAntialiasMode.Grayscale))
@@ -174,8 +175,8 @@ internal sealed class Direct2DSvgRenderer() : SvgRenderer2(name: "Direct2D")
         {
             dc.Clear(Color.LightGray);
             dc.DrawTextLayout(0, 0, textLayout, textBrush, DrawTextOptions.EnableColorFont);
-            // dc.FillGeometry(textGeometry, textBrush);
-            // dc.FillGeometry(outerStrokeGeometry, strokeBrush);
+            //dc.FillGeometry(textGeometry, textBrush);
+            //dc.FillGeometry(outerStrokeGeometry, strokeBrush);
         }
         return surface.CreateSingleLayerDocument(takeOwnership: true);
     }

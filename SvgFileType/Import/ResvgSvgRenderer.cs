@@ -22,6 +22,7 @@ internal sealed class ResvgSvgRenderer() : SvgRenderer2("resvg")
 
         ctoken.ThrowIfCancellationRequested();
         (int width, int height) = (config.RasterWidth, config.RasterHeight);
+        using BenchmarkScope _ = new BenchmarkScope();
         using MemoryFailPoint mfp = GetMemoryFailPoint(width, height, 1);
         ResetProgress(1);
         Surface surface = new Surface(width, height, SurfaceCreationFlags.DoNotZeroFillHint);
@@ -51,13 +52,14 @@ internal sealed class ResvgSvgRenderer() : SvgRenderer2("resvg")
         ArgumentException.ThrowIfNullOrWhiteSpace(svgdata);
         ArgumentNullException.ThrowIfNull(config);
 
+        using BenchmarkScope _ = new BenchmarkScope();
         SvgDocument svg = SvgDocument.FromSvg<SvgDocument>(svgdata);
-        using IDisposable _ = svg.UseSetRasterDimensions(config);
+        using IDisposable _1 = svg.UseSetRasterDimensions(config);
 
         List<SvgVisualElement> elements = GetSvgVisualElements(svg, config, ctoken);
         ctoken.ThrowIfCancellationRequested();
 
-        using MemoryFailPoint _1 = GetMemoryFailPoint(config.RasterWidth, config.RasterHeight, elements.Count);
+        using MemoryFailPoint _2 = GetMemoryFailPoint(config.RasterWidth, config.RasterHeight, elements.Count);
 
         ResetProgress(elements.Count);
         List<BitmapLayer> layers = [];

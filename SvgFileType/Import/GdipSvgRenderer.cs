@@ -20,11 +20,13 @@ internal sealed class GdipSvgRenderer() : SvgRenderer2(name: "GDI+")
         ArgumentNullException.ThrowIfNull(config);
 
         ctoken.ThrowIfCancellationRequested();
+
+        using BenchmarkScope _ = new BenchmarkScope();
         SvgDocument svg = SvgDocument.FromSvg<SvgDocument>(svgdata);
-        using IDisposable _ = svg.UseSetRasterDimensions(config);
+        using IDisposable _1 = svg.UseSetRasterDimensions(config);
 
         List<SvgVisualElement> elements = GetSvgVisualElements(svg, config, ctoken);
-        using MemoryFailPoint _1 = GetMemoryFailPoint(config.RasterWidth, config.RasterHeight, 2);
+        using MemoryFailPoint _2 = GetMemoryFailPoint(config.RasterWidth, config.RasterHeight, 2);
 
         ResetProgress(elements.Count);
         using Bitmap bmp = new Bitmap(config.RasterWidth, config.RasterHeight);
@@ -53,13 +55,14 @@ internal sealed class GdipSvgRenderer() : SvgRenderer2(name: "GDI+")
         ArgumentException.ThrowIfNullOrWhiteSpace(svgdata);
         ArgumentNullException.ThrowIfNull(config);
 
+        using BenchmarkScope _ = new BenchmarkScope();
         SvgDocument svg = SvgDocument.FromSvg<SvgDocument>(svgdata);
-        using IDisposable _ = svg.UseSetRasterDimensions(config);
+        using IDisposable _1 = svg.UseSetRasterDimensions(config);
 
         List<SvgVisualElement> elements = GetSvgVisualElements(svg, config, ctoken);
         ctoken.ThrowIfCancellationRequested();
 
-        using MemoryFailPoint _1 = GetMemoryFailPoint(config.RasterWidth, config.RasterHeight, elements.Count);
+        using MemoryFailPoint _2 = GetMemoryFailPoint(config.RasterWidth, config.RasterHeight, elements.Count);
 
         ResetProgress(elements.Count);
         List<BitmapLayer> layers = [];
