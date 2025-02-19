@@ -4,7 +4,6 @@
 using System;
 using System.Runtime.CompilerServices;
 using PaintDotNet;
-using PaintDotNet.Rendering;
 
 namespace SvgFileTypePlugin.Extensions;
 
@@ -27,22 +26,6 @@ internal static class SurfaceExtensions
             throw;
         }
         return document;
-    }
-
-    public static void ConvertFromPrgba(this Surface surface)
-    {
-        ArgumentNullException.ThrowIfNull(surface);
-
-        for (int y = 0; y < surface.Height; y++)
-        {
-            ref ColorBgra pix = ref surface.GetRowReferenceUnchecked(y);
-            for (int x = surface.Width; x > 0; x--)
-            {
-                (pix.R, pix.B) = (pix.B, pix.R);
-                pix = ref Unsafe.Add(ref pix, 1);
-            }
-        }
-        surface.ConvertFromPremultipliedAlpha();
     }
 
     public static bool IsEmpty(this Surface surface)
@@ -71,9 +54,6 @@ internal static class SurfaceExtensions
         int h = tmp.Height;
         int stride = tmp.Stride;
         surface.Fill(backgroundColor);
-        unsafe
-        {
-            new T().UnsafeApply(w, h, (ColorBgra*)surface.Scan0.Pointer, stride, (ColorBgra*)tmp.Scan0.Pointer, stride);
-        }
+        new T().Apply(surface, tmp);
     }
 }

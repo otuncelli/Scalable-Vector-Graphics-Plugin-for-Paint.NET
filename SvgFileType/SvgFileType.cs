@@ -155,17 +155,12 @@ public sealed class SvgFileType() : PropertyBasedFileType("SVG Plugin", BaseOpti
 
     private static bool IsSerializable(Property property)
     {
-        switch (property.Name)
-        {
-            case nameof(PropertyNames.GitHubLink):
-            case nameof(PropertyNames.DiscussionLink):
-            case nameof(PropertyNames.PdnShape):
-            case nameof(PropertyNames.PdnShapeName):
-            case nameof(PropertyNames.PreviewMode):
-                return false;
-            default:
-                return Enum.IsDefined(typeof(PropertyNames), property.Name);
-        }
+        return Enum.TryParse(property.Name, out PropertyNames prop)
+            && prop is not PropertyNames.GitHubLink
+            and not PropertyNames.DiscussionLink
+            and not PropertyNames.PdnShape
+            and not PropertyNames.PdnShapeName
+            and not PropertyNames.PreviewMode;
     }
 
     #endregion

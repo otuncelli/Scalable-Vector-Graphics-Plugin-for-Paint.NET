@@ -25,15 +25,12 @@ internal sealed class ResvgSvgRenderer() : SvgRenderer2("resvg")
         using BenchmarkScope _ = new BenchmarkScope();
         using MemoryFailPoint mfp = GetMemoryFailPoint(width, height, 1);
         ResetProgress(1);
-        Surface surface = new Surface(width, height, SurfaceCreationFlags.DoNotZeroFillHint);
+        Surface surface = new Surface(width, height);
         try
         {
-            using (Resvg resvg = Resvg.FromData(svgdata, loadSystemFonts: true))
-            {
-                ResvgTransform transform = CalculateTransform(resvg.Size, config);
-                resvg.Render(surface.Scan0.Pointer, transform, width, height);
-            }
-            surface.ConvertFromPrgba();
+            using Resvg resvg = Resvg.FromData(svgdata, loadSystemFonts: true);
+            ResvgTransform transform = CalculateTransform(resvg.Size, config);
+            resvg.Render(surface.Scan0.Pointer, transform, width, height, PixelOpFlags.RgbaToBgra | PixelOpFlags.UnPremultiplyAlpha);
         }
         catch (Exception)
         {
@@ -66,7 +63,7 @@ internal sealed class ResvgSvgRenderer() : SvgRenderer2("resvg")
         using ResvgOptions options = new ResvgOptions();
         options.LoadSystemFonts();
 
-        using Surface surface = new Surface(config.RasterWidth, config.RasterHeight);
+        using Surface surface = new Surface(config.RasterWidth, config.RasterHeight, SurfaceCreationFlags.DoNotZeroFillHint);
         // Render all visual elements that are passed here.
         foreach (SvgVisualElement element in elements)
         {
@@ -141,9 +138,9 @@ internal sealed class ResvgSvgRenderer() : SvgRenderer2("resvg")
         else
         {
             SvgDocument clone = element.OwnerDocument.RemoveInvisibleAndNonTextElements();
-            using (Resvg resvg = Resvg.FromData(clone.GetXML_QuotedFuncIRIHack(), options))
-                resvg.Render(surface.Scan0.Pointer, surface.Width, surface.Height);
-            surface.ConvertFromPrgba();
+            (int width, int height) = (surface.Width, surface.Height);
+            using Resvg resvg = Resvg.FromData(clone.GetXML_QuotedFuncIRIHack(), options);
+            resvg.Render(surface.Scan0.Pointer, width, height, PixelOpFlags.RgbaToBgra | PixelOpFlags.UnPremultiplyAlpha);
         }
     }
 
@@ -156,8 +153,8 @@ internal sealed class ResvgSvgRenderer() : SvgRenderer2("resvg")
             : config.RasterHeight / svgsize.Height * tolerance;
         return new ResvgTransform()
         {
-            a = ratioX,
-            d = ratioY
+            M11 = ratioX,
+            M22 = ratioY
         };
     }
 }

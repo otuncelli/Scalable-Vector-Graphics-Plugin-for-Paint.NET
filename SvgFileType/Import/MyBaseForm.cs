@@ -302,7 +302,7 @@ internal class MyBaseForm : Form
             {
                 Attribute = WindowCompositionAttribute.WCA_USEDARKMODECOLORS,
                 Data = enable ? 1 : 0,
-                SizeOfData = Marshal.SizeOf(typeof(int))
+                SizeOfData = Marshal.SizeOf<int>()
             };
             bool success = SetWindowCompositionAttribute(window.Handle, data);
             return success;
@@ -341,7 +341,7 @@ internal class MyBaseForm : Form
         }
 
         [DllImport("uxtheme", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Unicode)]
-        private static extern int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string pszSubIdList);
+        private static extern int SetWindowTheme(IntPtr hWnd, string? pszSubAppName, string? pszSubIdList);
 
         [DllImport("uxtheme", SetLastError = true, EntryPoint = "#133")]
         [return: MarshalAs(UnmanagedType.Bool)]
