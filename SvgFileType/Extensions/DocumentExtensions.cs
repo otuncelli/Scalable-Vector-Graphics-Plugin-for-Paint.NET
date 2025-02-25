@@ -8,17 +8,17 @@ namespace SvgFileTypePlugin.Extensions;
 
 internal static class DocumentExtensions
 {
-    public static void SetDpi(this Document doc, double x, double y)
+    public static void SetDpi(this Document doc, double x, double y, MeasurementUnit dpuUnit = MeasurementUnit.Inch)
     {
         ArgumentNullException.ThrowIfNull(doc);
 
-        doc.DpuUnit = MeasurementUnit.Inch;
+        doc.DpuUnit = dpuUnit;
         doc.DpuX = x;
         doc.DpuY = y;
     }
 
-    public static void SetDpi(this Document doc, double dpi)
+    public static void SetDpi(this Document doc, double dpi, MeasurementUnit dpuUnit = MeasurementUnit.Inch)
     {
-        SetDpi(doc, dpi, dpi);
+        SetDpi(doc, dpi, dpi, dpuUnit);
     }
 }

@@ -10,6 +10,7 @@
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     <RootNamespace>SvgFileTypePlugin</RootNamespace>
     <UseWindowsForms>true</UseWindowsForms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Label="AssemblyInfo" Condition="'$(GenerateAssemblyInfo)'=='true' Or '$(GenerateAssemblyInfo)'==''">
@@ -18,7 +19,7 @@
     <Copyright>Copyright © 2025 Osman Tunçelli</Copyright>
     <Company>$(Copyright)</Company>
     <Product>$(AssemblyTitle)</Product>
-    <Version>1.0.7.1</Version>
+    <Version>1.0.7.2</Version>
   </PropertyGroup>
 
   <PropertyGroup Label="Base Variables">
