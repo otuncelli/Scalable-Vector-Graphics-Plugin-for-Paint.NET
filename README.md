@@ -1,7 +1,7 @@
 ﻿# ![W3C SVG Logo](https://www.w3.org/Icons/SVG/svg-logo-v.png) Scalable Vector Graphics (SVG) Plugin for Paint.NET 
 
 [![](https://img.shields.io/github/release-pre/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET.svg?style=flat)](https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/releases)
-[![](https://img.shields.io/github/downloads/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/latest/total)](https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/releases)
+[![](https://img.shields.io/github/downloads/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/total)](https://github.com/otuncelli/Scalable-Vector-Graphics-Plugin-for-Paint.NET/releases)
 
 This is a [paint.net](https://getpaint.net) filetype plugin for loading SVG (Scalable Vector Graphics) and its compressed variant SVGZ files. SVG files can be rendered as a flat image or each element/group on a separate layer. This plugin also provides basic image tracing (raster to vector conversion) functionality which works best with black and white drawings. You may export the tracing result as SVG or Paint.NET Shape.
 

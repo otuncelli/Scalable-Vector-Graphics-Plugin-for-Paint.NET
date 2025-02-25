@@ -18,6 +18,7 @@ internal static class SvgElementExtensions
 
     private static readonly AttributesGetterDelegate GetElementAttributes = CreateGetterDelegate<AttributesGetterDelegate>("Attributes");
     private static readonly ElementNameGetterDelegate GetElementName = CreateGetterDelegate<ElementNameGetterDelegate>("ElementName");
+    private static readonly XmlWriterSettings WriterSettings = new() { Encoding = Encoding.UTF8 };
 
     public static string GetName(this SvgElement element)
     {
@@ -54,8 +55,7 @@ internal static class SvgElementExtensions
         ArgumentNullException.ThrowIfNull(svg);
 
         using InvariantUtf8StringWriter writer = new InvariantUtf8StringWriter();
-        XmlWriterSettings xmlWriterSettings = new() { Encoding = Encoding.UTF8 };
-        using (XmlWriter xmlWriter = new CustomXmlWriter(XmlWriter.Create(writer, xmlWriterSettings)))
+        using (XmlWriter xmlWriter = new CustomXmlWriter(XmlWriter.Create(writer, WriterSettings)))
         {
             svg.Write(xmlWriter);
             xmlWriter.Flush();
@@ -69,8 +69,7 @@ internal static class SvgElementExtensions
         ArgumentNullException.ThrowIfNull(svg);
 
         using InvariantUtf8StreamWriter writer = new InvariantUtf8StreamWriter(output);
-        XmlWriterSettings xmlWriterSettings = new() { Encoding = Encoding.UTF8 };
-        using (XmlWriter xmlWriter = new CustomXmlWriter(XmlWriter.Create(writer, xmlWriterSettings)))
+        using (XmlWriter xmlWriter = new CustomXmlWriter(XmlWriter.Create(writer, WriterSettings)))
         {
             svg.Write(xmlWriter);
             xmlWriter.Flush();
@@ -87,6 +86,8 @@ internal static class SvgElementExtensions
         return getter.CreateDelegate<T>();
     }
 
+    #region InvariantUtf8StreamWriter
+
     private sealed class InvariantUtf8StreamWriter(Stream stream) : StreamWriter(stream, Encoding.UTF8, leaveOpen: true)
     {
         private readonly Stream stream = stream;
@@ -102,10 +103,20 @@ internal static class SvgElementExtensions
         }
     }
 
+    #endregion
+
+    #region InvariantUtf8StringWriter
+
     private sealed class InvariantUtf8StringWriter() : StringWriter(CultureInfo.InvariantCulture)
     {
         public override Encoding Encoding => Encoding.UTF8;
     }
+
+    #endregion
+
+    #region CustomXmlWriter
+
+    // Workaround for removing quotes from quoted FuncIRI(s).
 
     private sealed class CustomXmlWriter(XmlWriter writer) : XmlWriter
     {
@@ -138,4 +149,6 @@ internal static class SvgElementExtensions
         public override void WriteSurrogateCharEntity(char lowChar, char highChar) => writer.WriteSurrogateCharEntity(lowChar, highChar);
         public override void WriteWhitespace(string? ws) => writer.WriteWhitespace(ws);
     }
+
+    #endregion
 }
