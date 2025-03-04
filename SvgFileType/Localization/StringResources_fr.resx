@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AllElements" xml:space="preserve">
+    <value>Tous les éléments</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Angle" xml:space="preserve">
+    <value>Angle</value>
+    <comment>Export</comment>
+  </data>
+  <data name="AnUpdateIsAvailable" xml:space="preserve">
+    <value>Une mise à jour est disponible !</value>
+    <comment>Import</comment>
+  </data>
+  <data name="BrightnessCutoff" xml:space="preserve">
+    <value>Extinction de la luminosité</value>
+    <comment>Export</comment>
+  </data>
+  <data name="BrightnessCutoffDesc" xml:space="preserve">
+    <value>Détecte les zones plus foncées que le seuil et crée un chemin les entourant.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annuler</value>
+    <comment>Import</comment>
+  </data>
+  <data name="CanceledUponYourRequest" xml:space="preserve">
+    <value>Annulée à votre demande.</value>
+    <comment>Generic</comment>
+  </data>
+  <data name="Canvas" xml:space="preserve">
+    <value>Canevas (L × H)</value>
+    <comment>Import</comment>
+  </data>
+  <data name="CanvasIsTooBig" xml:space="preserve">
+    <value>Le canevas est trop grand.</value>
+    <comment>Generic</comment>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Couleur</value>
+    <comment>Export</comment>
+  </data>
+  <data name="DiscussionLink" xml:space="preserve">
+    <value>Discussion</value>
+    <comment>Export</comment>
+  </data>
+  <data name="EdgeDetectionMode" xml:space="preserve">
+    <value>Mode de détection des bords</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Enclose" xml:space="preserve">
+    <value>Joindre</value>
+    <comment>Export</comment>
+  </data>
+  <data name="EndLayerGroup" xml:space="preserve">
+    <value>Groupe de calques finaux : {0}</value>
+    <comment>Import</comment>
+  </data>
+  <data name="ExportAsPdnShape" xml:space="preserve">
+    <value>Exporter en tant que forme</value>
+    <comment>Export</comment>
+  </data>
+  <data name="FillColor" xml:space="preserve">
+    <value>Couleur de remplissage</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Flatten" xml:space="preserve">
+    <value>Aplatir</value>
+    <comment>Import</comment>
+  </data>
+  <data name="GitHubLink" xml:space="preserve">
+    <value>GitHub</value>
+    <comment>Export</comment>
+  </data>
+  <data name="GroupBoundaries" xml:space="preserve">
+    <value>Limites de groupe comme calques vides</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Groups" xml:space="preserve">
+    <value>Groupes</value>
+    <comment>Import</comment>
+  </data>
+  <data name="HighpassFilterRadius" xml:space="preserve">
+    <value>Rayon du filtre passe-haut</value>
+    <comment>Export</comment>
+  </data>
+  <data name="HighpassFilterRadiusDesc" xml:space="preserve">
+    <value>Supprime les irrégularités à grande échelle comme les variations d'arrière-plan, tout en préservant les détails à petite échelle comme les lignes.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ImportHiddenElements" xml:space="preserve">
+    <value>Éléments masqués</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Invert" xml:space="preserve">
+    <value>Inverser</value>
+    <comment>Export</comment>
+  </data>
+  <data name="KeepAspectRatio" xml:space="preserve">
+    <value>Conserver le rapport d'aspect</value>
+    <comment>Import</comment>
+  </data>
+  <data name="LayerGroup" xml:space="preserve">
+    <value>Groupe de calques : {0}</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Layers" xml:space="preserve">
+    <value>Calques</value>
+    <comment>Import</comment>
+  </data>
+  <data name="LowpassFilterRadius" xml:space="preserve">
+    <value>Rayon du filtre passe-bas</value>
+    <comment>Export</comment>
+  </data>
+  <data name="LowpassFilterRadiusDesc" xml:space="preserve">
+    <value>Adoucit les détails du premier plan.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="MemoryWarningText" xml:space="preserve">
+    <value>Assurez-vous d’avoir assez de mémoire !</value>
+    <comment>Import</comment>
+  </data>
+  <data name="NoPath" xml:space="preserve">
+    <value>AUCUN CHEMIN</value>
+    <comment>Export</comment>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+    <comment>Import</comment>
+  </data>
+  <data name="OpacityAsLayerProperty" xml:space="preserve">
+    <value>Opacité de l’élément comme propriété de calque</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Optimize" xml:space="preserve">
+    <value>Optimiser</value>
+    <comment>Export</comment>
+  </data>
+  <data name="OptimizeDesc" xml:space="preserve">
+    <value>Tenter d’optimiser les chemins en joignant des segments de courbe de Bézier adjacents.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PdnShapeExportOptions" xml:space="preserve">
+    <value>Options d’exportation de formes Paint.NET</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PdnShapeExportOptionsDesc" xml:space="preserve">
+    <value>* Entrez un nom d’affichage pour la forme</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PluginVersion" xml:space="preserve">
+    <value>Version du greffon : {0}</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PreviewMode" xml:space="preserve">
+    <value>Mode aperçu</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PreviewModeFast" xml:space="preserve">
+    <value>Rapide</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PreviewModeSlow" xml:space="preserve">
+    <value>Lent</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value>Prêt !</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Resolution" xml:space="preserve">
+    <value>Résolution (DPI)</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Scale" xml:space="preserve">
+    <value>Échelle</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ScaleBeforeThreshold" xml:space="preserve">
+    <value>Échelle avant le seuil</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ScanMode" xml:space="preserve">
+    <value>Mode de numérisation</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ScanModeOpaque" xml:space="preserve">
+    <value>Opaque</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ScanModeTransparent" xml:space="preserve">
+    <value>Transparent</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Shape" xml:space="preserve">
+    <value>Forme</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ShapeSaved" xml:space="preserve">
+    <value>Le résultat du traçage de l’image est enregistré en tant que Forme Paint.NET.
+-----
+{0}
+-----</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ShapeSavedCaption" xml:space="preserve">
+    <value>Réussi</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ShapeSavedRestart" xml:space="preserve">
+    <value>Vous devez redémarrer Paint.NET pour l’utiliser.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="SizeSelectionByUser" xml:space="preserve">
+    <value>Sélection de la taille par l’utilisateur</value>
+    <comment>Import</comment>
+  </data>
+  <data name="SizeSettingsGivenInSvgFile" xml:space="preserve">
+    <value>Paramètres de taille indiqués dans le fichier SVG</value>
+    <comment>Import</comment>
+  </data>
+  <data name="SmoothCorners" xml:space="preserve">
+    <value>Lisser les coins</value>
+    <comment>Export</comment>
+  </data>
+  <data name="SmoothCornersDesc" xml:space="preserve">
+    <value>Lisser les angles pointus du traçage.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="SuppressSpeckles" xml:space="preserve">
+    <value>Enlever les salissures</value>
+    <comment>Export</comment>
+  </data>
+  <data name="SuppressSpecklesDesc" xml:space="preserve">
+    <value>Ignorer les petites taches (salissures) dans l’image bitmap.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Tight" xml:space="preserve">
+    <value>Resserrer</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicy" xml:space="preserve">
+    <value>Stratégie de direction</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyBlack" xml:space="preserve">
+    <value>Noir</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyDesc" xml:space="preserve">
+    <value>Détermine comment résoudre les ambiguïtés lors de la décomposition des bitmaps en chemins.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyLeft" xml:space="preserve">
+    <value>Gauche</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyMajority" xml:space="preserve">
+    <value>Majorité</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyMinority" xml:space="preserve">
+    <value>Minorité</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyRandom" xml:space="preserve">
+    <value>Aléatoire</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyRight" xml:space="preserve">
+    <value>Droite</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyWhite" xml:space="preserve">
+    <value>Blanc</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Untitled" xml:space="preserve">
+    <value>Sans titre</value>
+    <comment>Export</comment>
+  </data>
+  <data name="UseSizeSettingsGivenInSvg" xml:space="preserve">
+    <value>▼ Utiliser les paramètres de taille dans le SVG ▼</value>
+    <comment>Import</comment>
+  </data>
+  <data name="ViewBoxWH" xml:space="preserve">
+    <value>ViewBox (L x H)</value>
+    <comment>Import</comment>
+  </data>
+  <data name="ViewBoxXY" xml:space="preserve">
+    <value>ViewBox (X, Y)</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Viewport" xml:space="preserve">
+    <value>Viewport (L x H)</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Working" xml:space="preserve">
+    <value>Traitement en cours…</value>
+    <comment>Import</comment>
+  </data>
+</root>
