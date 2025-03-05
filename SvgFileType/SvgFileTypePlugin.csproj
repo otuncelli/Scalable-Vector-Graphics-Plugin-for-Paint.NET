@@ -19,7 +19,7 @@
     <Copyright>Copyright © 2025 Osman Tunçelli</Copyright>
     <Company>$(Copyright)</Company>
     <Product>$(AssemblyTitle)</Product>
-    <Version>1.0.7.2</Version>
+    <Version>1.0.7.3</Version>
   </PropertyGroup>
 
   <PropertyGroup Label="Base Variables">
@@ -107,6 +107,12 @@
     <EmbeddedResource Update="Localization\StringResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Localization\StringResources_de.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Localization\StringResources_fr.resx">
+      <Generator></Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Localization\StringResources_tr.resx">
       <Generator></Generator>

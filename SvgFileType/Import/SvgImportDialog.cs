@@ -23,7 +23,8 @@ internal partial class SvgImportDialog : MyBaseForm
     private const int DefaultFallbackSize = 512;
     private object? lastModifiedNud;
     private bool dontUpdate;
-    private readonly CancellationTokenSource? cts;
+    private bool isRunning;
+    private readonly CancellationTokenSource cts;
     private readonly Size docSize;
     private readonly int docPpi;
     private readonly string svgdata;
@@ -38,7 +39,7 @@ internal partial class SvgImportDialog : MyBaseForm
     public Exception? Error { get; private set; }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public override bool ImmersiveDarkMode => true;
+    public override bool EnableImmersiveDarkMode => true;
 
     public SvgImportDialog(string svgdata, string renderer = "resvg", CancellationToken ctoken = default) : base(UIHelper.GetMainForm())
     {
@@ -70,7 +71,21 @@ internal partial class SvgImportDialog : MyBaseForm
     protected override void OnClosing(CancelEventArgs e)
     {
         base.OnClosing(e);
-        cts?.Dispose();
+
+        if (!isRunning) 
+        {
+            Error = new WarningException(SR.CanceledUponYourRequest);
+        }
+        if (!cts.IsCancellationRequested)
+        {
+            cts.Cancel();
+        }
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+        base.OnClosed(e);
+        cts.Dispose();
     }
 
     #region Private Methods
@@ -80,7 +95,7 @@ internal partial class SvgImportDialog : MyBaseForm
         Text = $"{SvgFileTypePluginSupportInfo.Instance.DisplayName} v{SvgFileTypePluginSupportInfo.Instance.Version}";
         PbWarning.Image = SystemIcons.Warning.ToBitmap();
         GbInfo.Text = SR.SizeSettingsGivenInSvgFile;
-        LnkUseSvgSettings.Text = SR.UseSizeSettingsGivenInSvg;
+        LnkUseSvgSettings.Text = SR.UseSizeSettingsGivenInSvg.SplitIntoLines(maximumLineLength: 60);
         GbSizeSelection.Text = SR.SizeSelectionByUser;
         LblResolution.Text = SR.Resolution;
         LblCanvasWH.Text = SR.Canvas;
@@ -92,9 +107,9 @@ internal partial class SvgImportDialog : MyBaseForm
         RbFlatten.Text = SR.Flatten;
         RbGroups.Text = SR.Groups;
         RbAllElements.Text = SR.AllElements;
-        CbOpacity.Text = SR.OpacityAsLayerProperty;
-        CbHiddenLayers.Text = SR.ImportHiddenElements;
-        CbGroupBoundaries.Text = SR.GroupBoundaries;
+        CbOpacity.Text = SR.OpacityAsLayerProperty.SplitIntoLines(maximumLineLength: 36);
+        CbHiddenLayers.Text = SR.ImportHiddenElements.SplitIntoLines(maximumLineLength: 36);
+        CbGroupBoundaries.Text = SR.GroupBoundaries.SplitIntoLines(maximumLineLength: 36);
         BtnOk.Text = SR.OK;
         BtnCancel.Text = SR.Cancel;
         ProgressLabel.Text = SR.Ready;
@@ -218,6 +233,13 @@ internal partial class SvgImportDialog : MyBaseForm
         return config;
     }
 
+    private void DisableControlsExceptCancelButton()
+    {
+        this.Descendants().OfType<GroupBox>().ToList().ForEach(groupbox => groupbox.Enabled = false);
+        BtnOk.Enabled = false;
+        ProgressBar.Visible = true;
+    }
+
     #endregion
 
     #region Events
@@ -226,6 +248,7 @@ internal partial class SvgImportDialog : MyBaseForm
     {
         if (dontUpdate)
             return;
+
         lastModifiedNud = sender;
         UpdateTheOtherNud();
     }
@@ -234,6 +257,7 @@ internal partial class SvgImportDialog : MyBaseForm
     {
         if (dontUpdate)
             return;
+
         lastModifiedNud = null;
         UpdateTheOtherNud();
     }
@@ -301,42 +325,27 @@ internal partial class SvgImportDialog : MyBaseForm
 
     private async void BtnOk_Click(object? sender, EventArgs e)
     {
-        Debug.Assert(cts is not null);
-
-        this.Descendants().OfType<GroupBox>().ToList().ForEach(gb => gb.Enabled = false);
-        BtnOk.Enabled = false;
-        ProgressBar.Visible = true;
-        SvgImportConfig config = GetSvgImportConfig();
-        using var _ = cts;
-        CancellationToken ctoken = cts.Token;
-        SvgRenderer2 svgRenderer = SvgRenderer2.Create(renderer);
-        svgRenderer.ProgressChanged += OnProgressChanged;
-
+        isRunning = true;
         try
         {
-            Result = await Task.Run<Document?>(() => svgRenderer.Rasterize(svgdata, config, ctoken), ctoken)
-                .ContinueWith(task =>
-                {
-                    if (task.IsCompletedSuccessfully)
-                        return task.Result;
-                    Error = task.IsCanceled 
-                        ? new WarningException(SR.CanceledUponYourRequest, task.Exception)
-                        : task.Exception;
-                    return null;
-                }, ctoken).ConfigureAwait(false);
-            DialogResult = Result is not null
-                ? DialogResult.OK
-                : DialogResult.Cancel;
+            DisableControlsExceptCancelButton();
+            CancellationToken ctoken = cts.Token;
+            SvgImportConfig config = GetSvgImportConfig();
+            SvgRenderer2 svgRenderer = SvgRenderer2.Create(renderer);
+            svgRenderer.ProgressChanged += OnProgressChanged;
+            Result = await Task.Run(() => svgRenderer.Rasterize(svgdata, config, ctoken), ctoken).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is OperationCanceledException or TaskCanceledException)
         {
             Error = new WarningException(SR.CanceledUponYourRequest, ex);
-            DialogResult = DialogResult.Cancel;
         }
         catch (Exception ex)
         {
             Error = ex;
-            DialogResult = DialogResult.Cancel;
+        }
+        finally
+        {
+            DialogResult = Result is null ? DialogResult.Cancel : DialogResult.OK;
         }
     }
 
@@ -386,7 +395,7 @@ internal partial class SvgImportDialog : MyBaseForm
         BtnCancel.Enabled = false;
         try
         {
-            cts?.Cancel();
+            cts.Cancel();
         }
         catch (ObjectDisposedException)
         {

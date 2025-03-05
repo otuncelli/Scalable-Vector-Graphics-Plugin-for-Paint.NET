@@ -20,7 +20,7 @@ internal class MyBaseForm : Form
     public bool UseAppThemeColors { get; private set; }
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public virtual bool ImmersiveDarkMode => false;
+    public virtual bool EnableImmersiveDarkMode => false;
 
     #endregion
 
@@ -65,7 +65,7 @@ internal class MyBaseForm : Form
     {
         bool isDark = ForeColor.GetBrightness() > BackColor.GetBrightness();
 
-        if (ImmersiveDarkMode)
+        if (EnableImmersiveDarkMode)
         {
             // Native.SetPreferredAppMode(true);
             Native.UseImmersiveDarkModeColors(this, isDark);
@@ -109,7 +109,7 @@ internal class MyBaseForm : Form
                     break;
             }
 
-            if (ImmersiveDarkMode)
+            if (EnableImmersiveDarkMode)
             {
                 if (control.IsHandleCreated)
                 {
