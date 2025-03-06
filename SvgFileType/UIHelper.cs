@@ -37,7 +37,9 @@ internal static partial class UIHelper
     {
         IUISynchronizationContext ctx = Services.Get<IUISynchronizationContext>();
         if (ctx.IsOnUIThread)
+        {
             return action();
+        }
         TResult? result = default;
         Exception? error = null;
         ctx.Send(new SendOrPostCallback(state =>
@@ -52,7 +54,9 @@ internal static partial class UIHelper
             }
         }), state: null);
         if (error is not null)
+        {
             throw error;
+        }
         return result;
     }
 
@@ -77,6 +81,8 @@ internal static partial class UIHelper
             }
         }), state: null);
         if (error is not null)
+        {
             throw error;
+        }
     }
 }

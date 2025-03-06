@@ -30,7 +30,6 @@ internal abstract class SvgRenderer2(string name)
 
     #region Public
 
-    /// <exception cref="ArgumentNullException"></exception>
     public Document Rasterize(string svgdata, SvgImportConfig config, CancellationToken ctoken = default)
     {
         ArgumentNullException.ThrowIfNull(config);
@@ -45,8 +44,6 @@ internal abstract class SvgRenderer2(string name)
 
     #region Public Static
 
-    /// <exception cref="ArgumentNullException"></exception>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public static SvgRenderer2 Create(string name)
     {
         ArgumentNullException.ThrowIfNull(name);
@@ -68,17 +65,18 @@ internal abstract class SvgRenderer2(string name)
 
     protected abstract Document GetLayeredDocument(string svgdata, SvgImportConfig config, CancellationToken ctoken = default);
 
-    /// <exception cref="ArgumentNullException"></exception>
-    protected virtual void RenderSvgUseElement(SvgUse use, Action<SvgElement> renderAction)
+    protected virtual void RenderSvgUseElement(SvgUse useElement, Action<SvgElement> renderAction)
     {
-        ArgumentNullException.ThrowIfNull(use);
+        ArgumentNullException.ThrowIfNull(useElement);
         ArgumentNullException.ThrowIfNull(renderAction);
 
-        if (use.GetCopyOfReferencedElement() is not SvgElement referencedElement)
+        if (useElement.GetCopyOfReferencedElement() is not SvgElement referencedElement)
+        {
             return;
+        }
         referencedElement.Visibility = "visible";
-        use.Visibility = "hidden";
-        SvgElementCollection children = use.Parent.Children;
+        useElement.Visibility = "hidden";
+        SvgElementCollection children = useElement.Parent.Children;
         children.AddAndForceUniqueID(referencedElement);
         try
         {
@@ -95,8 +93,10 @@ internal abstract class SvgRenderer2(string name)
         Graphics g;
         Size size;
         using Font font = new Font("Arial", 24, FontStyle.Bold);
-        using (g = Graphics.FromHwnd(IntPtr.Zero))
+        using (g = Graphics.FromHwnd(nint.Zero))
+        {
             size = g.MeasureString(SR.NoPath, font).ToSize();
+        }
         using Bitmap bmp = new Bitmap(size.Width, size.Height, PixelFormat.Format24bppRgb);
         g = Graphics.FromImage(bmp);
         using var _ = g;
@@ -114,7 +114,9 @@ internal abstract class SvgRenderer2(string name)
     protected void IncrementProgress()
     {
         if (ProgressChanged is null)
+        {
             return;
+        }
 
         int value = Interlocked.Increment(ref step);
         value = Math.Clamp(value, 0, total);
@@ -122,7 +124,6 @@ internal abstract class SvgRenderer2(string name)
         ProgressChanged.Invoke(this, args);
     }
 
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
     protected void ResetProgress(int total)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(total);
@@ -140,7 +141,6 @@ internal abstract class SvgRenderer2(string name)
 
     #region Protected Static
 
-    /// <exception cref="ArgumentNullException"></exception>
     protected static List<SvgVisualElement> GetSvgVisualElements(SvgDocument svg, SvgImportConfig config, CancellationToken ctoken = default)
     {
         ArgumentNullException.ThrowIfNull(svg);
@@ -149,25 +149,30 @@ internal abstract class SvgRenderer2(string name)
         IEnumerable<SvgVisualElement> elements = GetPreparedElements(svg.Children, ctoken);
 
         if (config.LayersMode == LayersMode.Groups)
+        {
             elements = FilterByGroups(elements, ctoken);
+        }
         else
+        {
             elements = FilterByNonGroups(elements);
+        }
 
         if (config.LayersMode == LayersMode.Flat || !config.GroupBoundariesAsLayers)
+        {
             elements = elements.NotOfType<GroupBoundary>();
+        }
 
-        if (config.LayersMode == LayersMode.Flat)
-            return elements.ToList();
-
-        // Skip group boundaries for hidden layers.
-        elements = elements.Where(e => config.ImportHiddenElements || (e is GroupBoundary groupBoundary
-            ? groupBoundary.IsOriginallyVisible
-            : e.IsOriginallyVisible()));
+        if (config.LayersMode != LayersMode.Flat)
+        {
+            // Skip group boundaries for hidden layers.
+            elements = elements.Where(e => config.ImportHiddenElements || (e is GroupBoundary groupBoundary
+                ? groupBoundary.IsOriginallyVisible
+                : e.IsOriginallyVisible()));
+        }
 
         return elements.ToList();
     }
 
-    /// <exception cref="ArgumentNullException"></exception>
     protected static string GetLayerTitle(SvgElement element, bool prependElementName = true)
     {
         ArgumentNullException.ThrowIfNull(element);
@@ -175,8 +180,10 @@ internal abstract class SvgRenderer2(string name)
         string elementName = element.GetName();
         string? layerName = null;
 
-        if (element.ID != null)
+        if (element.ID is not null)
+        {
             layerName = element.ID;
+        }
 
         if (string.IsNullOrEmpty(layerName) && element.CustomAttributes != null)
         {
@@ -197,26 +204,33 @@ internal abstract class SvgRenderer2(string name)
             // Get child title tag
             SvgTitle? title = element.Children.OfType<SvgTitle>().FirstOrDefault();
             if (!string.IsNullOrEmpty(title?.Content))
+            {
                 layerName = title.Content;
+            }
         }
 
         if (string.IsNullOrEmpty(layerName))
         {
             // Generate more meanfull name for a svg use node. Add reference element name in a case if it's local document.
-            if (element is SvgUse use
-                && use.ReferencedElement != null
-                && !string.IsNullOrEmpty(use.ReferencedElement.OriginalString))
+            if (element is SvgUse useElement and { ReferencedElement.OriginalString.Length: > 1 })
             {
-                string str = use.ReferencedElement.OriginalString.Trim();
+                string str = useElement.ReferencedElement.OriginalString.Trim();
                 if (str.StartsWith('#'))
+                {
                     layerName = str[1..];
+                }
                 prependElementName = true;
             }
             // Generate more meanfull name for a svg text.
-            else if (element is SvgTextBase text && !string.IsNullOrEmpty(text.Text))
+            else if (element is SvgTextBase text and { Text.Length: > 0})
+            {
                 layerName = text.Text.Truncate(maxLength: 32);
-            else if (element is SvgPath path && path.PathData.Count > 0)
+            }
+            // Generate more meanfull name for a svg path.
+            else if (element is SvgPath path and { PathData.Count: > 0 })
+            {
                 layerName = path.PathData.ToString().Truncate(maxLength: 32);
+            }
         }
 
         return layerName is null
@@ -239,7 +253,9 @@ internal abstract class SvgRenderer2(string name)
         ArgumentNullException.ThrowIfNull(layers);
         ArgumentNullException.ThrowIfNull(config);
         if (layers.Count == 0)
+        {
             throw new ArgumentException("There aren't any layers in the collection.", nameof(layers));
+        }
 
         Debug.Assert(layers[0].Width == config.RasterWidth);
         Debug.Assert(layers[0].Height == config.RasterHeight);
@@ -312,7 +328,9 @@ internal abstract class SvgRenderer2(string name)
 
             // Save current group to indicate that elements inside a group.
             if (!string.IsNullOrEmpty(groupName))
+            {
                 visual.SetGroupName(groupName); // Store group info
+            }
 
             SvgGroup? group = visual as SvgGroup;
             if (group is not null)
@@ -326,7 +344,9 @@ internal abstract class SvgRenderer2(string name)
             if (GetPreparedElements(visual.Children, groupName, ctoken) is IEnumerable<SvgVisualElement> preparedElements)
             {
                 foreach (SvgVisualElement element in preparedElements)
+                {
                     yield return element;
+                }
             }
 
             if (group is not null)
@@ -338,8 +358,10 @@ internal abstract class SvgRenderer2(string name)
             }
 
             // Skip text with empty content. But keep all children nodes.
-            if (visual is SvgTextBase textNode && string.IsNullOrEmpty(textNode.Text))
+            if (visual is SvgTextBase textNode and { Text.Length: > 0 })
+            {
                 continue;
+            }
 
             yield return visual;
         }
@@ -365,15 +387,17 @@ internal abstract class SvgRenderer2(string name)
                 {
                     // TODO: render more groups. In most cases svg has only few root groups.
                     if (parent is SvgGroup group)
+                    {
                         visual = group;
+                    }
                 }
             }
 
             visual ??= element;
-            if (groups.Contains(visual))
-                continue;
-            groups.Add(visual);
-            yield return visual;
+            if (groups.Add(visual))
+            {
+                yield return visual;
+            }
         }
     }
 

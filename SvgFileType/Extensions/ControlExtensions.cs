@@ -17,8 +17,12 @@ internal static class ControlExtensions
         {
             yield return control;
             if (control.HasChildren)
+            {
                 foreach (Control child in Descendants(control))
+                {
                     yield return child;
+                }
+            }
         }
     }
 

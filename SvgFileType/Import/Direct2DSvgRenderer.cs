@@ -128,10 +128,14 @@ internal sealed class Direct2DSvgRenderer() : SvgRenderer2(name: "Direct2D")
             {
                 layer.Name = GetLayerTitle(element);
                 if (config.RespectElementOpacity)
+                {
                     layer.Opacity = ToByteOpacity(element.Opacity);
+                }
 
                 if (config.ImportHiddenElements && !element.IsOriginallyVisible())
+                {
                     layer.Visible = false;
+                }
             }
             catch (Exception)
             {
@@ -199,13 +203,10 @@ internal sealed class Direct2DSvgRenderer() : SvgRenderer2(name: "Direct2D")
         }
     }
 
-    private static Matrix3x2Float CalculateTransform(SizeF svgsize, SvgImportConfig config, float tolerance = 1f)
+    private static Matrix3x2Float CalculateTransform(SizeF svgsize, SvgImportConfig config)
     {
-        float ratioX, ratioY;
-        ratioX = config.RasterWidth / svgsize.Width * tolerance;
-        ratioY = config.PreserveAspectRatio
-            ? ratioX
-            : config.RasterHeight / svgsize.Height * tolerance;
+        float ratioX = config.RasterWidth / svgsize.Width;
+        float ratioY = config.PreserveAspectRatio ? ratioX : config.RasterHeight / svgsize.Height;
         return new Matrix3x2Float()
         {
             M11 = ratioX,

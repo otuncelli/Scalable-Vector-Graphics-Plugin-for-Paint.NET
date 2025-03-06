@@ -27,7 +27,9 @@ internal static partial class SvgExport
             IFileSystemService fss = Services.Get<IFileSystemService>();
             string path = Path.Combine(fss.PerUserAppFilesPath, "Shapes");
             if (!Directory.Exists(path))
+            {
                 Directory.CreateDirectory(path);
+            }
             return path;
         }
         catch
@@ -39,7 +41,9 @@ internal static partial class SvgExport
     public static string? ShowSaveShapeDialog()
     {
         if (!UIHelper.IsSaveConfigDialogVisible())
+        {
             return null;
+        }
 
         return UIHelper.RunOnUIThread(() =>
         {
@@ -115,9 +119,13 @@ internal static partial class SvgExport
             int newWidth = maxDimForPreview;
             int newHeight = maxDimForPreview;
             if (input.Width > input.Height)
+            {
                 newHeight = (int)Math.Round(maxDimForPreview / ar);
+            }
             else
+            {
                 newWidth = (int)Math.Round(maxDimForPreview * ar);
+            }
 
             surface = new Surface(newWidth, newHeight);
             surface.FitSurface(ResamplingAlgorithm.Cubic, input);
@@ -150,7 +158,9 @@ internal static partial class SvgExport
             gm.HighPassFilter(lambda: highpass);
 
             if (lowpass > 0)
+            {
                 gm.LowPassFilter(lambda: lowpass);
+            }
 
             if (gmScale > 1)
             {
@@ -159,16 +169,22 @@ internal static partial class SvgExport
                 backend.Ry *= gmScale;
             }
             else
+            {
                 bm = gm.Threshold(c: brightnessCutoff);
+            }
         }
 
         using (bm)
         {
             if (invert)
+            {
                 bm.Invert();
+            }
 
             if (enclose)
+            {
                 bm.Enclose();
+            }
 
             Progress<ProgressArgs> progress = new Progress<ProgressArgs>((prog) => OnProgress(ConvertProgressValue(prog)));
             trace = bm.Trace(turdsize, turnpolicy, alphamax, opttolerance, progress, cancellationToken);
@@ -176,12 +192,16 @@ internal static partial class SvgExport
             imginfo.Tight = tight;
         }
         imginfo.Angle = angle;
-        if (trace == null)
+        if (trace is null)
         {
             if (UIHelper.IsSaveConfigDialogVisible())
+            {
                 return;
+            }
             else
+            {
                 throw new InvalidOperationException(StringResources.NoPath);
+            }
         }
 
         if (isSaveConfigDialogVisible && scanMode == ScanMode.Transparent && shapePath.Length > 0)
@@ -192,7 +212,9 @@ internal static partial class SvgExport
                 DisplayName = shapeName
             };
             using (FileStream shapeStream = File.Open(shapePath, FileMode.Create, FileAccess.Write))
+            {
                 pdnbackend.Save(shapeStream, trace, imginfo, cancellationToken);
+            }
 
             StringBuilder msg = new StringBuilder();
             msg.AppendFormat(StringResources.ShapeSaved, shapePath);
@@ -248,7 +270,9 @@ internal static partial class SvgExport
     {
         float progress = args.Progress * .5f;
         if (args.Level == ProgressLevel.Tracing)
+        {
             progress += .5f;
+        }
         return progress;
     }
 }

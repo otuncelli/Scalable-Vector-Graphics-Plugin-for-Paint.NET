@@ -8,8 +8,6 @@ namespace SvgFileTypePlugin.Extensions;
 
 internal static class StringExtensions
 {
-    /// <exception cref="ArgumentNullException"></exception>
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public static string Truncate(this string s, int maxLength, string suffix = "...")
     {
         ArgumentNullException.ThrowIfNull(s);
@@ -20,6 +18,9 @@ internal static class StringExtensions
 
     public static string SplitIntoLines(this string s, int maximumLineLength)
     {
+        ArgumentNullException.ThrowIfNull(s);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maximumLineLength);
+
         return Regex.Replace(s, @"(.{1," + maximumLineLength + @"})(?:\s|$)", "$1\n");
     }
 }

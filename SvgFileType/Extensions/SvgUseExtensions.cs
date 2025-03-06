@@ -10,36 +10,42 @@ namespace SvgFileTypePlugin.Extensions;
 
 internal static class SvgUseExtensions
 {
-    public static SvgElement? GetCopyOfReferencedElement(this SvgUse use)
+    public static SvgElement? GetCopyOfReferencedElement(this SvgUse useElement)
     {
-        ArgumentNullException.ThrowIfNull(use);
-        if (use.OwnerDocument is null)
-            throw new ArgumentException("Use element does not have owner document.", nameof(use));
+        ArgumentNullException.ThrowIfNull(useElement);
+        SvgDocument document = useElement.OwnerDocument 
+            ?? throw new ArgumentException("Use element does not have an owner document.", nameof(useElement));
 
         List<SvgTransform> transforms = [];
-        SvgElement? referenced = use;
-        while (referenced is SvgUse parentUse && parentUse?.ReferencedElement is Uri uri)
+        SvgElement? referencedElement = useElement;
+        while (referencedElement is SvgUse parentUse and { ReferencedElement: Uri uri })
         {
             string href = uri.ToString().TrimStart('#');
             if (href.Length < 1)
+            {
                 return null;
-            if (parentUse.Transforms is not null && parentUse.Transforms.Count > 0)
+            }
+            if (parentUse.Transforms is { Count: > 0 })
+            {
                 transforms.AddRange(parentUse.Transforms);
-            referenced = use.OwnerDocument.GetElementById(href);
+            }
+            referencedElement = document.GetElementById(href);
         }
-        if (referenced is null)
+        if (referencedElement is null)
+        {
             return null;
-        SvgElement copied = referenced.DeepCopy();
-        use.CopyOverridedAttributes(copied);
-        copied.Transforms ??= [];
-        copied.Transforms.AddRange(transforms);
-        return copied;
+        }
+        SvgElement copiedElement = referencedElement.DeepCopy();
+        useElement.CopyOverridedAttributes(copiedElement);
+        copiedElement.Transforms ??= [];
+        copiedElement.Transforms.AddRange(transforms);
+        return copiedElement;
     }
 
-    private static void CopyOverridedAttributes(this SvgUse use, SvgElement target)
+    private static void CopyOverridedAttributes(this SvgUse useElement, SvgElement targetElement)
     {
-        SvgAttributeCollection targetAttributes = target.GetAttributes();
-        SvgAttributeCollection sourceAttributes = use.GetAttributes();
+        SvgAttributeCollection targetAttributes = targetElement.GetAttributes();
+        SvgAttributeCollection sourceAttributes = useElement.GetAttributes();
 
         foreach (KeyValuePair<string, object> attribute in sourceAttributes)
         {
@@ -52,7 +58,9 @@ internal static class SvgUseExtensions
             // referenced element.However, any other attributes not set on the referenced
             // element will be applied to the use element.
             if (key is "x" or "y" or "width" or "height" or "href" or "xlink:href")
+            {
                 targetAttributes[key] = attribute.Value;
+            }
         }
     }
 }

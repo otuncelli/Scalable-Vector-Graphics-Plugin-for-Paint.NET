@@ -20,7 +20,7 @@ internal static class SvgVisualElementExtensions
         ArgumentNullException.ThrowIfNull(element);
 
         return element.CustomAttributes.TryGetValue(OriginalVisibilityAttribute, out string? arg) 
-            && string.Equals(arg?.Trim(), "visible", StringComparison.OrdinalIgnoreCase);
+            && string.Equals(arg.Trim(), "visible", StringComparison.OrdinalIgnoreCase);
     }
 
     public static void StoreOriginalVisibility(this SvgVisualElement element)
@@ -29,9 +29,13 @@ internal static class SvgVisualElementExtensions
 
         SvgCustomAttributeCollection col = element.CustomAttributes;
         if (col.ContainsKey(OriginalVisibilityAttribute))
+        {
             col[OriginalVisibilityAttribute] = element.Visibility;
+        }
         else
+        {
             col.Add(OriginalVisibilityAttribute, element.Visibility);
+        }
     }
 
     #endregion
@@ -55,12 +59,18 @@ internal static class SvgVisualElementExtensions
         if (col.ContainsKey(GroupNameAttribute))
         {
             if (string.IsNullOrEmpty(groupName))
+            {
                 col.Remove(GroupNameAttribute);
+            }
             else
+            {
                 col[GroupNameAttribute] = groupName;
+            }
         }
         else if (!string.IsNullOrEmpty(groupName))
+        {
             col.Add(GroupNameAttribute, groupName);
+        }
     }
 
     #endregion
@@ -80,7 +90,7 @@ internal static class SvgVisualElementExtensions
         return !element.Display.Trim().Equals("none", StringComparison.OrdinalIgnoreCase);
     }
 
-    public static bool PreRender(this SvgVisualElement element, IReadOnlyCollection<SvgVisualElement> elements, bool hiddenElements, CancellationToken cancellationToken = default)
+    public static bool PreRender(this SvgVisualElement element, IReadOnlyCollection<SvgVisualElement> elements, bool hiddenElements, CancellationToken ctoken = default)
     {
         ArgumentNullException.ThrowIfNull(element);
         ArgumentNullException.ThrowIfNull(elements);
@@ -88,7 +98,7 @@ internal static class SvgVisualElementExtensions
         // Turn off visibility of all other elements
         foreach (SvgVisualElement sibling in elements.Where(e => e != element))
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            ctoken.ThrowIfCancellationRequested();
             sibling.Visibility = "hidden";
         }
 
@@ -97,15 +107,19 @@ internal static class SvgVisualElementExtensions
         // Turn on visibility from node to parent
         for (SvgElement parent = element.Parent; parent != null; parent = parent.Parent)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            ctoken.ThrowIfCancellationRequested();
 
             if (parent is not SvgVisualElement visual)
+            {
                 continue;
+            }
 
             // Check, maybe parent element was initially hidden
             // Skip hidden layers.
             if (!hiddenElements && !visual.IsOriginallyVisible())
+            {
                 return false;
+            }
 
             visual.Visibility = "visible";
         }

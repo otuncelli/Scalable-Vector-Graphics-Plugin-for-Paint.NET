@@ -20,9 +20,11 @@ internal static class Services
     public static TService Get<TService>() where TService : class
     {
         if (Provider is null)
+        {
             throw new InvalidOperationException("No service provider has been configured. Call Init(IServiceProvider) first.");
+        }
 
         TService? service = Provider.GetService<TService>();
-        return service ?? throw new InvalidOperationException($"Cannot find the service: `{typeof(TService)}`");
+        return service ?? throw new InvalidOperationException($"Cannot find the service: '{typeof(TService)}'");
     }
 }

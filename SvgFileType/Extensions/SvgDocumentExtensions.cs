@@ -3,7 +3,6 @@
 
 using System;
 using System.Drawing;
-using System.Threading;
 using Svg;
 using SvgFileTypePlugin.Import;
 
@@ -32,7 +31,9 @@ internal static class SvgDocumentExtensions
         SizeF rasterSize = origSize;
         SvgViewBox origViewBox = svg.ViewBox;
         if (origViewBox.IsEmpty() && !origSize.IsEmpty)
+        {
             svg.ViewBox = new SvgViewBox(0, 0, origSize.Width, origSize.Height);
+        }
         svg.RasterizeDimensions(ref rasterSize, config.RasterWidth, config.RasterHeight);
         svg.Width = new SvgUnit(SvgUnitType.User, rasterSize.Width);
         svg.Height = new SvgUnit(SvgUnitType.User, rasterSize.Height);
@@ -52,7 +53,6 @@ internal static class SvgDocumentExtensions
     private sealed class DisposableAction : IDisposable
     {
         private Action? _dispose;
-        private readonly Lock @lock = new();
 
         public DisposableAction(Action dispose)
         {
@@ -63,21 +63,8 @@ internal static class SvgDocumentExtensions
 
         public void Dispose()
         {
-            if (_dispose is null)
-            {
-                return;
-            }
-
-            @lock.Enter();
-            try
-            {
-                _dispose.Invoke();
-            }
-            finally
-            {
-                _dispose = null;
-                @lock.Exit();
-            }
+            _dispose?.Invoke();
+            _dispose = null;
         }
     }
 }

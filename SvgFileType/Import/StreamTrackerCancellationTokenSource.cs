@@ -26,7 +26,9 @@ internal sealed class StreamTrackerCancellationTokenSource : CancellationTokenSo
         ArgumentOutOfRangeException.ThrowIfNegative(period);
 
         if (!stream.CanSeek)
+        {
             return;
+        }
 
         action = () => IsStreamCanceled(stream);
         timer = new Timer(OnTimer, null, 0, period);

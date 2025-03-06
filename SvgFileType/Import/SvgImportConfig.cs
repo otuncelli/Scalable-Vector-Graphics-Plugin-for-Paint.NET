@@ -5,9 +5,9 @@ namespace SvgFileTypePlugin.Import;
 
 internal sealed class SvgImportConfig
 {
-    public required int RasterWidth { get; set; }
+    public required int RasterWidth { get; init; }
 
-    public required int RasterHeight { get; set; }
+    public required int RasterHeight { get; init; }
 
     public bool PreserveAspectRatio { get; set; } = true;
 

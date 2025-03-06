@@ -247,7 +247,9 @@ internal partial class SvgImportDialog : MyBaseForm
     private void NudCanvas_ValueChanged(object? sender, EventArgs e)
     {
         if (dontUpdate)
+        {
             return;
+        }
 
         lastModifiedNud = sender;
         UpdateTheOtherNud();
@@ -256,7 +258,9 @@ internal partial class SvgImportDialog : MyBaseForm
     private void CbKeepAR_CheckedChanged(object? sender, EventArgs e)
     {
         if (dontUpdate)
+        {
             return;
+        }
 
         lastModifiedNud = null;
         UpdateTheOtherNud();
@@ -265,7 +269,9 @@ internal partial class SvgImportDialog : MyBaseForm
     private void NudCanvas_KeyUp(object? sender, KeyEventArgs e)
     {
         if (dontUpdate)
+        {
             return;
+        }
 
         lastModifiedNud = sender;
         if (e.KeyValue >= '0' || e.KeyValue <= '9' || e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
@@ -284,11 +290,15 @@ internal partial class SvgImportDialog : MyBaseForm
     private void NudCanvas_LostFocus(object? sender, EventArgs e)
     {
         if (sender is not NumericUpDown nud)
+        {
             return;
+        }
 
         TextBox? textbox = nud.Controls.OfType<TextBox>().FirstOrDefault();
         if (textbox is not null)
+        {
             textbox.Text = Math.Round(nud.Value, nud.DecimalPlaces).ToString();
+        }
     }
 
     private void Rb_CheckedChanged(object? sender, EventArgs e)
@@ -299,11 +309,9 @@ internal partial class SvgImportDialog : MyBaseForm
     private void LnkUseSvgSettings_Click(object? sender, EventArgs e)
     {
         // Restore the original sizes and show the size warning if needed
-        int w = rasterSize.Width;
-        int h = rasterSize.Height;
         dontUpdate = true;
-        NudCanvasW.Value = w;
-        NudCanvasH.Value = h;
+        NudCanvasW.Value = rasterSize.Width;
+        NudCanvasH.Value = rasterSize.Height;
         dontUpdate = false;
         NudDpi.Value = docPpi;
         ShowCanvasSizeWarningIfNeeded();
@@ -311,16 +319,18 @@ internal partial class SvgImportDialog : MyBaseForm
 
     private void LnkGitHub_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
     {
-        if (e.Button != MouseButtons.Left)
-            return;
-        LaunchUrl(SvgFileTypePluginSupportInfo.Instance.WebsiteUri);
+        if (e.Button == MouseButtons.Left)
+        {
+            LaunchUrl(SvgFileTypePluginSupportInfo.Instance.WebsiteUri);
+        }
     }
 
     private void LnkForum_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
     {
-        if (e.Button != MouseButtons.Left)
-            return;
-        LaunchUrl(SvgFileTypePluginSupportInfo.Instance.ForumUri);
+        if (e.Button == MouseButtons.Left)
+        {
+            LaunchUrl(SvgFileTypePluginSupportInfo.Instance.ForumUri);
+        }
     }
 
     private async void BtnOk_Click(object? sender, EventArgs e)
@@ -335,7 +345,7 @@ internal partial class SvgImportDialog : MyBaseForm
             svgRenderer.ProgressChanged += OnProgressChanged;
             Result = await Task.Run(() => svgRenderer.Rasterize(svgdata, config, ctoken), ctoken).ConfigureAwait(false);
         }
-        catch (Exception ex) when (ex is OperationCanceledException or TaskCanceledException)
+        catch (Exception ex) when (ex is OperationCanceledException)
         {
             Error = new WarningException(SR.CanceledUponYourRequest, ex);
         }
@@ -352,7 +362,9 @@ internal partial class SvgImportDialog : MyBaseForm
     private void OnProgressChanged(object? sender, ProgressChangedEventArgs e)
     {
         if (IsDisposed)
+        {
             return;
+        }
 
         try
         {

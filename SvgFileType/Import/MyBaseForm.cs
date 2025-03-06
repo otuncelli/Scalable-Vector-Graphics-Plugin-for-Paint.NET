@@ -12,7 +12,7 @@ using SvgFileTypePlugin.Extensions;
 
 namespace SvgFileTypePlugin.Import;
 
-internal class MyBaseForm : Form
+internal partial class MyBaseForm : Form
 {
     #region Properties
 
@@ -46,7 +46,10 @@ internal class MyBaseForm : Form
 
     public void SetUseAppThemeColors(bool enable = true)
     {
-        if (enable == UseAppThemeColors) { return; }
+        if (enable == UseAppThemeColors) 
+        { 
+            return;
+        }
         using (PdnBaseForm dummy = new PdnBaseForm())
         {
             dummy.UseAppThemeColors = enable;
@@ -137,7 +140,9 @@ internal class MyBaseForm : Form
     private static void Control_HandleCreated(object? sender, EventArgs e)
     {
         if (sender is not Control ctrl)
+        {
             return;
+        }
 
         bool isDark = ctrl.ForeColor.GetBrightness() > ctrl.BackColor.GetBrightness();
         Native.ControlSetDarkMode(ctrl, isDark);
@@ -153,7 +158,9 @@ internal class MyBaseForm : Form
     private static void GroupBox_Paint(object? sender, PaintEventArgs e)
     {
         if (sender is not GroupBox ctrl || ctrl.Enabled)
+        {
             return;
+        }
 
         Color foreColor = SystemColors.GrayText;
         bool rtl = ctrl.RightToLeft == RightToLeft.Yes;
@@ -165,7 +172,9 @@ internal class MyBaseForm : Form
     private static void Label_Paint(object? sender, PaintEventArgs e)
     {
         if (sender is not Label ctrl || ctrl.Enabled)
+        {
             return;
+        }
 
         Color foreColor = SystemColors.GrayText;
         bool rtl = ctrl.RightToLeft == RightToLeft.Yes;
@@ -177,14 +186,16 @@ internal class MyBaseForm : Form
     private static void CheckRadio_Paint(object? sender, PaintEventArgs e)
     {
         if (sender is not ButtonBase ctrl || ctrl.Enabled)
+        {
             return;
+        }
 
         Color foreColor = SystemColors.GrayText;
         Size glyphSize = CheckBoxRenderer.GetGlyphSize(e.Graphics, System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedNormal);
         bool rtl = ctrl.RightToLeft == RightToLeft.Yes;
-        TextFormatFlags tff = ConvertAlignment(ctrl.TextAlign, rtl) |
-            TextFormatFlags.LeftAndRightPadding |
-            TextFormatFlags.Internal;
+        TextFormatFlags tff = ConvertAlignment(ctrl.TextAlign, rtl) 
+            | TextFormatFlags.LeftAndRightPadding 
+            | TextFormatFlags.Internal;
         Rectangle rect = e.ClipRectangle;
         Size size = new Size(rect.Width - 1 - glyphSize.Width, rect.Height);
         Point point = rtl ? new Point(rect.X - 1, rect.Y) : new Point(rect.X + glyphSize.Width + 1, rect.Y + 1);
@@ -197,57 +208,26 @@ internal class MyBaseForm : Form
 
     #region ContentAlignment<->TextFormatting Conversions
 
-    private static bool IsRight(ContentAlignment alignment)
-    {
-        return alignment switch
-        {
-            ContentAlignment.TopRight or ContentAlignment.BottomRight or ContentAlignment.MiddleRight => true,
-            _ => false,
-        };
-    }
-
-    private static bool IsLeft(ContentAlignment alignment)
-    {
-        return alignment switch
-        {
-            ContentAlignment.TopLeft or ContentAlignment.BottomLeft or ContentAlignment.MiddleLeft => true,
-            _ => false,
-        };
-    }
-
     public static TextFormatFlags ConvertAlignment(ContentAlignment alignment, bool rtl)
     {
         TextFormatFlags tff = TextFormatFlags.Default;
-        switch (alignment)
+        // Vertical alignment
+        tff |= alignment switch
         {
-            case ContentAlignment.TopLeft:
-            case ContentAlignment.TopRight:
-            case ContentAlignment.TopCenter:
-                tff |= TextFormatFlags.Top;
-                break;
-            case ContentAlignment.BottomLeft:
-            case ContentAlignment.BottomRight:
-            case ContentAlignment.BottomCenter:
-                tff |= TextFormatFlags.Bottom;
-                break;
-            case ContentAlignment.MiddleLeft:
-            case ContentAlignment.MiddleRight:
-            case ContentAlignment.MiddleCenter:
-                tff |= TextFormatFlags.VerticalCenter;
-                break;
-        }
-        if ((IsLeft(alignment) && !rtl) || (IsRight(alignment) && rtl))
+            ContentAlignment.TopLeft or ContentAlignment.TopRight or ContentAlignment.TopCenter => TextFormatFlags.Top,
+            ContentAlignment.BottomLeft or ContentAlignment.BottomRight or ContentAlignment.BottomCenter => TextFormatFlags.Bottom,
+            ContentAlignment.MiddleLeft or ContentAlignment.MiddleRight or ContentAlignment.MiddleCenter => TextFormatFlags.VerticalCenter,
+            _ => TextFormatFlags.Default
+        };
+        // Horizontal alignment
+        tff |= alignment switch
         {
-            tff |= TextFormatFlags.Left;
-        }
-        else if ((IsRight(alignment) && !rtl) || (IsLeft(alignment) && rtl))
-        {
-            tff |= TextFormatFlags.Right;
-        }
-        else
-        {
-            tff |= TextFormatFlags.HorizontalCenter;
-        }
+            ContentAlignment.TopLeft or ContentAlignment.BottomLeft or ContentAlignment.MiddleLeft when rtl => TextFormatFlags.Right,
+            ContentAlignment.TopLeft or ContentAlignment.BottomLeft or ContentAlignment.MiddleLeft => TextFormatFlags.Left,
+            ContentAlignment.TopRight or ContentAlignment.BottomRight or ContentAlignment.MiddleRight when rtl => TextFormatFlags.Left,
+            ContentAlignment.TopRight or ContentAlignment.BottomRight or ContentAlignment.MiddleRight => TextFormatFlags.Right,
+            _ => TextFormatFlags.HorizontalCenter
+        };
         return tff;
     }
 
@@ -258,13 +238,13 @@ internal class MyBaseForm : Form
     #region Native
 
     [SuppressUnmanagedCodeSecurity]
-    private static class Native
+    private static partial class Native
     {
         #region Scaling Factor
 
-        [DllImport("gdi32", SetLastError = true)]
-        private static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
-
+        [LibraryImport("gdi32.dll", SetLastError = true)]
+        private static partial int GetDeviceCaps(nint hdc, int nIndex);
+        
         public static float GetScalingFactor()
         {
             const int VERTRES = 10;
@@ -290,72 +270,80 @@ internal class MyBaseForm : Form
 
         public static bool ControlSetDarkMode(IWin32Window window, bool enable)
         {
-            if (!IsDarkModeSupported) { return false; }
-            int hResult = SetWindowTheme(window.Handle, enable ? "darkmode_explorer" : "explorer", null);
-            return Check(hResult);
+            if (!IsDarkModeSupported) 
+            { 
+                return false; 
+            }
+            int error = SetWindowTheme(window.Handle, enable ? "darkmode_explorer" : "explorer", null);
+            return Check(error);
         }
 
         public static bool UseImmersiveDarkModeColors(IWin32Window window, bool enable)
         {
-            if (!IsDarkModeSupported) { return false; }
+            if (!IsDarkModeSupported) 
+            { 
+                return false;
+            }
             WindowCompositionAttributeData data = new()
             {
                 Attribute = WindowCompositionAttribute.WCA_USEDARKMODECOLORS,
                 Data = enable ? 1 : 0,
                 SizeOfData = Marshal.SizeOf<int>()
             };
-            bool success = SetWindowCompositionAttribute(window.Handle, data);
-            return success;
+            return SetWindowCompositionAttribute(window.Handle, data);
         }
 
         public static bool SetPreferredAppMode(bool dark)
         {
-            if (!IsDarkModeSupported) { return false; }
-            int hres = SetPreferredAppMode(dark ? 1 : 0);
-            return Check(hres);
+            if (!IsDarkModeSupported) 
+            {
+                return false;
+            }
+            int error = SetPreferredAppMode(dark ? 1 : 0);
+            return Check(error);
         }
 
         public static bool UseImmersiveDarkMode(IWin32Window window, bool enabled)
         {
-            if (!IsDarkModeSupported) { return false; }
+            if (!IsDarkModeSupported) 
+            { 
+                return false; 
+            }
             int attr = IsWindows10OrGreater(18985)
                 ? DWMWA_USE_IMMERSIVE_DARK_MODE
                 : DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1;
             int attrValue = enabled ? 1 : 0;
-            int hResult = DwmSetWindowAttribute(window.Handle, attr, ref attrValue, sizeof(int));
-            return Check(hResult);
+            int error = DwmSetWindowAttribute(window.Handle, attr, ref attrValue, sizeof(int));
+            return Check(error);
         }
 
-        private static bool Check(int hResult)
+        private static bool Check(int error)
         {
-            if (hResult != S_OK)
-            {
-                throw new Win32Exception(hResult);
-            }
-            return true;
+            return error == S_OK ? true : throw new Win32Exception(error);
         }
 
         private static bool IsWindows10OrGreater(int build = -1)
         {
-            return Environment.OSVersion.Version.Major >= 10 && Environment.OSVersion.Version.Build >= build;
+            Version version = Environment.OSVersion.Version;
+            return version.Major >= 10 && version.Build >= build;
         }
 
-        [DllImport("uxtheme", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Unicode)]
-        private static extern int SetWindowTheme(IntPtr hWnd, string? pszSubAppName, string? pszSubIdList);
+        [LibraryImport("uxtheme.dll", SetLastError = true, StringMarshalling = StringMarshalling.Utf16)]
+        private static partial int SetWindowTheme(nint hWnd, string? pszSubAppName, string? pszSubIdList);
 
-        [DllImport("uxtheme", SetLastError = true, EntryPoint = "#133")]
+        [LibraryImport("uxtheme.dll", EntryPoint = "#133", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool AllowDarkModeForWindow(IntPtr hWnd, [MarshalAs(UnmanagedType.Bool)] bool allow);
+        private static partial bool AllowDarkModeForWindow(nint hWnd, [MarshalAs(UnmanagedType.Bool)] bool allow);
 
-        [DllImport("uxtheme", SetLastError = true, EntryPoint = "#135")]
-        private static extern int SetPreferredAppMode(int i);
+        [LibraryImport("uxtheme.dll", EntryPoint = "#135", SetLastError = true)]
+        private static partial int SetPreferredAppMode(int i);
 
-        [DllImport("user32", SetLastError = true)]
+        [LibraryImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetWindowCompositionAttribute(IntPtr hwnd, WindowCompositionAttributeData data);
-
-        [DllImport("dwmapi", SetLastError = true)]
-        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+        private static partial bool SetWindowCompositionAttribute(nint hwnd, WindowCompositionAttributeData data);
+        
+        [LibraryImport("dwmapi.dll", SetLastError = true)]
+        private static partial int DwmSetWindowAttribute(nint hwnd, int attr, ref int attrValue, int attrSize);
 
         private enum WindowCompositionAttribute
         {

@@ -19,9 +19,14 @@ internal static class SvgImport
     {
         ArgumentNullException.ThrowIfNull(stream);
         if (!stream.CanRead)
+        {
             throw new IOException("Input stream is not readable.");
+        }
+
         if (stream.Length <= 0)
+        {
             return new Direct2DSvgRenderer().GetNoPathDocument();
+        }
 
         // We are using resvg which gives the best result in my tests.
         // For testing purposes, I also have implemented GDI+ and Direct2D based SVG renderers as well.
@@ -62,7 +67,9 @@ internal static class SvgImport
         using MemoryStream ms = new();
         Span<byte> buf = new byte[3];
         if (input.Read(buf) < 3)
+        {
             throw new IOException("Input stream is not a valid SVG.");
+        }
         ms.Write(buf);
         input.CopyTo(ms);
 

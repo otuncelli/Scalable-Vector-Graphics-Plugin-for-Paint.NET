@@ -10,7 +10,6 @@ namespace SvgFileTypePlugin.Extensions;
 
 internal static class SurfaceExtensions
 {
-    /// <exception cref="ArgumentNullException"></exception>
     public static Document CreateSingleLayerDocument(this Surface surface, bool takeOwnership = false)
     {
         ArgumentNullException.ThrowIfNull(surface);
@@ -62,8 +61,8 @@ internal static class SurfaceExtensions
                 v2 = Avx2.CompareGreaterThan(v2, zero);
                 v3 = Avx2.CompareGreaterThan(v3, zero);
 
-                if (Avx2.MoveMask(v0) != 0 || Avx2.MoveMask(v1) != 0
-                    || Avx2.MoveMask(v2) != 0 || Avx2.MoveMask(v3) != 0)
+                int mask = Avx2.MoveMask(v0) | Avx2.MoveMask(v1) | Avx2.MoveMask(v2) | Avx2.MoveMask(v3);
+                if (mask != 0)
                 {
                     return false;
                 }
@@ -78,7 +77,9 @@ internal static class SurfaceExtensions
                 v = Avx2.Shuffle(v, valphamask);
                 v = Avx2.CompareGreaterThan(v, zero);
                 if (Avx2.MoveMask(v) != 0)
+                {
                     return false;
+                }
                 ptr += Vector256<sbyte>.Count;
                 pixcnt -= Vector256<uint>.Count;
             }
@@ -109,8 +110,8 @@ internal static class SurfaceExtensions
                 v2 = Sse2.CompareGreaterThan(v2, zero);
                 v3 = Sse2.CompareGreaterThan(v3, zero);
 
-                if (Sse2.MoveMask(v0) != 0 || Sse2.MoveMask(v1) != 0
-                    || Sse2.MoveMask(v2) != 0 || Sse2.MoveMask(v3) != 0)
+                int mask = Sse2.MoveMask(v0) | Sse2.MoveMask(v1) | Sse2.MoveMask(v2) | Sse2.MoveMask(v3);
+                if (mask != 0)
                 {
                     return false;
                 }
@@ -125,7 +126,9 @@ internal static class SurfaceExtensions
                 v = Ssse3.Shuffle(v, valphamask);
                 v = Sse2.CompareGreaterThan(v, zero);
                 if (Sse2.MoveMask(v) != 0)
+                {
                     return false;
+                }
                 ptr += Vector128<sbyte>.Count;
                 pixcnt -= Vector128<uint>.Count;
             }
@@ -134,7 +137,9 @@ internal static class SurfaceExtensions
         while (pixcnt > 0)
         {
             if (ptr[3] > 0)
+            {
                 return false;
+            }
             ptr += sizeof(uint);
             pixcnt--;
         }
@@ -147,10 +152,8 @@ internal static class SurfaceExtensions
         ArgumentNullException.ThrowIfNull(surface);
 
         using Surface tmp = surface.Clone();
-        int w = tmp.Width;
-        int h = tmp.Height;
-        int stride = tmp.Stride;
         surface.Fill(backgroundColor);
-        new T().Apply(surface, tmp);
+        T blendOp = new T();
+        blendOp.Apply(surface, tmp);
     }
 }

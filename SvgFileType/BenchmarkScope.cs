@@ -31,7 +31,9 @@ internal struct BenchmarkScope : IDisposable
             StringBuilder sb = new StringBuilder(nameof(BenchmarkScope));
             sb.Append(' ');
             if (name is not null)
+            {
                 sb.Append($"({name}) ");
+            }
             sb.Append($"took {timer.ElapsedMilliseconds} ms.");
             Logger.WriteLine(sb.ToString());
         }

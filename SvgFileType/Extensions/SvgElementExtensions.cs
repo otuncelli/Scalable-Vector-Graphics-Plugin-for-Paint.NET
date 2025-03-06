@@ -43,10 +43,14 @@ internal static class SvgElementExtensions
         for (int i = element.Children.Count - 1; i >= 0; i--)
         {
             SvgElement child = element.Children[i];
-            if (child.Visibility != "visible" && child is not SvgTextBase)
+            if (child is not SvgTextBase && child.Visibility != "visible")
+            {
                 element.Children.RemoveAt(i);
+            }
             else
+            {
                 child.RemoveInvisibleAndNonTextElements();
+            }
         }
     }
 
@@ -99,7 +103,9 @@ internal static class SvgElementExtensions
         {
             base.Dispose(disposing);
             if (disposing)
+            {
                 stream.Position = 0;
+            }
         }
     }
 
