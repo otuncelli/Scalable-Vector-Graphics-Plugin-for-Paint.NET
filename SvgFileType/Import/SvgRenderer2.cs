@@ -65,29 +65,6 @@ internal abstract class SvgRenderer2(string name)
 
     protected abstract Document GetLayeredDocument(string svgdata, SvgImportConfig config, CancellationToken ctoken = default);
 
-    protected virtual void RenderSvgUseElement(SvgUse useElement, Action<SvgElement> renderAction)
-    {
-        ArgumentNullException.ThrowIfNull(useElement);
-        ArgumentNullException.ThrowIfNull(renderAction);
-
-        if (useElement.GetCopyOfReferencedElement() is not SvgElement referencedElement)
-        {
-            return;
-        }
-        referencedElement.Visibility = "visible";
-        useElement.Visibility = "hidden";
-        SvgElementCollection children = useElement.Parent.Children;
-        children.AddAndForceUniqueID(referencedElement);
-        try
-        {
-            renderAction(referencedElement);
-        }
-        finally
-        {
-            children.Remove(referencedElement);
-        }
-    }
-
     public virtual Document GetNoPathDocument()
     {
         Graphics g;
@@ -120,27 +97,31 @@ internal abstract class SvgRenderer2(string name)
 
         int value = Interlocked.Increment(ref step);
         value = Math.Clamp(value, 0, total);
-        ProgressChangedEventArgs args = new ProgressChangedEventArgs(step, total);
+        ProgressChangedEventArgs args = new ProgressChangedEventArgs(value, total);
         ProgressChanged.Invoke(this, args);
     }
 
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     protected void ResetProgress(int total)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(total);
 
+        if (ProgressChanged is null)
+        {
+            return;
+        }
+
         this.total = total;
         int value = Interlocked.Exchange(ref step, 0);
-        if (ProgressChanged is not null)
-        {
-            ProgressChangedEventArgs args = new ProgressChangedEventArgs(step, total);
-            ProgressChanged?.Invoke(this, args);
-        }
+        ProgressChangedEventArgs args = new ProgressChangedEventArgs(value, total);
+        ProgressChanged.Invoke(this, args);
     }
 
     #endregion
 
     #region Protected Static
 
+    /// <exception cref="ArgumentNullException"></exception>
     protected static List<SvgVisualElement> GetSvgVisualElements(SvgDocument svg, SvgImportConfig config, CancellationToken ctoken = default)
     {
         ArgumentNullException.ThrowIfNull(svg);
@@ -173,6 +154,7 @@ internal abstract class SvgRenderer2(string name)
         return elements.ToList();
     }
 
+    /// <exception cref="ArgumentNullException"></exception>
     protected static string GetLayerTitle(SvgElement element, bool prependElementName = true)
     {
         ArgumentNullException.ThrowIfNull(element);
@@ -264,7 +246,7 @@ internal abstract class SvgRenderer2(string name)
         try
         {
             layers.ForEach(document.Layers.Add);
-            document.SetDpi(config.Ppi);
+            document.SetDpu(config.Ppi);
             return document;
         }
         catch (Exception)
@@ -272,6 +254,30 @@ internal abstract class SvgRenderer2(string name)
             document.Dispose();
             layers.ForEach(layer => layer.Dispose());
             throw;
+        }
+    }
+
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    protected static void RenderSvgUseElement(SvgUse useElement, Action<SvgElement> renderAction)
+    {
+        ArgumentNullException.ThrowIfNull(useElement);
+        ArgumentNullException.ThrowIfNull(renderAction);
+
+        if (useElement.GetCopyOfReferencedElement() is not SvgElement referencedElement)
+        {
+            return;
+        }
+        referencedElement.Visibility = "visible";
+        useElement.Visibility = "hidden";
+        SvgElementCollection children = useElement.Parent.Children;
+        children.AddAndForceUniqueID(referencedElement);
+        try
+        {
+            renderAction(referencedElement);
+        }
+        finally
+        {
+            children.Remove(referencedElement);
         }
     }
 
@@ -288,6 +294,7 @@ internal abstract class SvgRenderer2(string name)
 
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     /// <exception cref="InsufficientMemoryException"></exception>
+    /// <exception cref="OverflowException"></exception>
     protected static MemoryFailPoint GetMemoryFailPoint(int width, int height, int count = 1)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(width);
@@ -428,6 +435,19 @@ internal abstract class SvgRenderer2(string name)
         public override GraphicsPath Path(ISvgRenderer renderer)
         {
             throw new NotImplementedException();
+        }
+
+        public BitmapLayer ToEmptyLayer(int width, int height)
+        {
+            // Render empty group boundary and continue
+            BitmapLayer layer = new BitmapLayer(width, height)
+            {
+                Name = Name,
+                // Store related group opacity and visibility.
+                Opacity = ToByteOpacity(Opacity),
+                Visible = Visible
+            };
+            return layer;
         }
     }
 

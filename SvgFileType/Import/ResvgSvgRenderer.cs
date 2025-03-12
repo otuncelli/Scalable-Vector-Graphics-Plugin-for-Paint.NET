@@ -39,7 +39,7 @@ internal sealed class ResvgSvgRenderer() : SvgRenderer2("resvg")
         }
 
         Document document = surface.CreateSingleLayerDocument(takeOwnership: true);
-        document.SetDpi(config.Ppi);
+        document.SetDpu(config.Ppi);
         IncrementProgress();
         return document;
     }
@@ -69,27 +69,13 @@ internal sealed class ResvgSvgRenderer() : SvgRenderer2("resvg")
         {
             ctoken.ThrowIfCancellationRequested();
 
-            BitmapLayer? layer = null;
-
+            BitmapLayer? layer;
             if (element is GroupBoundary boundaryNode)
             {
                 // Render empty group boundary and continue
-                layer = new BitmapLayer(config.RasterWidth, config.RasterHeight);
-                try
-                {
-                    layer.Name = boundaryNode.Name;
-                    // Store related group opacity and visibility.
-                    layer.Opacity = ToByteOpacity(boundaryNode.Opacity);
-                    layer.Visible = boundaryNode.Visible;
-                }
-                catch (Exception)
-                {
-                    layer.Dispose();
-                    layers.ForEach(layer => layer.Dispose());
-                    throw;
-                }
-                IncrementProgress();
+                layer = boundaryNode.ToEmptyLayer(config.RasterWidth, config.RasterHeight);
                 layers.Add(layer);
+                IncrementProgress();
                 continue;
             }
 

@@ -46,7 +46,7 @@ internal sealed class GdipSvgRenderer() : SvgRenderer2(name: "GDI+")
             }
         }
         Document document = Document.FromImage(bmp);
-        document.SetDpi(config.Ppi);
+        document.SetDpu(config.Ppi);
         return document;
     }
 
@@ -73,27 +73,13 @@ internal sealed class GdipSvgRenderer() : SvgRenderer2(name: "GDI+")
         {
             ctoken.ThrowIfCancellationRequested();
 
-            BitmapLayer? layer = null;
-
+            BitmapLayer? layer;
             if (element is GroupBoundary boundaryNode)
             {
                 // Render empty group boundary and continue
-                layer = new BitmapLayer(config.RasterWidth, config.RasterHeight);
-                try
-                {
-                    layer.Name = boundaryNode.Name;
-                    // Store related group opacity and visibility.
-                    layer.Opacity = ToByteOpacity(boundaryNode.Opacity);
-                    layer.Visible = boundaryNode.Visible;
-                }
-                catch (Exception)
-                {
-                    layer.Dispose();
-                    layers.ForEach(layer => layer.Dispose());
-                    throw;
-                }
-                IncrementProgress();
+                layer = boundaryNode.ToEmptyLayer(config.RasterWidth, config.RasterHeight);
                 layers.Add(layer);
+                IncrementProgress();
                 continue;
             }
 
