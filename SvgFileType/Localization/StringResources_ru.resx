@@ -1,0 +1,419 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AllElements" xml:space="preserve">
+    <value>Все элементы</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Angle" xml:space="preserve">
+    <value>Угол</value>
+    <comment>Export</comment>
+  </data>
+  <data name="AnUpdateIsAvailable" xml:space="preserve">
+    <value>Доступно обновление!</value>
+    <comment>Import</comment>
+  </data>
+  <data name="BrightnessCutoff" xml:space="preserve">
+    <value>Порог яркости</value>
+    <comment>Export</comment>
+  </data>
+  <data name="BrightnessCutoffDesc" xml:space="preserve">
+    <value>Обнаруживает области, темнее порогового значения, и создаёт путь, их охватывающий.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Отмена</value>
+    <comment>Import</comment>
+  </data>
+  <data name="CanceledUponYourRequest" xml:space="preserve">
+    <value>Отменено по вашему запросу.</value>
+    <comment>Generic</comment>
+  </data>
+  <data name="Canvas" xml:space="preserve">
+    <value>Холст (Ш×В)</value>
+    <comment>Import</comment>
+  </data>
+  <data name="CanvasIsTooBig" xml:space="preserve">
+    <value>Холст слишком большой.</value>
+    <comment>Generic</comment>
+  </data>
+  <data name="Color" xml:space="preserve">
+    <value>Цвет</value>
+    <comment>Export</comment>
+  </data>
+  <data name="DiscussionLink" xml:space="preserve">
+    <value>Обсуждение</value>
+    <comment>Export</comment>
+  </data>
+  <data name="EdgeDetectionMode" xml:space="preserve">
+    <value>Режим обнаружения границ</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Enclose" xml:space="preserve">
+    <value>Охватить</value>
+    <comment>Export</comment>
+  </data>
+  <data name="EndLayerGroup" xml:space="preserve">
+    <value>Конец группы слоёв: {0}</value>
+    <comment>Import</comment>
+  </data>
+  <data name="ExportAsPdnShape" xml:space="preserve">
+    <value>Экспорт как форму</value>
+    <comment>Export</comment>
+  </data>
+  <data name="FillColor" xml:space="preserve">
+    <value>Цвет заливки</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Flatten" xml:space="preserve">
+    <value>Сплющить</value>
+    <comment>Import</comment>
+  </data>
+  <data name="GitHubLink" xml:space="preserve">
+    <value>GitHub</value>
+    <comment>Export</comment>
+  </data>
+  <data name="GroupBoundaries" xml:space="preserve">
+    <value>Группировать границы как пустые слои</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Groups" xml:space="preserve">
+    <value>Группы</value>
+    <comment>Import</comment>
+  </data>
+  <data name="HighpassFilterRadius" xml:space="preserve">
+    <value>Радиус высокочастотного фильтра</value>
+    <comment>Export</comment>
+  </data>
+  <data name="HighpassFilterRadiusDesc" xml:space="preserve">
+    <value>Подавляет крупномасштабные искажения, такие как фоновая неоднородность, сохраняя мелкие детали, например линии.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ImportHiddenElements" xml:space="preserve">
+    <value>Скрытые элементы</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Invert" xml:space="preserve">
+    <value>Инвертировать</value>
+    <comment>Export</comment>
+  </data>
+  <data name="KeepAspectRatio" xml:space="preserve">
+    <value>Сохранять пропорции</value>
+    <comment>Import</comment>
+  </data>
+  <data name="LayerGroup" xml:space="preserve">
+    <value>Группа слоёв: {0}</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Layers" xml:space="preserve">
+    <value>Слои</value>
+    <comment>Import</comment>
+  </data>
+  <data name="LowpassFilterRadius" xml:space="preserve">
+    <value>Радиус низкочастотного фильтра</value>
+    <comment>Export</comment>
+  </data>
+  <data name="LowpassFilterRadiusDesc" xml:space="preserve">
+    <value>Сглаживает детали переднего плана.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="MemoryWarningText" xml:space="preserve">
+    <value>Убедитесь, что у вас достаточно памяти!</value>
+    <comment>Import</comment>
+  </data>
+  <data name="NoPath" xml:space="preserve">
+    <value>НЕТ ПУТИ</value>
+    <comment>Export</comment>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>ОК</value>
+    <comment>Import</comment>
+  </data>
+  <data name="OpacityAsLayerProperty" xml:space="preserve">
+    <value>Прозрачность элемента как свойство слоя</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Optimize" xml:space="preserve">
+    <value>Оптимизировать</value>
+    <comment>Export</comment>
+  </data>
+  <data name="OptimizeDesc" xml:space="preserve">
+    <value>Пробует оптимизировать пути, объединяя соседние сегменты кривых Безье.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PdnShapeExportOptions" xml:space="preserve">
+    <value>Параметры экспорта формы Paint.NET</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PdnShapeExportOptionsDesc" xml:space="preserve">
+    <value>* Введите отображаемое имя для формы</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PluginVersion" xml:space="preserve">
+    <value>Версия плагина: {0}</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PreviewMode" xml:space="preserve">
+    <value>Режим предпросмотра</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PreviewModeFast" xml:space="preserve">
+    <value>Быстрый</value>
+    <comment>Export</comment>
+  </data>
+  <data name="PreviewModeSlow" xml:space="preserve">
+    <value>Медленный</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Ready" xml:space="preserve">
+    <value>Готово!</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Resolution" xml:space="preserve">
+    <value>Разрешение (DPI)</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Scale" xml:space="preserve">
+    <value>Масштаб</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ScaleBeforeThreshold" xml:space="preserve">
+    <value>Масштабировать до применения порога</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ScanMode" xml:space="preserve">
+    <value>Режим сканирования</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ScanModeOpaque" xml:space="preserve">
+    <value>Непрозрачный</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ScanModeTransparent" xml:space="preserve">
+    <value>Прозрачный</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Shape" xml:space="preserve">
+    <value>Форма</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ShapeSaved" xml:space="preserve">
+    <value>Результат трассировки изображения сохранён как форма Paint.NET.
+  -----
+  {0}
+  -----</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ShapeSavedCaption" xml:space="preserve">
+    <value>Успех</value>
+    <comment>Export</comment>
+  </data>
+  <data name="ShapeSavedRestart" xml:space="preserve">
+    <value>Для использования необходимо перезапустить Paint.NET.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="SizeSelectionByUser" xml:space="preserve">
+    <value>Выбор размера пользователем</value>
+    <comment>Import</comment>
+  </data>
+  <data name="SizeSettingsGivenInSvgFile" xml:space="preserve">
+    <value>Параметры размера указаны в файле SVG</value>
+    <comment>Import</comment>
+  </data>
+  <data name="SmoothCorners" xml:space="preserve">
+    <value>Сглаживание углов</value>
+    <comment>Export</comment>
+  </data>
+  <data name="SmoothCornersDesc" xml:space="preserve">
+    <value>Сглаживает резкие углы трассировки.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="SuppressSpeckles" xml:space="preserve">
+    <value>Подавление пятен</value>
+    <comment>Export</comment>
+  </data>
+  <data name="SuppressSpecklesDesc" xml:space="preserve">
+    <value>Игнорирует мелкие пятна (помехи) на изображении.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Tight" xml:space="preserve">
+    <value>Плотно</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicy" xml:space="preserve">
+    <value>Политика поворота</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyBlack" xml:space="preserve">
+    <value>Чёрный</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyDesc" xml:space="preserve">
+    <value>Определяет, как разрешать неоднозначности при разложении битмапов на пути.</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyLeft" xml:space="preserve">
+    <value>Влево</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyMajority" xml:space="preserve">
+    <value>Большинство</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyMinority" xml:space="preserve">
+    <value>Меньшинство</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyRandom" xml:space="preserve">
+    <value>Случайно</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyRight" xml:space="preserve">
+    <value>Вправо</value>
+    <comment>Export</comment>
+  </data>
+  <data name="TurnPolicyWhite" xml:space="preserve">
+    <value>Белый</value>
+    <comment>Export</comment>
+  </data>
+  <data name="Untitled" xml:space="preserve">
+    <value>Без названия</value>
+    <comment>Export</comment>
+  </data>
+  <data name="UseSizeSettingsGivenInSvg" xml:space="preserve">
+    <value>▼ Использовать параметры размера из SVG ▼</value>
+    <comment>Import</comment>
+  </data>
+  <data name="ViewBoxWH" xml:space="preserve">
+    <value>ViewBox (Ш×В)</value>
+    <comment>Import</comment>
+  </data>
+  <data name="ViewBoxXY" xml:space="preserve">
+    <value>ViewBox (X,Y)</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Viewport" xml:space="preserve">
+    <value>Область просмотра (Ш×В)</value>
+    <comment>Import</comment>
+  </data>
+  <data name="Working" xml:space="preserve">
+    <value>Обработка...</value>
+    <comment>Import</comment>
+  </data>
+</root>
