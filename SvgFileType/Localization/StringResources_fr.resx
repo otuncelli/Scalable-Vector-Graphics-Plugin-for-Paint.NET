@@ -234,7 +234,7 @@
     <comment>Export</comment>
   </data>
   <data name="MemoryWarningText" xml:space="preserve">
-    <value>Assurez-vous d’avoir assez de mémoire !</value>
+    <value>Assurez-vous d'avoir assez de mémoire !</value>
     <comment>Import</comment>
   </data>
   <data name="NoPath" xml:space="preserve">
@@ -246,7 +246,7 @@
     <comment>Import</comment>
   </data>
   <data name="OpacityAsLayerProperty" xml:space="preserve">
-    <value>Opacité de l’élément comme propriété de calque</value>
+    <value>Opacité de l'élément comme propriété de calque</value>
     <comment>Import</comment>
   </data>
   <data name="Optimize" xml:space="preserve">
@@ -254,19 +254,19 @@
     <comment>Export</comment>
   </data>
   <data name="OptimizeDesc" xml:space="preserve">
-    <value>Tenter d’optimiser les chemins en joignant des segments de courbe de Bézier adjacents.</value>
+    <value>Tenter d'optimiser les chemins en joignant des segments de courbe de Bézier adjacents.</value>
     <comment>Export</comment>
   </data>
   <data name="PdnShapeExportOptions" xml:space="preserve">
-    <value>Options d’exportation de formes Paint.NET</value>
+    <value>Options d'exportation de formes Paint.NET</value>
     <comment>Export</comment>
   </data>
   <data name="PdnShapeExportOptionsDesc" xml:space="preserve">
-    <value>* Entrez un nom d’affichage pour la forme</value>
+    <value>* Entrez un nom d'affichage pour la forme</value>
     <comment>Export</comment>
   </data>
   <data name="PluginVersion" xml:space="preserve">
-    <value>Version du greffon : {0}</value>
+    <value>Version du plug-in : {0}</value>
     <comment>Export</comment>
   </data>
   <data name="PreviewMode" xml:space="preserve">
@@ -314,7 +314,7 @@
     <comment>Export</comment>
   </data>
   <data name="ShapeSaved" xml:space="preserve">
-    <value>Le résultat du traçage de l’image est enregistré en tant que Forme Paint.NET.
+    <value>Le résultat du traçage de l'image est enregistré en tant que Forme Paint.NET.
 -----
 {0}
 -----</value>
@@ -325,11 +325,11 @@
     <comment>Export</comment>
   </data>
   <data name="ShapeSavedRestart" xml:space="preserve">
-    <value>Vous devez redémarrer Paint.NET pour l’utiliser.</value>
+    <value>Vous devez redémarrer Paint.NET pour l'utiliser.</value>
     <comment>Export</comment>
   </data>
   <data name="SizeSelectionByUser" xml:space="preserve">
-    <value>Sélection de la taille par l’utilisateur</value>
+    <value>Sélection de la taille par l'utilisateur</value>
     <comment>Import</comment>
   </data>
   <data name="SizeSettingsGivenInSvgFile" xml:space="preserve">
@@ -349,7 +349,7 @@
     <comment>Export</comment>
   </data>
   <data name="SuppressSpecklesDesc" xml:space="preserve">
-    <value>Ignorer les petites taches (salissures) dans l’image bitmap.</value>
+    <value>Ignorer les petites taches (salissures) dans l'image bitmap.</value>
     <comment>Export</comment>
   </data>
   <data name="Tight" xml:space="preserve">
